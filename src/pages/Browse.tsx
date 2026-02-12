@@ -84,7 +84,7 @@ const Browse = () => {
   return (
     <div className="flex flex-col pb-24">
       <PageHeader
-        title={activeCategory ? categories.find(c => c.id === activeCategory)?.label ?? 'Browse' : 'Browse'}
+        title={activeCategory ? categories.find(c => c.id === activeCategory)?.label ?? '' : undefined}
         subtitle={activeCategory ? `${filtered.length} items` : undefined}
         onBack={activeCategory ? handleBack : undefined}
       >
