@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Sparkles, ShoppingCart, Search } from 'lucide-react';
+import { Sparkles, ShoppingCart, Search, RotateCcw } from 'lucide-react';
 import { useCart } from '@/store/cartStore';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -15,7 +15,6 @@ const BottomNav = () => {
   const navigate = useNavigate();
   const { totalItems } = useCart();
 
-  // Hide on welcome & confirmation
   if (location.pathname === '/' || location.pathname === '/confirmation') return null;
 
   return (
@@ -47,10 +46,7 @@ const BottomNav = () => {
                 {tab.label}
               </span>
               {active && (
-                <motion.div
-                  layoutId="bottomNavIndicator"
-                  className="absolute -top-px left-3 right-3 h-0.5 rounded-full bg-primary"
-                />
+                <motion.div layoutId="bottomNavIndicator" className="absolute -top-px left-3 right-3 h-0.5 rounded-full bg-primary" />
               )}
             </button>
           );

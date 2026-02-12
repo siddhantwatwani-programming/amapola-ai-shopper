@@ -6,6 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/store/cartStore";
 import { StoreProvider } from "@/store/storeContext";
 import { CustomerProvider } from "@/store/customerContext";
+import { ModeProvider } from "@/store/modeContext";
+import { PickupProvider } from "@/store/pickupContext";
+import { OrderHistoryProvider } from "@/store/orderHistoryContext";
 import Welcome from "./pages/Welcome";
 import Browse from "./pages/Browse";
 import AiAssistant from "./pages/AiAssistant";
@@ -19,27 +22,33 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <StoreProvider>
-        <CustomerProvider>
-          <CartProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <div className="mx-auto min-h-screen bg-background max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
-                <Routes>
-                  <Route path="/" element={<Welcome />} />
-                  <Route path="/browse" element={<Browse />} />
-                  <Route path="/assistant" element={<AiAssistant />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/confirmation" element={<Confirmation />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-                <BottomNav />
-              </div>
-            </BrowserRouter>
-          </CartProvider>
-        </CustomerProvider>
-      </StoreProvider>
+      <ModeProvider>
+        <StoreProvider>
+          <CustomerProvider>
+            <PickupProvider>
+              <OrderHistoryProvider>
+                <CartProvider>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter>
+                    <div className="mx-auto min-h-screen bg-background max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
+                      <Routes>
+                        <Route path="/" element={<Welcome />} />
+                        <Route path="/browse" element={<Browse />} />
+                        <Route path="/assistant" element={<AiAssistant />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/confirmation" element={<Confirmation />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                      <BottomNav />
+                    </div>
+                  </BrowserRouter>
+                </CartProvider>
+              </OrderHistoryProvider>
+            </PickupProvider>
+          </CustomerProvider>
+        </StoreProvider>
+      </ModeProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

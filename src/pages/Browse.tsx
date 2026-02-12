@@ -1,10 +1,13 @@
 import { useState, useMemo } from 'react';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, RotateCcw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { products, categories, priceRanges, type Category } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
 import CategoryChips from '@/components/CategoryChips';
 import PageHeader from '@/components/PageHeader';
+import { useMode } from '@/store/modeContext';
+import { useOrderHistory } from '@/store/orderHistoryContext';
+import { useCart } from '@/store/cartStore';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -14,6 +17,9 @@ const Browse = () => {
   const [activePriceRange, setActivePriceRange] = useState<number | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'categories' | 'products'>('categories');
+  const { isRestaurant } = useMode();
+  const { orders } = useOrderHistory();
+  const { addItem } = useCart();
 
   const filtered = useMemo(() => {
     let list = products;
@@ -40,6 +46,14 @@ const Browse = () => {
     setSearch('');
   };
 
+  const handleQuickReorder = () => {
+    if (orders.length === 0) return;
+    const lastOrder = orders[0];
+    lastOrder.items.forEach(({ product, quantity }) => {
+      for (let i = 0; i < quantity; i++) addItem(product);
+    });
+  };
+
   return (
     <div className="flex flex-col pb-24">
       <PageHeader
@@ -58,12 +72,27 @@ const Browse = () => {
         </button>
       </PageHeader>
 
+      {/* Quick reorder banner for restaurant mode */}
+      {isRestaurant && orders.length > 0 && viewMode === 'categories' && (
+        <button
+          onClick={handleQuickReorder}
+          className="mx-4 mb-2 flex items-center gap-3 rounded-2xl border-2 border-primary/20 bg-primary/5 p-4 text-left active:scale-[0.98] transition-all"
+        >
+          <RotateCcw className="h-5 w-5 text-primary shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-bold text-foreground">Quick Reorder</p>
+            <p className="text-xs text-muted-foreground">Repeat your last order ({orders[0].id}) · ${orders[0].total.toFixed(2)}</p>
+          </div>
+          <span className="text-xs font-bold text-primary">Tap</span>
+        </button>
+      )}
+
       {/* Search */}
       <div className="px-4 pb-2">
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search groceries..."
+            placeholder={isRestaurant ? 'Search bulk items...' : 'Search groceries...'}
             value={search}
             onChange={e => {
               setSearch(e.target.value);
@@ -86,9 +115,7 @@ const Browse = () => {
               }}
               className={cn(
                 'shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-colors active:scale-95',
-                activePriceRange === i
-                  ? 'bg-accent text-accent-foreground shadow-sm'
-                  : 'bg-muted text-muted-foreground'
+                activePriceRange === i ? 'bg-accent text-accent-foreground shadow-sm' : 'bg-muted text-muted-foreground'
               )}
             >
               {range.label}
@@ -97,7 +124,6 @@ const Browse = () => {
         </div>
       )}
 
-      {/* Category tiles (kiosk mode) or scrolling chips */}
       {viewMode === 'categories' && !search.trim() ? (
         <div className="grid grid-cols-3 gap-3 px-4 pt-3 md:grid-cols-4 lg:grid-cols-5">
           {categories.map((cat, i) => (
@@ -116,7 +142,6 @@ const Browse = () => {
         </div>
       ) : (
         <>
-          {/* Scrolling category chips when in product view */}
           <CategoryChips
             categories={categories}
             active={activeCategory}
@@ -125,14 +150,11 @@ const Browse = () => {
               if (!cat) setViewMode('categories');
             }}
           />
-
-          {/* Product Grid */}
           <div className="grid grid-cols-2 gap-3 px-4 pt-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {filtered.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
-
           {filtered.length === 0 && (
             <div className="px-4 py-12 text-center text-lg text-muted-foreground">
               No items found. Try a different search or filter.
