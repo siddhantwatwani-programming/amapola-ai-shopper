@@ -24,7 +24,7 @@ interface Message {
 const AiAssistant = () => {
   const { selectedStore } = useStore();
   const { customer } = useCustomer();
-  const { isRestaurant, mode } = useMode();
+  const { isRestaurant, mode, qtyStep } = useMode();
   const { scheduleLabel, dynamicLabel, pickupWarning } = usePickup();
   const { orders } = useOrderHistory();
   const { items: cartItems, totalItems: cartTotal, addItem } = useCart();
@@ -555,7 +555,9 @@ const AiAssistant = () => {
                         onClick={() => {
                           msg.productIds!.forEach(id => {
                             const product = getProductById(id);
-                            if (product) addItem(product);
+                            if (product) {
+                              for (let i = 0; i < qtyStep; i++) addItem(product);
+                            }
                           });
                         }}
                         className="mt-1 flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground active:scale-95 transition-transform"
