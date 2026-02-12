@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/store/cartStore";
 import { StoreProvider } from "@/store/storeContext";
+import { CustomerProvider } from "@/store/customerContext";
 import Welcome from "./pages/Welcome";
 import Browse from "./pages/Browse";
 import AiAssistant from "./pages/AiAssistant";
@@ -19,23 +20,25 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <StoreProvider>
-        <CartProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <div className="mx-auto min-h-screen bg-background max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
-              <Routes>
-                <Route path="/" element={<Welcome />} />
-                <Route path="/browse" element={<Browse />} />
-                <Route path="/assistant" element={<AiAssistant />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/confirmation" element={<Confirmation />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <BottomNav />
-            </div>
-          </BrowserRouter>
-        </CartProvider>
+        <CustomerProvider>
+          <CartProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <div className="mx-auto min-h-screen bg-background max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
+                <Routes>
+                  <Route path="/" element={<Welcome />} />
+                  <Route path="/browse" element={<Browse />} />
+                  <Route path="/assistant" element={<AiAssistant />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/confirmation" element={<Confirmation />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+                <BottomNav />
+              </div>
+            </BrowserRouter>
+          </CartProvider>
+        </CustomerProvider>
       </StoreProvider>
     </TooltipProvider>
   </QueryClientProvider>

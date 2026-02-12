@@ -1,23 +1,37 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, ShoppingBag, Clock, Navigation, CheckCircle2, Zap, Users, Timer } from 'lucide-react';
+import { MapPin, ShoppingBag, Clock, Navigation, CheckCircle2, Zap, Users, Timer, User, Phone, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useStore, stores, type StoreLocation } from '@/store/storeContext';
+import { useCustomer } from '@/store/customerContext';
 import { cn } from '@/lib/utils';
 import logoAmapola from '@/assets/logo-amapola.avif';
+
+type Step = 'entry' | 'store' | 'identify';
 
 const Welcome = () => {
   const navigate = useNavigate();
   const { selectedStore, setSelectedStore } = useStore();
+  const { setCustomer } = useCustomer();
+  const [step, setStep] = useState<Step>('entry');
   const [confirmed, setConfirmed] = useState(false);
-  const [showStores, setShowStores] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [phone, setPhone] = useState('');
 
   const handleSelect = (store: StoreLocation) => {
     setSelectedStore(store);
   };
 
-  const handleConfirm = () => {
+  const handleStoreConfirm = () => {
+    setStep('identify');
+  };
+
+  const handleIdentifyConfirm = () => {
+    if (firstName.trim()) {
+      setCustomer({ firstName: firstName.trim(), phone: phone.trim() });
+    }
     setConfirmed(true);
     setTimeout(() => navigate('/browse'), 350);
   };
@@ -28,8 +42,8 @@ const Welcome = () => {
     return <Timer className="h-3.5 w-3.5" />;
   };
 
-  // Kiosk entry (full-screen, no scroll)
-  if (!showStores) {
+  // --- ENTRY ---
+  if (step === 'entry') {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
         <motion.div
@@ -46,47 +60,121 @@ const Welcome = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1, type: 'spring', stiffness: 180 }}
           />
-
-          <h1 className="text-3xl font-bold text-foreground mb-2 md:text-4xl">
-            Welcome to Amapola
-          </h1>
-          <p className="text-lg text-muted-foreground mb-10 md:text-xl">
-            Your neighborhood market, now on screen
-          </p>
-
+          <h1 className="text-3xl font-bold text-foreground mb-2 md:text-4xl">Welcome to Amapola</h1>
+          <p className="text-lg text-muted-foreground mb-10 md:text-xl">Your neighborhood market, now on screen</p>
           <div className="w-full space-y-4 max-w-sm">
             <Button
               size="lg"
-              onClick={() => setShowStores(true)}
+              onClick={() => setStep('store')}
               className="h-16 w-full rounded-2xl text-xl font-bold shadow-lg active:scale-[0.97] transition-transform md:h-20 md:text-2xl"
             >
               <ShoppingBag className="mr-3 h-6 w-6 md:h-7 md:w-7" />
               Order for Pickup
             </Button>
-
             <Button
               variant="outline"
               size="lg"
-              onClick={() => setShowStores(true)}
+              onClick={() => setStep('store')}
               className="h-14 w-full rounded-2xl text-lg font-semibold border-2 active:scale-[0.97] transition-transform md:h-16 md:text-xl"
             >
               <MapPin className="mr-3 h-5 w-5 md:h-6 md:w-6" />
               Find Nearest Store
             </Button>
           </div>
-
-          <p className="mt-8 text-sm text-muted-foreground">
-            Touch to begin · No account needed
-          </p>
+          <p className="mt-8 text-sm text-muted-foreground">Touch to begin · No account needed</p>
         </motion.div>
       </div>
     );
   }
 
-  // Store selector (map-driven feel)
+  // --- IDENTIFY ---
+  if (step === 'identify') {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border px-5 py-4">
+          <div className="flex items-center justify-between max-w-lg mx-auto">
+            <img src={logoAmapola} alt="Amapola" className="h-8 w-auto object-contain" />
+            <span className="text-xs font-semibold text-muted-foreground">
+              Amapola — {selectedStore.name}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-1 flex-col items-center justify-center px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="w-full max-w-sm"
+          >
+            <div className="text-center mb-8">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <User className="h-8 w-8 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground mb-2 md:text-3xl">Almost ready!</h2>
+              <p className="text-base text-muted-foreground md:text-lg">
+                So we can identify your order at pickup
+              </p>
+            </div>
+
+            <div className="space-y-4 mb-8">
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-1.5">First Name</label>
+                <Input
+                  value={firstName}
+                  onChange={e => setFirstName(e.target.value)}
+                  placeholder="e.g. Maria"
+                  className="h-14 rounded-xl text-lg px-4 border-2 border-border focus:border-primary"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-1.5">Mobile Number</label>
+                <Input
+                  value={phone}
+                  onChange={e => setPhone(e.target.value.replace(/[^0-9()-\s+]/g, ''))}
+                  placeholder="(555) 123-4567"
+                  type="tel"
+                  inputMode="numeric"
+                  className="h-14 rounded-xl text-lg px-4 border-2 border-border focus:border-primary"
+                />
+              </div>
+            </div>
+
+            <Button
+              size="lg"
+              onClick={handleIdentifyConfirm}
+              disabled={confirmed || !firstName.trim()}
+              className="h-16 w-full rounded-2xl text-xl font-bold shadow-lg active:scale-[0.97] transition-transform md:h-20 md:text-2xl"
+            >
+              {confirmed ? (
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 className="h-6 w-6" />
+                  Opening store…
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  Continue to Order
+                  <ArrowRight className="h-6 w-6" />
+                </span>
+              )}
+            </Button>
+
+            <button
+              onClick={handleIdentifyConfirm}
+              className="mt-4 w-full text-center text-sm font-medium text-muted-foreground active:text-foreground transition-colors"
+            >
+              Skip for now
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  // --- STORE SELECTOR ---
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Header */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border px-5 py-4">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <img src={logoAmapola} alt="Amapola" className="h-8 w-auto object-contain" />
@@ -183,9 +271,7 @@ const Welcome = () => {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
-                    {isSelected && (
-                      <CheckCircle2 className="h-6 w-6 text-primary" />
-                    )}
+                    {isSelected && <CheckCircle2 className="h-6 w-6 text-primary" />}
                     <span className={cn(
                       'flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold',
                       store.status === 'Open' ? 'bg-accent/15 text-accent' :
@@ -202,7 +288,6 @@ const Welcome = () => {
           })}
         </div>
 
-        {/* Selected store summary */}
         <motion.div
           key={selectedStore.id}
           initial={{ opacity: 0 }}
@@ -219,21 +304,13 @@ const Welcome = () => {
 
         <Button
           size="lg"
-          onClick={handleConfirm}
-          disabled={confirmed}
+          onClick={handleStoreConfirm}
           className="h-16 w-full rounded-2xl text-xl font-bold shadow-lg active:scale-[0.97] transition-transform md:h-20 md:text-2xl"
         >
-          {confirmed ? (
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="h-6 w-6" />
-              Opening store…
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <ShoppingBag className="h-6 w-6" />
-              Start Shopping
-            </span>
-          )}
+          <span className="flex items-center gap-2">
+            <ShoppingBag className="h-6 w-6" />
+            Continue
+          </span>
         </Button>
       </div>
     </div>
