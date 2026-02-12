@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Sparkles } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { findAiResponse, getProductById } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
-import logoAmapola from '@/assets/logo-amapola.avif';
+import PageHeader from '@/components/PageHeader';
 
 interface Message {
   id: string;
@@ -48,16 +48,7 @@ const AiAssistant = () => {
 
   return (
     <div className="flex h-full flex-col pb-24">
-      {/* Header */}
-      <div className="px-4 pb-2 pt-4">
-        <div className="flex items-center gap-2">
-          <img src={logoAmapola} alt="Amapola Market" className="h-8 w-auto object-contain" />
-          <div>
-            <h1 className="text-lg font-bold text-foreground">AI Assistant</h1>
-            <p className="text-xs text-muted-foreground">Powered by Amapola</p>
-          </div>
-        </div>
-      </div>
+      <PageHeader title="AI Assistant" subtitle="Powered by Amapola" />
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-2">

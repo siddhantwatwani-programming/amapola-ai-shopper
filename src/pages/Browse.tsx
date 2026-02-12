@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { products, categories, type Category } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
 import CategoryChips from '@/components/CategoryChips';
-import logoAmapola from '@/assets/logo-amapola.avif';
+import PageHeader from '@/components/PageHeader';
 
 const Browse = () => {
   const [search, setSearch] = useState('');
@@ -23,11 +23,10 @@ const Browse = () => {
   return (
     <div className="flex flex-col pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-background/95 px-4 pb-3 pt-4 backdrop-blur-md">
-        <div className="mb-3 flex items-center gap-2">
-          <img src={logoAmapola} alt="Amapola Market" className="h-8 w-auto object-contain" />
-          <h1 className="text-2xl font-bold text-foreground">Browse</h1>
-        </div>
+      <PageHeader title="Browse" />
+
+      {/* Search */}
+      <div className="px-4 pb-1">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
