@@ -62,7 +62,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
           {children && <div className="flex items-center gap-2">{children}</div>}
         </div>
         {/* Store + schedule bar */}
-        <div className="mt-1.5 flex gap-2">
+        <div className="mt-2.5 flex gap-2">
           <button
             onClick={() => setSwitcherOpen(true)}
             className="flex flex-1 items-center gap-2 text-xs text-muted-foreground md:text-sm rounded-xl bg-muted/40 px-3 py-2 active:bg-muted transition-colors"
