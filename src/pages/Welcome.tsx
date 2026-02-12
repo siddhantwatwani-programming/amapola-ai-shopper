@@ -52,18 +52,18 @@ const Welcome = () => {
           <motion.img
             src={logoAmapola}
             alt="Amapola Market"
-            className="h-32 w-auto object-contain mb-6 md:h-40"
+            className="h-24 w-auto object-contain mb-4 md:h-32"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1, type: 'spring', stiffness: 180 }}
           />
-          <h1 className="text-3xl font-bold text-foreground mb-2 md:text-4xl">Welcome to Amapola</h1>
-          <p className="text-lg text-muted-foreground mb-10 md:text-xl">Your neighborhood market, now on screen</p>
-          <div className="w-full space-y-4 max-w-sm">
+          <h1 className="text-2xl font-bold text-foreground mb-1.5 md:text-3xl">Welcome to Amapola</h1>
+          <p className="text-base text-muted-foreground mb-6 md:text-lg">Your neighborhood market, now on screen</p>
+          <div className="w-full space-y-3 max-w-sm">
             <Button
               size="lg"
               onClick={() => setStep('mode')}
-              className="h-16 w-full rounded-2xl text-xl font-bold shadow-lg active:scale-[0.97] transition-transform md:h-20 md:text-2xl"
+              className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform md:h-16 md:text-xl"
             >
               <ShoppingBag className="mr-3 h-6 w-6 md:h-7 md:w-7" />
               Order for Pickup
@@ -72,13 +72,13 @@ const Welcome = () => {
               variant="outline"
               size="lg"
               onClick={() => setStep('mode')}
-              className="h-14 w-full rounded-2xl text-lg font-semibold border-2 active:scale-[0.97] transition-transform md:h-16 md:text-xl"
+              className="h-12 w-full rounded-2xl text-base font-semibold border-2 active:scale-[0.97] transition-transform md:h-14 md:text-lg"
             >
               <MapPin className="mr-3 h-5 w-5 md:h-6 md:w-6" />
               Find Nearest Store
             </Button>
           </div>
-          <p className="mt-8 text-sm text-muted-foreground">Touch to begin · No account needed</p>
+          <p className="mt-5 text-xs text-muted-foreground">Touch to begin · No account needed</p>
         </motion.div>
       </div>
     );
@@ -92,7 +92,7 @@ const Welcome = () => {
     ];
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border px-5 py-4">
+         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border px-5 py-3">
           <div className="flex items-center justify-center max-w-lg mx-auto">
             <img src={logoAmapola} alt="Amapola" className="h-8 w-auto object-contain" />
           </div>
@@ -100,8 +100,8 @@ const Welcome = () => {
         <div className="flex flex-1 flex-col items-center justify-center px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
             <h2 className="text-2xl font-bold text-foreground mb-2 text-center md:text-3xl">How are you ordering?</h2>
-            <p className="text-base text-muted-foreground mb-8 text-center">Choose your ordering mode</p>
-            <div className="space-y-4">
+            <p className="text-sm text-muted-foreground mb-5 text-center">Choose your ordering mode</p>
+            <div className="space-y-3">
               {modes.map(m => {
                 const Icon = m.icon;
                 const isActive = mode === m.id;
@@ -110,16 +110,16 @@ const Welcome = () => {
                     key={m.id}
                     onClick={() => setMode(m.id)}
                     className={cn(
-                      'w-full rounded-2xl border-2 p-6 text-left transition-all active:scale-[0.98]',
+                      'w-full rounded-2xl border-2 p-4 text-left transition-all active:scale-[0.98]',
                       isActive ? 'border-primary bg-primary/5 shadow-md' : 'border-border bg-card'
                     )}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                       <div className={cn(
-                        'flex h-14 w-14 items-center justify-center rounded-2xl',
+                        'flex h-12 w-12 items-center justify-center rounded-xl',
                         isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
                       )}>
-                        <Icon className="h-7 w-7" />
+                        <Icon className="h-6 w-6" />
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-bold text-foreground">{m.title}</h3>
@@ -134,7 +134,7 @@ const Welcome = () => {
             <Button
               size="lg"
               onClick={() => setStep('store')}
-              className="mt-8 h-16 w-full rounded-2xl text-xl font-bold shadow-lg active:scale-[0.97] transition-transform"
+              className="mt-5 h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform"
             >
               Continue <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -148,7 +148,7 @@ const Welcome = () => {
   if (step === 'identify') {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border px-5 py-4">
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border px-5 py-3">
           <div className="flex items-center justify-between max-w-lg mx-auto">
             <img src={logoAmapola} alt="Amapola" className="h-8 w-auto object-contain" />
             <span className="text-xs font-semibold text-muted-foreground">
@@ -158,8 +158,8 @@ const Welcome = () => {
         </div>
         <div className="flex flex-1 flex-col items-center justify-center px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="w-full max-w-sm">
-            <div className="text-center mb-8">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <div className="text-center mb-5">
+              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                 <User className="h-8 w-8 text-primary" />
               </div>
               <h2 className="text-2xl font-bold text-foreground mb-2 md:text-3xl">Almost ready!</h2>
@@ -167,7 +167,7 @@ const Welcome = () => {
                 {mode === 'restaurant' ? 'Business name & contact for bulk orders' : 'So we can identify your order at pickup'}
               </p>
             </div>
-            <div className="space-y-4 mb-8">
+            <div className="space-y-3 mb-5">
               <div>
                 <label className="block text-sm font-bold text-foreground mb-1.5">
                   {mode === 'restaurant' ? 'Business / Contact Name' : 'First Name'}
@@ -196,7 +196,7 @@ const Welcome = () => {
               size="lg"
               onClick={handleIdentifyConfirm}
               disabled={confirmed || !firstName.trim()}
-              className="h-16 w-full rounded-2xl text-xl font-bold shadow-lg active:scale-[0.97] transition-transform md:h-20 md:text-2xl"
+              className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform md:h-16 md:text-xl"
             >
               {confirmed ? (
                 <span className="flex items-center gap-2"><CheckCircle2 className="h-6 w-6" />Opening store…</span>
@@ -216,7 +216,7 @@ const Welcome = () => {
   // --- STORE SELECTOR ---
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border px-5 py-4">
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border px-5 py-3">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <img src={logoAmapola} alt="Amapola" className="h-8 w-auto object-contain" />
           <div className="flex items-center gap-1.5 text-accent">
@@ -227,8 +227,8 @@ const Welcome = () => {
       </div>
 
       <div className="relative bg-muted/30 border-b border-border">
-        <div className="max-w-lg mx-auto px-5 py-6">
-          <div className="rounded-2xl bg-muted/50 border border-border p-6 flex items-center justify-center min-h-[140px] md:min-h-[200px]">
+        <div className="max-w-lg mx-auto px-5 py-4">
+          <div className="rounded-2xl bg-muted/50 border border-border p-4 flex items-center justify-center min-h-[120px] md:min-h-[160px]">
             <div className="text-center">
               <div className="flex justify-center gap-6 mb-3">
                 {stores.map((store, i) => (
@@ -248,14 +248,14 @@ const Welcome = () => {
         </div>
       </div>
 
-      <div className="flex-1 px-5 py-4 max-w-lg mx-auto w-full">
-        <div className="space-y-3 mb-5">
+      <div className="flex-1 px-5 py-3 max-w-lg mx-auto w-full">
+        <div className="space-y-2.5 mb-4">
           {stores.map((store, i) => {
             const isSelected = selectedStore.id === store.id;
             const isNearest = i === 2;
             return (
               <motion.button key={store.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + i * 0.08 }} onClick={() => handleSelect(store)}
-                className={cn('w-full rounded-2xl border-2 p-5 text-left transition-all active:scale-[0.98]', isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-border bg-card')}>
+                className={cn('w-full rounded-2xl border-2 p-4 text-left transition-all active:scale-[0.98]', isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-border bg-card')}>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2.5 mb-1">
@@ -281,12 +281,12 @@ const Welcome = () => {
           })}
         </div>
 
-        <motion.div key={selectedStore.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-5 rounded-2xl bg-muted/60 px-5 py-4 text-center">
+        <motion.div key={selectedStore.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4 rounded-2xl bg-muted/60 px-4 py-3 text-center">
           <p className="text-base font-semibold text-foreground md:text-lg">Amapola — {selectedStore.name}</p>
           <p className="text-sm text-muted-foreground mt-1">Ready in <span className="font-bold text-foreground">{selectedStore.pickupTime}</span> · Pickup at front counter or kiosk</p>
         </motion.div>
 
-        <Button size="lg" onClick={handleStoreConfirm} className="h-16 w-full rounded-2xl text-xl font-bold shadow-lg active:scale-[0.97] transition-transform md:h-20 md:text-2xl">
+        <Button size="lg" onClick={handleStoreConfirm} className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform md:h-16 md:text-xl">
           <span className="flex items-center gap-2"><ShoppingBag className="h-6 w-6" />Continue</span>
         </Button>
       </div>

@@ -539,14 +539,14 @@ const AiAssistant = () => {
         <AnimatePresence initial={false}>
           {messages.map(msg => (
             <motion.div key={msg.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}
-              className={`mb-4 ${msg.role === 'user' ? 'flex justify-end' : ''}`}>
+              className={`mb-3 ${msg.role === 'user' ? 'flex justify-end' : ''}`}>
               {msg.role === 'user' ? (
-                <div className="max-w-[80%] rounded-2xl rounded-br-md bg-primary px-5 py-3 text-base text-primary-foreground whitespace-pre-line font-medium">{msg.text}</div>
+                <div className="max-w-[80%] rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-sm text-primary-foreground whitespace-pre-line font-medium">{msg.text}</div>
               ) : (
-                <div className="space-y-3">
-                  <div className="max-w-[90%] rounded-2xl rounded-bl-md bg-muted px-5 py-3 text-base text-foreground whitespace-pre-line">{msg.text}</div>
+                <div className="space-y-2">
+                  <div className="max-w-[90%] rounded-2xl rounded-bl-md bg-muted px-4 py-2.5 text-sm text-foreground whitespace-pre-line">{msg.text}</div>
                   {msg.productIds && (
-                    <div className="space-y-2 pl-1">
+                    <div className="space-y-1.5 pl-1">
                       {msg.productIds.map(id => {
                         const product = getProductById(id);
                         return product ? <ProductCard key={id} product={product} compact /> : null;
@@ -561,16 +561,16 @@ const AiAssistant = () => {
 
         {/* Initial quick prompts */}
         {messages.length === 1 && (
-          <div className="flex flex-wrap gap-2 mt-3">
+          <div className="flex flex-wrap gap-1.5 mt-2">
             {quickPrompts.map(qp => (
               <button key={qp.query} onClick={() => send(qp.query)}
-                className="rounded-full border-2 border-border bg-card px-4 py-2.5 text-sm font-bold text-foreground active:scale-95 active:border-primary transition-all">
+                className="rounded-full border-2 border-border bg-card px-3 py-2 text-xs font-bold text-foreground active:scale-95 active:border-primary transition-all">
                 {qp.label}
               </button>
             ))}
             {orders.length > 0 && (
               <button onClick={() => send('reorder')}
-                className="rounded-full border-2 border-primary/30 bg-primary/5 px-4 py-2.5 text-sm font-bold text-primary active:scale-95 transition-all flex items-center gap-1.5">
+                className="rounded-full border-2 border-primary/30 bg-primary/5 px-3 py-2 text-xs font-bold text-primary active:scale-95 transition-all flex items-center gap-1.5">
                 <RotateCcw className="h-3.5 w-3.5" />
                 Reorder last
               </button>
@@ -584,12 +584,12 @@ const AiAssistant = () => {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.2 }}
-            className="flex flex-wrap gap-2 mt-2 mb-2"
+            className="flex flex-wrap gap-1.5 mt-1.5 mb-1.5"
           >
             <Lightbulb className="h-4 w-4 text-muted-foreground mt-1.5" />
             {activeFollowUps.map(fp => (
               <button key={fp.query} onClick={() => send(fp.query)}
-                className="rounded-full border-2 border-primary/20 bg-primary/5 px-4 py-2 text-sm font-bold text-primary active:scale-95 transition-all">
+                className="rounded-full border-2 border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-bold text-primary active:scale-95 transition-all">
                 {fp.label}
               </button>
             ))}
@@ -597,8 +597,8 @@ const AiAssistant = () => {
         )}
       </div>
 
-      <div className="border-t border-border bg-background/95 px-4 py-4 backdrop-blur-md">
-        <div className="flex gap-3">
+      <div className="border-t border-border bg-background/95 px-4 py-3 backdrop-blur-md">
+        <div className="flex gap-2">
           <Input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()}
             placeholder={isRestaurant ? 'What does your kitchen need?' : 'What are you cooking today?'}
             className="h-13 flex-1 rounded-xl border-muted bg-muted/50 text-base md:text-lg px-4" />
