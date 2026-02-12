@@ -3,7 +3,7 @@ import { Minus, Plus, Trash2, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/store/cartStore';
 import { Button } from '@/components/ui/button';
-import logoAmapola from '@/assets/logo-amapola.avif';
+import PageHeader from '@/components/PageHeader';
 
 const Cart = () => {
   const { items, updateQuantity, removeItem, totalPrice, totalItems } = useCart();
@@ -11,10 +11,13 @@ const Cart = () => {
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center px-6 pb-24 pt-20 text-center">
-        <span className="mb-4 text-6xl">🛒</span>
-        <h2 className="mb-1 text-xl font-bold text-foreground">Your cart is empty</h2>
-        <p className="text-sm text-muted-foreground">Browse our store and add some items!</p>
+      <div className="flex flex-col pb-24">
+        <PageHeader title="Cart" />
+        <div className="flex flex-col items-center justify-center px-6 pt-16 text-center">
+          <span className="mb-4 text-6xl">🛒</span>
+          <h2 className="mb-1 text-xl font-bold text-foreground">Your cart is empty</h2>
+          <p className="text-sm text-muted-foreground">Browse our store and add some items!</p>
+        </div>
       </div>
     );
   }
@@ -32,13 +35,7 @@ const Cart = () => {
 
   return (
     <div className="flex flex-col pb-24">
-      <div className="px-4 pb-2 pt-4">
-        <div className="flex items-center gap-2">
-          <img src={logoAmapola} alt="Amapola Market" className="h-8 w-auto object-contain" />
-          <h1 className="text-2xl font-bold text-foreground">Cart</h1>
-        </div>
-        <p className="text-sm text-muted-foreground">{totalItems} item{totalItems !== 1 ? 's' : ''}</p>
-      </div>
+      <PageHeader title="Cart" subtitle={`${totalItems} item${totalItems !== 1 ? 's' : ''}`} />
 
       {/* AI Summary */}
       <div className="mx-4 mb-4 flex items-start gap-2 rounded-2xl bg-primary/5 p-3">
