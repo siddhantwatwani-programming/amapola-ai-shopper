@@ -117,13 +117,13 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
                   <Plus className="h-5 w-5" />
                 </Button>
               ) : (
-                <div className="flex items-center gap-1">
-                  <button onClick={handleDec} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform">
-                    <Minus className="h-4 w-4" />
+                <div className="flex items-center gap-0.5">
+                  <button onClick={handleDec} className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-foreground active:scale-90 transition-transform">
+                    <Minus className="h-3.5 w-3.5" />
                   </button>
-                  <span className="w-7 text-center text-sm font-bold text-foreground">{qty}</span>
-                  <button onClick={handleInc} className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground active:scale-90 transition-transform">
-                    <Plus className="h-4 w-4" />
+                  <span className="w-6 text-center text-sm font-bold text-foreground">{qty}</span>
+                  <button onClick={handleInc} className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground active:scale-90 transition-transform">
+                    <Plus className="h-3.5 w-3.5" />
                   </button>
                 </div>
               )
