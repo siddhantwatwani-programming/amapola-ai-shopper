@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Sparkles } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { findAiResponse, getProductById } from '@/data/products';
 import { useStore } from '@/store/storeContext';
+import { useCustomer } from '@/store/customerContext';
 import ProductCard from '@/components/ProductCard';
 import PageHeader from '@/components/PageHeader';
 
@@ -25,17 +26,20 @@ const quickPrompts = [
 
 const AiAssistant = () => {
   const { selectedStore } = useStore();
+  const { customer } = useCustomer();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const greeting = customer?.firstName ? `${customer.firstName}, welcome` : 'Welcome';
 
   useEffect(() => {
     setMessages([{
       id: 'welcome',
       role: 'ai',
-      text: `Welcome to Amapola — ${selectedStore.name} 🌺\n\nI'm your market assistant. I know every aisle, every specialty, and what's fresh right now.\n\nPickup is ready in ${selectedStore.pickupTime}. Tell me what you're cooking or tap a suggestion below.`,
+      text: `${greeting} to Amapola — ${selectedStore.name} 🌺\n\nI'm your market assistant. I know every aisle, every specialty, and what's fresh right now.\n\nPickup is ready in ${selectedStore.pickupTime}. Tell me what you're cooking or tap a suggestion below.`,
     }]);
-  }, [selectedStore]);
+  }, [selectedStore, customer]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
@@ -57,7 +61,7 @@ const AiAssistant = () => {
         .map(id => getProductById(id)?.name)
         .filter(Boolean)
         .join(', ');
-      storeNote = `\n\n⚠️ Heads up: ${names} may not be available at ${selectedStore.name} right now.`;
+      storeNote = `\n\n⚠️ Heads up${customer?.firstName ? `, ${customer.firstName}` : ''}: ${names} may not be available at ${selectedStore.name} right now.`;
     }
 
     const specialtiesInResponse = aiRes.productIds.filter(id =>
@@ -71,10 +75,15 @@ const AiAssistant = () => {
       storeNote += `\n\n⭐ ${selectedStore.name} specialty: ${names}`;
     }
 
+    // Add personalized pickup note
+    const personalNote = customer?.firstName
+      ? `\n\n📍 ${customer.firstName}, your order from ${selectedStore.name} will be ready in ${selectedStore.pickupTime}.`
+      : '';
+
     const aiMsg: Message = {
       id: (Date.now() + 1).toString(),
       role: 'ai',
-      text: aiRes.message + storeNote,
+      text: aiRes.message + storeNote + personalNote,
       productIds: aiRes.productIds,
     };
 
@@ -86,7 +95,6 @@ const AiAssistant = () => {
     <div className="flex h-full flex-col pb-28">
       <PageHeader title="Market Assistant" subtitle={`Shopping at ${selectedStore.name}`} />
 
-      {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3">
         <AnimatePresence initial={false}>
           {messages.map(msg => (
@@ -120,7 +128,6 @@ const AiAssistant = () => {
           ))}
         </AnimatePresence>
 
-        {/* Quick prompts after welcome */}
         {messages.length === 1 && (
           <div className="flex flex-wrap gap-2 mt-3">
             {quickPrompts.map(qp => (
@@ -136,7 +143,6 @@ const AiAssistant = () => {
         )}
       </div>
 
-      {/* Input */}
       <div className="border-t border-border bg-background/95 px-4 py-4 backdrop-blur-md">
         <div className="flex gap-3">
           <Input

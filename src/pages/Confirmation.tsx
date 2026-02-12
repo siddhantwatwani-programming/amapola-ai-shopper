@@ -1,21 +1,24 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, QrCode, MapPin, Clock } from 'lucide-react';
+import { CheckCircle2, QrCode, MapPin, Clock, User, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/store/cartStore';
 import { useStore } from '@/store/storeContext';
+import { useCustomer } from '@/store/customerContext';
 import { Button } from '@/components/ui/button';
 import logoAmapola from '@/assets/logo-amapola.avif';
 
 const Confirmation = () => {
   const { clearCart, totalPrice, totalItems } = useCart();
   const { selectedStore } = useStore();
+  const { customer, clearCustomer } = useCustomer();
   const navigate = useNavigate();
 
   const orderNumber = useMemo(() => `AMP-${Math.floor(1000 + Math.random() * 9000)}`, []);
 
   const handleDone = () => {
     clearCart();
+    clearCustomer();
     navigate('/');
   };
 
@@ -45,8 +48,29 @@ const Confirmation = () => {
           Ready in {selectedStore.pickupTime}
         </p>
 
-        {/* Store info */}
+        {/* Customer & Store info */}
         <div className="mb-6 w-full rounded-2xl border-2 border-border bg-card p-5 text-left">
+          {/* Customer info */}
+          {customer?.firstName && (
+            <div className="mb-4 pb-4 border-b border-border">
+              <p className="text-lg font-bold text-primary mb-1">
+                Ask for {customer.firstName} at the pickup counter
+              </p>
+              <div className="flex flex-col gap-1.5 mt-2">
+                <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <User className="h-4 w-4" />
+                  {customer.firstName}
+                </span>
+                {customer.phone && (
+                  <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Phone className="h-4 w-4" />
+                    {customer.phone}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center gap-3 mb-4">
             <MapPin className="h-5 w-5 text-primary" />
             <div>

@@ -1,15 +1,20 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Minus, Plus, Trash2, Sparkles, MapPin, Clock, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, Trash2, Sparkles, MapPin, Clock, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/store/cartStore';
 import { useStore } from '@/store/storeContext';
+import { useCustomer } from '@/store/customerContext';
 import { Button } from '@/components/ui/button';
 import PageHeader from '@/components/PageHeader';
+import StoreSwitcher from '@/components/StoreSwitcher';
 
 const Cart = () => {
   const { items, updateQuantity, removeItem, totalPrice, totalItems } = useCart();
   const { selectedStore, isAvailable } = useStore();
+  const { customer } = useCustomer();
   const navigate = useNavigate();
+  const [switcherOpen, setSwitcherOpen] = useState(false);
 
   const unavailableItems = items.filter(i => !isAvailable(i.product.id));
   const availableItems = items.filter(i => isAvailable(i.product.id));
@@ -34,7 +39,6 @@ const Cart = () => {
     );
   }
 
-  // AI summary
   const categoryNames = [...new Set(availableItems.map(i => i.product.category))];
   const summaryParts: string[] = [];
   if (categoryNames.includes('produce')) summaryParts.push('fresh produce');
@@ -46,8 +50,10 @@ const Cart = () => {
   if (categoryNames.includes('frozen')) summaryParts.push('frozen goods');
   if (categoryNames.includes('beverages')) summaryParts.push('beverages');
   if (categoryNames.includes('snacks')) summaryParts.push('snacks & sweets');
+  
+  const namePrefix = customer?.firstName ? `${customer.firstName}, your` : 'Your';
   const aiSummary = summaryParts.length > 0
-    ? `Your order from ${selectedStore.name} includes ${summaryParts.join(', ')} — looks like a great haul! 🛍️`
+    ? `${namePrefix} order from ${selectedStore.name} includes ${summaryParts.join(', ')} — looks like a great haul! 🛍️`
     : 'Add some items to get started!';
 
   return (
@@ -66,7 +72,6 @@ const Cart = () => {
         </span>
       </div>
 
-      {/* Unavailable warning */}
       {unavailableItems.length > 0 && (
         <div className="mx-4 mb-3 flex items-start gap-2 rounded-2xl bg-destructive/5 border border-destructive/20 p-4">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
@@ -81,13 +86,11 @@ const Cart = () => {
         </div>
       )}
 
-      {/* AI Summary */}
       <div className="mx-4 mb-4 flex items-start gap-2 rounded-2xl bg-primary/5 p-4">
         <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
         <p className="text-sm text-foreground md:text-base">{aiSummary}</p>
       </div>
 
-      {/* Items */}
       <div className="space-y-2 px-4">
         {items.map(({ product, quantity }) => {
           const avail = isAvailable(product.id);
@@ -111,23 +114,14 @@ const Cart = () => {
                 </p>
               </div>
               <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => updateQuantity(product.id, quantity - 1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform"
-                >
+                <button onClick={() => updateQuantity(product.id, quantity - 1)} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform">
                   <Minus className="h-4 w-4" />
                 </button>
                 <span className="w-8 text-center text-base font-bold text-foreground">{quantity}</span>
-                <button
-                  onClick={() => updateQuantity(product.id, quantity + 1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform"
-                >
+                <button onClick={() => updateQuantity(product.id, quantity + 1)} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform">
                   <Plus className="h-4 w-4" />
                 </button>
-                <button
-                  onClick={() => removeItem(product.id)}
-                  className="ml-1 flex h-10 w-10 items-center justify-center rounded-xl text-destructive active:scale-90 transition-transform"
-                >
+                <button onClick={() => removeItem(product.id)} className="ml-1 flex h-10 w-10 items-center justify-center rounded-xl text-destructive active:scale-90 transition-transform">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
@@ -136,7 +130,6 @@ const Cart = () => {
         })}
       </div>
 
-      {/* Total + Checkout */}
       <div className="mx-4 mt-6 space-y-4">
         <div className="flex items-center justify-between rounded-2xl bg-muted/60 px-5 py-4">
           <span className="text-base font-semibold text-muted-foreground">Subtotal</span>
@@ -152,12 +145,14 @@ const Cart = () => {
         <Button
           variant="outline"
           size="lg"
-          onClick={() => navigate('/')}
+          onClick={() => setSwitcherOpen(true)}
           className="h-14 w-full rounded-2xl text-lg font-semibold border-2 active:scale-[0.97] transition-transform"
         >
           Change Store
         </Button>
       </div>
+
+      <StoreSwitcher open={switcherOpen} onOpenChange={setSwitcherOpen} />
     </div>
   );
 };
