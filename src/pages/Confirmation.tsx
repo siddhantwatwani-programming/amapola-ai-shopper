@@ -49,7 +49,7 @@ const Confirmation = () => {
         className="flex w-full max-w-md flex-col items-center text-center">
 
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.15, type: 'spring', stiffness: 200 }} className="mb-5">
-          <img src={logoAmapola} alt="Amapola Market" className="h-24 w-auto object-contain md:h-28" />
+          <img src={logoAmapola} alt="Amapola Market" className="h-14 w-auto object-contain md:h-16" />
         </motion.div>
 
         <CheckCircle2 className="mb-4 h-16 w-16 text-accent md:h-20 md:w-20" />
