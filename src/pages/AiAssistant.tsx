@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { findAiResponse, getProductById } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
+import logoAmapola from '@/assets/logo-amapola.avif';
 
 interface Message {
   id: string;
@@ -50,9 +51,7 @@ const AiAssistant = () => {
       {/* Header */}
       <div className="px-4 pb-2 pt-4">
         <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10">
-            <Sparkles className="h-5 w-5 text-primary" />
-          </div>
+          <img src={logoAmapola} alt="Amapola Market" className="h-8 w-auto object-contain" />
           <div>
             <h1 className="text-lg font-bold text-foreground">AI Assistant</h1>
             <p className="text-xs text-muted-foreground">Powered by Amapola</p>
