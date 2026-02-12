@@ -15,7 +15,7 @@ const CategoryChips = ({ categories, active, onSelect }: Props) => {
         <button
           onClick={() => onSelect(null)}
           className={cn(
-            'shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors',
+            'shrink-0 rounded-full px-5 py-2.5 text-sm font-bold transition-colors active:scale-95',
             !active ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-muted text-muted-foreground'
           )}
         >
@@ -26,11 +26,11 @@ const CategoryChips = ({ categories, active, onSelect }: Props) => {
             key={cat.id}
             onClick={() => onSelect(active === cat.id ? null : cat.id)}
             className={cn(
-              'flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors',
+              'flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-bold transition-colors active:scale-95',
               active === cat.id ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-muted text-muted-foreground'
             )}
           >
-            <span>{cat.emoji}</span>
+            <span className="text-base">{cat.emoji}</span>
             {cat.label}
           </button>
         ))}

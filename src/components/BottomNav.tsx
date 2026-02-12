@@ -20,7 +20,7 @@ const BottomNav = () => {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-border bg-background/95 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-md items-center justify-around">
+      <div className="mx-auto flex h-20 max-w-lg items-center justify-around md:h-24">
         {tabs.map(tab => {
           const active = location.pathname === tab.path;
           const Icon = tab.icon;
@@ -28,10 +28,10 @@ const BottomNav = () => {
             <button
               key={tab.path}
               onClick={() => navigate(tab.path)}
-              className="relative flex flex-col items-center gap-0.5 px-4 py-1"
+              className="relative flex flex-col items-center gap-1 px-6 py-2 active:scale-95 transition-transform"
             >
               <div className="relative">
-                <Icon className={cn('h-6 w-6 transition-colors', active ? 'text-primary' : 'text-muted-foreground')} />
+                <Icon className={cn('h-7 w-7 transition-colors md:h-8 md:w-8', active ? 'text-primary' : 'text-muted-foreground')} />
                 {tab.path === '/cart' && totalItems > 0 && (
                   <motion.span
                     key={totalItems}
@@ -43,20 +43,19 @@ const BottomNav = () => {
                   </motion.span>
                 )}
               </div>
-              <span className={cn('text-[10px] font-medium', active ? 'text-primary' : 'text-muted-foreground')}>
+              <span className={cn('text-xs font-semibold md:text-sm', active ? 'text-primary' : 'text-muted-foreground')}>
                 {tab.label}
               </span>
               {active && (
                 <motion.div
                   layoutId="bottomNavIndicator"
-                  className="absolute -top-px left-2 right-2 h-0.5 rounded-full bg-primary"
+                  className="absolute -top-px left-3 right-3 h-0.5 rounded-full bg-primary"
                 />
               )}
             </button>
           );
         })}
       </div>
-      {/* Safe area bottom */}
       <div className="h-[env(safe-area-inset-bottom)]" />
     </nav>
   );

@@ -6,12 +6,14 @@ import ProductCard from '@/components/ProductCard';
 import CategoryChips from '@/components/CategoryChips';
 import PageHeader from '@/components/PageHeader';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 const Browse = () => {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [activePriceRange, setActivePriceRange] = useState<number | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<'categories' | 'products'>('categories');
 
   const filtered = useMemo(() => {
     let list = products;
@@ -27,29 +29,47 @@ const Browse = () => {
     return list;
   }, [search, activeCategory, activePriceRange]);
 
+  const handleCategoryTap = (catId: Category) => {
+    setActiveCategory(catId);
+    setViewMode('products');
+  };
+
+  const handleBack = () => {
+    setActiveCategory(null);
+    setViewMode('categories');
+    setSearch('');
+  };
+
   return (
     <div className="flex flex-col pb-24">
-      <PageHeader title="Browse">
+      <PageHeader
+        title={activeCategory ? categories.find(c => c.id === activeCategory)?.label ?? 'Browse' : 'Browse'}
+        subtitle={activeCategory ? `${filtered.length} items` : undefined}
+        onBack={activeCategory ? handleBack : undefined}
+      >
         <button
           onClick={() => setShowFilters(!showFilters)}
           className={cn(
-            'flex h-9 w-9 items-center justify-center rounded-xl transition-colors',
+            'flex h-10 w-10 items-center justify-center rounded-xl transition-colors md:h-12 md:w-12',
             showFilters ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
           )}
         >
-          <SlidersHorizontal className="h-4 w-4" />
+          <SlidersHorizontal className="h-5 w-5" />
         </button>
       </PageHeader>
 
       {/* Search */}
-      <div className="px-4 pb-1">
+      <div className="px-4 pb-2">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search groceries..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="h-11 rounded-xl border-muted bg-muted/50 pl-10 text-base"
+            onChange={e => {
+              setSearch(e.target.value);
+              if (e.target.value.trim()) setViewMode('products');
+            }}
+            className="h-12 rounded-xl border-muted bg-muted/50 pl-11 text-base md:h-14 md:text-lg"
           />
         </div>
       </div>
@@ -60,9 +80,12 @@ const Browse = () => {
           {priceRanges.map((range, i) => (
             <button
               key={range.label}
-              onClick={() => setActivePriceRange(activePriceRange === i ? null : i)}
+              onClick={() => {
+                setActivePriceRange(activePriceRange === i ? null : i);
+                setViewMode('products');
+              }}
               className={cn(
-                'shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
+                'shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-colors active:scale-95',
                 activePriceRange === i
                   ? 'bg-accent text-accent-foreground shadow-sm'
                   : 'bg-muted text-muted-foreground'
@@ -74,24 +97,48 @@ const Browse = () => {
         </div>
       )}
 
-      {/* Categories */}
-      <CategoryChips
-        categories={categories}
-        active={activeCategory}
-        onSelect={setActiveCategory}
-      />
-
-      {/* Product Grid — responsive for tablet/kiosk */}
-      <div className="grid grid-cols-2 gap-3 px-4 pt-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {filtered.map(product => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <div className="px-4 py-12 text-center text-muted-foreground">
-          No items found. Try a different search or filter.
+      {/* Category tiles (kiosk mode) or scrolling chips */}
+      {viewMode === 'categories' && !search.trim() ? (
+        <div className="grid grid-cols-3 gap-3 px-4 pt-3 md:grid-cols-4 lg:grid-cols-5">
+          {categories.map((cat, i) => (
+            <motion.button
+              key={cat.id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.04 }}
+              onClick={() => handleCategoryTap(cat.id)}
+              className="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-border bg-card p-5 shadow-sm active:scale-95 active:border-primary transition-all md:p-7"
+            >
+              <span className="text-4xl md:text-5xl">{cat.emoji}</span>
+              <span className="text-sm font-bold text-foreground md:text-base">{cat.label}</span>
+            </motion.button>
+          ))}
         </div>
+      ) : (
+        <>
+          {/* Scrolling category chips when in product view */}
+          <CategoryChips
+            categories={categories}
+            active={activeCategory}
+            onSelect={(cat) => {
+              setActiveCategory(cat);
+              if (!cat) setViewMode('categories');
+            }}
+          />
+
+          {/* Product Grid */}
+          <div className="grid grid-cols-2 gap-3 px-4 pt-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {filtered.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+
+          {filtered.length === 0 && (
+            <div className="px-4 py-12 text-center text-lg text-muted-foreground">
+              No items found. Try a different search or filter.
+            </div>
+          )}
+        </>
       )}
     </div>
   );
