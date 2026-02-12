@@ -89,7 +89,7 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
         )}
       </div>
       {/* Fixed-height info section prevents card height changes */}
-      <div className="flex flex-col p-3 md:p-4" style={{ minHeight: '140px' }}>
+      <div className="flex flex-col p-2.5 md:p-3" style={{ minHeight: '120px' }}>
         {/* Signal + bulk badges */}
         <div className="flex flex-wrap items-center gap-1.5 mb-1.5 h-5">
           {signal.text && (
@@ -104,7 +104,7 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
         <h3 className="text-sm font-bold leading-tight text-foreground line-clamp-2 md:text-base">{product.name}</h3>
         <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1 md:text-sm">{product.description}</p>
         {/* Fixed-height bottom row: price + controls */}
-        <div className="mt-auto flex items-center justify-between pt-3 h-12">
+        <div className="mt-auto flex items-center justify-between pt-2 h-11">
           <div>
             <span className="text-lg font-bold text-foreground md:text-xl">${product.price.toFixed(2)}</span>
             {isRestaurant && <span className="block text-[10px] text-muted-foreground">per unit · +{qtyStep}</span>}

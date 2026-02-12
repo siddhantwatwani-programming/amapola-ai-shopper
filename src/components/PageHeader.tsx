@@ -34,7 +34,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
   };
   return (
     <>
-      <div className="sticky top-0 z-20 bg-background/95 px-4 pb-2 pt-4 backdrop-blur-md">
+      <div className="sticky top-0 z-20 bg-background/95 px-4 pb-1.5 pt-3 backdrop-blur-md">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             {onBack ? (
@@ -62,7 +62,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
           {children && <div className="flex items-center gap-2">{children}</div>}
         </div>
         {/* Store + schedule bar */}
-        <div className="mt-2 flex gap-2">
+        <div className="mt-1.5 flex gap-2">
           <button
             onClick={() => setSwitcherOpen(true)}
             className="flex flex-1 items-center gap-2 text-xs text-muted-foreground md:text-sm rounded-xl bg-muted/40 px-3 py-2 active:bg-muted transition-colors"

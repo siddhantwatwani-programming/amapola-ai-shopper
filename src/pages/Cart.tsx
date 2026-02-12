@@ -132,7 +132,7 @@ const Cart = () => {
       <PageHeader title="Cart" subtitle={`${totalItems} item${totalItems !== 1 ? 's' : ''}${isRestaurant ? ' · Bulk' : ''}`} />
 
       {/* Mode + schedule info */}
-      <div className="mx-4 mb-2 flex gap-2">
+      <div className="mx-4 mb-1.5 flex gap-2">
         {isRestaurant && (
           <div className="flex items-center gap-1.5 rounded-xl bg-secondary/50 px-3 py-1.5 text-xs font-bold text-secondary-foreground">
             <UtensilsCrossed className="h-3 w-3" />
@@ -146,7 +146,7 @@ const Cart = () => {
       </div>
 
       {/* Dynamic pickup timing bar */}
-      <div className="mx-4 mb-3 flex items-center gap-3 rounded-2xl bg-muted/50 px-4 py-3">
+      <div className="mx-4 mb-2 flex items-center gap-3 rounded-2xl bg-muted/50 px-3 py-2.5">
         <MapPin className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm text-muted-foreground flex-1 md:text-base">
           Pickup at <span className="font-bold text-foreground">Amapola — {selectedStore.name}</span>
@@ -158,14 +158,14 @@ const Cart = () => {
 
       {/* Pickup warning */}
       {pickupWarning && (
-        <div className="mx-4 mb-3 flex items-start gap-2 rounded-2xl bg-secondary/30 border border-secondary p-3">
+        <div className="mx-4 mb-2 flex items-start gap-2 rounded-2xl bg-secondary/30 border border-secondary p-2.5">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-secondary-foreground" />
           <p className="text-xs font-semibold text-secondary-foreground">{pickupWarning}</p>
         </div>
       )}
 
       {unavailableItems.length > 0 && (
-        <div className="mx-4 mb-3 flex items-start gap-2 rounded-2xl bg-destructive/5 border border-destructive/20 p-4">
+        <div className="mx-4 mb-2 flex items-start gap-2 rounded-2xl bg-destructive/5 border border-destructive/20 p-3">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
           <div>
             <p className="text-sm font-bold text-destructive">{unavailableItems.length} item{unavailableItems.length > 1 ? 's' : ''} not available at {selectedStore.name}</p>
@@ -185,17 +185,17 @@ const Cart = () => {
         );
       })}
 
-      <div className="mx-4 mb-4 flex items-start gap-2 rounded-2xl bg-primary/5 p-4">
-        <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-        <p className="text-sm text-foreground md:text-base">{aiSummary}</p>
+      <div className="mx-4 mb-3 flex items-start gap-2 rounded-2xl bg-primary/5 p-3">
+        <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+        <p className="text-xs text-foreground md:text-sm">{aiSummary}</p>
       </div>
 
-      <div className="space-y-2 px-4">
+      <div className="space-y-1.5 px-4">
         {items.map(({ product, quantity }) => {
           const avail = isAvailable(product.id);
           return (
             <motion.div key={product.id} layout initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}
-              className={`flex items-center gap-3 rounded-2xl border-2 border-border bg-card p-4 ${!avail ? 'opacity-50' : ''}`}>
+              className={`flex items-center gap-2.5 rounded-2xl border-2 border-border bg-card p-3 ${!avail ? 'opacity-50' : ''}`}>
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted overflow-hidden text-3xl md:h-16 md:w-16">
                 {product.image ? (
                   <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
@@ -227,15 +227,15 @@ const Cart = () => {
         })}
       </div>
 
-      <div className="mx-4 mt-6 space-y-4">
-        <div className="flex items-center justify-between rounded-2xl bg-muted/60 px-5 py-4">
-          <span className="text-base font-semibold text-muted-foreground">Subtotal</span>
-          <span className="text-2xl font-bold text-foreground">${totalPrice.toFixed(2)}</span>
+      <div className="mx-4 mt-4 space-y-3">
+        <div className="flex items-center justify-between rounded-2xl bg-muted/60 px-4 py-3">
+          <span className="text-sm font-semibold text-muted-foreground">Subtotal</span>
+          <span className="text-xl font-bold text-foreground">${totalPrice.toFixed(2)}</span>
         </div>
-        <Button size="lg" onClick={() => navigate('/confirmation')} className="h-16 w-full rounded-2xl text-xl font-bold shadow-lg active:scale-[0.97] transition-transform md:h-20 md:text-2xl">
+        <Button size="lg" onClick={() => navigate('/confirmation')} className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform md:h-16 md:text-xl">
           Confirm Pickup Order
         </Button>
-        <Button variant="outline" size="lg" onClick={() => setSwitcherOpen(true)} className="h-14 w-full rounded-2xl text-lg font-semibold border-2 active:scale-[0.97] transition-transform">
+        <Button variant="outline" size="lg" onClick={() => setSwitcherOpen(true)} className="h-12 w-full rounded-2xl text-base font-semibold border-2 active:scale-[0.97] transition-transform">
           Change Store
         </Button>
       </div>

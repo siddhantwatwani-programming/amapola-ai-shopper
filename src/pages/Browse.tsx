@@ -132,7 +132,7 @@ const Browse = () => {
       )}
 
       {/* Search */}
-      <div className="px-4 pb-2">
+      <div className="px-4 pb-1.5">
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -200,7 +200,7 @@ const Browse = () => {
       </AnimatePresence>
 
       {viewMode === 'categories' && !search.trim() ? (
-        <div className="grid grid-cols-3 gap-3 px-4 pt-3 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-3 gap-2.5 px-4 pt-2 md:grid-cols-4 lg:grid-cols-5">
           {categories.map((cat, i) => (
             <motion.button
               key={cat.id}
@@ -208,7 +208,7 @@ const Browse = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.04 }}
               onClick={() => handleCategoryTap(cat.id)}
-              className="relative flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-border bg-card p-5 shadow-sm active:scale-95 active:border-primary transition-all md:p-7"
+              className="relative flex flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-border bg-card p-4 shadow-sm active:scale-95 active:border-primary transition-all md:p-5"
             >
               <span className="text-4xl md:text-5xl">{cat.emoji}</span>
               <span className="text-sm font-bold text-foreground md:text-base">{cat.label}</span>
@@ -238,7 +238,7 @@ const Browse = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 px-4 pt-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-2.5 px-4 pt-1.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {filtered.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
