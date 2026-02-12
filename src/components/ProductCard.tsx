@@ -113,16 +113,16 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
           <div className="flex w-[110px] items-center justify-end">
             {available ? (
               qty === 0 ? (
-                <Button size="icon" onClick={handleAdd} className="h-8 w-8 rounded-lg active:scale-90 transition-transform">
+                <Button size="icon" onClick={handleAdd} className="h-8 w-8 rounded-md active:scale-90 transition-transform">
                   <Plus className="h-4 w-4" />
                 </Button>
               ) : (
                 <div className="flex items-center gap-0.5">
-                  <button onClick={handleDec} className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-foreground active:scale-90 transition-transform">
+                  <button onClick={handleDec} className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-foreground active:scale-90 transition-transform">
                     <Minus className="h-3.5 w-3.5" />
                   </button>
                   <span className="w-6 text-center text-sm font-bold text-foreground">{qty}</span>
-                  <button onClick={handleInc} className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground active:scale-90 transition-transform">
+                  <button onClick={handleInc} className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground active:scale-90 transition-transform">
                     <Plus className="h-3.5 w-3.5" />
                   </button>
                 </div>
