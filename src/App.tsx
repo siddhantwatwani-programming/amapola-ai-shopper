@@ -3,7 +3,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { CartProvider } from "@/store/cartStore";
+import Welcome from "./pages/Welcome";
+import Browse from "./pages/Browse";
+import AiAssistant from "./pages/AiAssistant";
+import Cart from "./pages/Cart";
+import Confirmation from "./pages/Confirmation";
+import BottomNav from "./components/BottomNav";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -11,15 +17,23 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <CartProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <div className="mx-auto min-h-screen max-w-md bg-background">
+            <Routes>
+              <Route path="/" element={<Welcome />} />
+              <Route path="/browse" element={<Browse />} />
+              <Route path="/assistant" element={<AiAssistant />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/confirmation" element={<Confirmation />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <BottomNav />
+          </div>
+        </BrowserRouter>
+      </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
