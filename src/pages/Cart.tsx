@@ -3,6 +3,7 @@ import { Minus, Plus, Trash2, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/store/cartStore';
 import { Button } from '@/components/ui/button';
+import logoAmapola from '@/assets/logo-amapola.avif';
 
 const Cart = () => {
   const { items, updateQuantity, removeItem, totalPrice, totalItems } = useCart();
@@ -32,7 +33,10 @@ const Cart = () => {
   return (
     <div className="flex flex-col pb-24">
       <div className="px-4 pb-2 pt-4">
-        <h1 className="text-2xl font-bold text-foreground">Cart</h1>
+        <div className="flex items-center gap-2">
+          <img src={logoAmapola} alt="Amapola Market" className="h-8 w-auto object-contain" />
+          <h1 className="text-2xl font-bold text-foreground">Cart</h1>
+        </div>
         <p className="text-sm text-muted-foreground">{totalItems} item{totalItems !== 1 ? 's' : ''}</p>
       </div>
 

@@ -4,6 +4,7 @@ import { CheckCircle2, QrCode } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/store/cartStore';
 import { Button } from '@/components/ui/button';
+import logoAmapola from '@/assets/logo-amapola.avif';
 
 const Confirmation = () => {
   const { clearCart, totalPrice, totalItems } = useCart();
@@ -12,7 +13,6 @@ const Confirmation = () => {
   const orderNumber = useMemo(() => `AMP-${Math.floor(1000 + Math.random() * 9000)}`, []);
 
   useEffect(() => {
-    // Clear cart on mount (order placed)
     return () => {};
   }, []);
 
@@ -33,9 +33,12 @@ const Confirmation = () => {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+          className="mb-4"
         >
-          <CheckCircle2 className="mb-4 h-20 w-20 text-accent" />
+          <img src={logoAmapola} alt="Amapola Market" className="h-20 w-auto object-contain" />
         </motion.div>
+
+        <CheckCircle2 className="mb-3 h-14 w-14 text-accent" />
 
         <h1 className="mb-1 text-2xl font-bold text-foreground">Order Placed!</h1>
         <p className="mb-6 text-muted-foreground">Your groceries will be ready for pickup.</p>

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { MapPin, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import logoAmapola from '@/assets/logo-amapola.avif';
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -19,14 +20,15 @@ const Welcome = () => {
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-          className="mb-6 flex h-28 w-28 items-center justify-center rounded-[2rem] bg-primary/10"
+          className="mb-6"
         >
-          <span className="text-6xl">🌺</span>
+          <img
+            src={logoAmapola}
+            alt="Amapola Market"
+            className="h-32 w-auto object-contain"
+          />
         </motion.div>
 
-        <h1 className="mb-2 text-3xl font-bold tracking-tight text-foreground">
-          Amapola Market
-        </h1>
         <p className="mb-1 text-base text-muted-foreground">
           Your neighborhood grocery store
         </p>
