@@ -623,7 +623,7 @@ const AiAssistant = () => {
           <Input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()}
             placeholder={isRestaurant ? 'What does your kitchen need?' : 'What are you cooking today?'}
             className="h-13 flex-1 rounded-xl border-muted bg-muted/50 text-base md:text-lg px-4" />
-          <Button size="icon" onClick={() => send()} className="h-13 w-13 shrink-0 rounded-xl active:scale-95 transition-transform">
+          <Button size="icon" onClick={() => send()} className="h-13 w-13 shrink-0 rounded-xl px-3 active:scale-95 transition-transform">
             <Send className="h-5 w-5" />
           </Button>
         </div>
