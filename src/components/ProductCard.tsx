@@ -46,31 +46,34 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
             {isRestaurant && <span className="ml-1 text-secondary-foreground font-semibold">· Bulk</span>}
           </p>
         </div>
-        {available ? (
-          qty === 0 ? (
-            <Button size="icon" onClick={handleAdd} className="h-11 w-11 shrink-0 rounded-xl active:scale-95 transition-transform">
-              <Plus className="h-5 w-5" />
-            </Button>
+        {/* Fixed-width interaction zone prevents layout shift */}
+        <div className="flex w-[120px] shrink-0 items-center justify-end">
+          {available ? (
+            qty === 0 ? (
+              <Button size="icon" onClick={handleAdd} className="h-11 w-11 shrink-0 rounded-xl active:scale-95 transition-transform">
+                <Plus className="h-5 w-5" />
+              </Button>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <button onClick={handleDec} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform">
+                  <Minus className="h-4 w-4" />
+                </button>
+                <span className="w-7 text-center text-base font-bold text-foreground">{qty}</span>
+                <button onClick={handleInc} className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground active:scale-90 transition-transform">
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+            )
           ) : (
-            <div className="flex items-center gap-1.5">
-              <button onClick={handleDec} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform">
-                <Minus className="h-4 w-4" />
-              </button>
-              <span className="w-7 text-center text-base font-bold text-foreground">{qty}</span>
-              <button onClick={handleInc} className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground active:scale-90 transition-transform">
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-          )
-        ) : (
-          <span className="text-xs text-destructive font-semibold">Unavailable</span>
-        )}
+            <span className="text-xs text-destructive font-semibold">Unavailable</span>
+          )}
+        </div>
       </motion.div>
     );
   }
 
   return (
-    <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} whileTap={available ? { scale: 0.97 } : undefined}
+    <motion.div layout="position" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} whileTap={available ? { scale: 0.97 } : undefined}
       className={cn('flex flex-col overflow-hidden rounded-2xl border-2 border-border bg-card shadow-sm', !available && 'opacity-50')}>
       {/* 1:1 square image container */}
       <div className="relative w-full overflow-hidden bg-muted/40" style={{ paddingBottom: '100%' }}>
@@ -85,10 +88,10 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
           <span className="absolute inset-0 flex items-center justify-center text-5xl md:text-6xl">{product.emoji}</span>
         )}
       </div>
-      {/* Info below image — no overlays on photos */}
-      <div className="flex flex-1 flex-col p-3 md:p-4">
-        {/* Signal + bulk badges below image */}
-        <div className="flex flex-wrap items-center gap-1.5 mb-1.5 min-h-[20px]">
+      {/* Fixed-height info section prevents card height changes */}
+      <div className="flex flex-col p-3 md:p-4" style={{ minHeight: '140px' }}>
+        {/* Signal + bulk badges */}
+        <div className="flex flex-wrap items-center gap-1.5 mb-1.5 h-5">
           {signal.text && (
             <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold leading-tight ${signal.style}`}>{signal.text}</span>
           )}
@@ -100,21 +103,21 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
         </div>
         <h3 className="text-sm font-bold leading-tight text-foreground line-clamp-2 md:text-base">{product.name}</h3>
         <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1 md:text-sm">{product.description}</p>
-        <div className="mt-auto flex items-center justify-between pt-3">
+        {/* Fixed-height bottom row: price + controls */}
+        <div className="mt-auto flex items-center justify-between pt-3 h-12">
           <div>
             <span className="text-lg font-bold text-foreground md:text-xl">${product.price.toFixed(2)}</span>
             {isRestaurant && <span className="block text-[10px] text-muted-foreground">per unit · +{qtyStep}</span>}
           </div>
-          {available ? (
-            <AnimatePresence mode="wait">
-              {qty === 0 ? (
-                <motion.div key="add" initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }}>
-                  <Button size="icon" onClick={handleAdd} className="h-11 w-11 rounded-xl active:scale-90 transition-transform md:h-12 md:w-12">
-                    <Plus className="h-5 w-5" />
-                  </Button>
-                </motion.div>
+          {/* Fixed-width control zone — no layout shift on state change */}
+          <div className="flex w-[110px] items-center justify-end">
+            {available ? (
+              qty === 0 ? (
+                <Button size="icon" onClick={handleAdd} className="h-11 w-11 rounded-xl active:scale-90 transition-transform md:h-12 md:w-12">
+                  <Plus className="h-5 w-5" />
+                </Button>
               ) : (
-                <motion.div key="qty" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} className="flex items-center gap-1">
+                <div className="flex items-center gap-1">
                   <button onClick={handleDec} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform">
                     <Minus className="h-4 w-4" />
                   </button>
@@ -122,12 +125,12 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
                   <button onClick={handleInc} className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground active:scale-90 transition-transform">
                     <Plus className="h-4 w-4" />
                   </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          ) : (
-            <span className="text-xs text-destructive font-semibold px-2">Unavailable</span>
-          )}
+                </div>
+              )
+            ) : (
+              <span className="text-xs text-destructive font-semibold px-2">Unavailable</span>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
