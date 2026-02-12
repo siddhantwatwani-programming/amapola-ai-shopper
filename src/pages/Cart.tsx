@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Minus, Plus, Trash2, Sparkles, MapPin, Clock, AlertTriangle, CalendarDays, RotateCcw, UtensilsCrossed } from 'lucide-react';
+import { Minus, Plus, Trash2, Sparkles, MapPin, Clock, AlertTriangle, CalendarDays, RotateCcw, UtensilsCrossed, TrendingUp, Package, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/store/cartStore';
 import { useStore } from '@/store/storeContext';
@@ -18,15 +18,47 @@ const Cart = () => {
   const { selectedStore, isAvailable } = useStore();
   const { customer } = useCustomer();
   const { isRestaurant, qtyStep } = useMode();
-  const { scheduleLabel } = usePickup();
+  const { scheduleLabel, dynamicLabel, pickupWarning } = usePickup();
   const { orders } = useOrderHistory();
   const navigate = useNavigate();
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [schedulerOpen, setSchedulerOpen] = useState(false);
-  const [showReorder, setShowReorder] = useState(false);
 
   const unavailableItems = items.filter(i => !isAvailable(i.product.id));
   const availableItems = items.filter(i => isAvailable(i.product.id));
+
+  // Intelligent cart messages
+  const smartMessages = useMemo(() => {
+    const msgs: { icon: typeof TrendingUp; text: string; style: string }[] = [];
+
+    if (isRestaurant && totalItems > 15) {
+      msgs.push({ icon: Package, text: `Bulk order detected — pickup time adjusted to ${dynamicLabel}`, style: 'bg-secondary/50 text-secondary-foreground' });
+    }
+
+    if (totalItems > 8 && !isRestaurant) {
+      msgs.push({ icon: TrendingUp, text: `Large order — estimated pickup in ${dynamicLabel}`, style: 'bg-muted text-muted-foreground' });
+    }
+
+    // Check for commonly paired items
+    const cats = new Set(items.map(i => i.product.category));
+    if (cats.has('deli') && !cats.has('bakery')) {
+      msgs.push({ icon: Zap, text: 'Tip: Add tortillas — commonly ordered with deli items', style: 'bg-accent/10 text-accent' });
+    }
+    if (cats.has('meat') && !cats.has('produce')) {
+      msgs.push({ icon: Zap, text: 'Don\'t forget produce — perfect with your meat selection', style: 'bg-accent/10 text-accent' });
+    }
+
+    // Reorder suggestion
+    if (orders.length > 0 && items.length > 0) {
+      const lastOrder = orders[0];
+      const overlap = items.filter(i => lastOrder.items.some(li => li.product.id === i.product.id));
+      if (overlap.length >= 2) {
+        msgs.push({ icon: RotateCcw, text: `This order looks similar to ${lastOrder.id} — repeat pattern detected`, style: 'bg-primary/5 text-primary' });
+      }
+    }
+
+    return msgs;
+  }, [items, totalItems, isRestaurant, dynamicLabel, orders]);
 
   // Reorder handler
   const handleReorder = (orderId: string) => {
@@ -35,14 +67,12 @@ const Cart = () => {
     order.items.forEach(({ product, quantity }) => {
       for (let i = 0; i < quantity; i++) addItem(product);
     });
-    setShowReorder(false);
   };
 
   if (items.length === 0) {
     return (
       <div className="flex flex-col pb-28">
         <PageHeader title="Cart" />
-
         <div className="flex flex-col items-center justify-center px-6 pt-12 text-center">
           <span className="mb-5 text-7xl">🛒</span>
           <h2 className="mb-2 text-2xl font-bold text-foreground md:text-3xl">Your cart is empty</h2>
@@ -51,8 +81,6 @@ const Cart = () => {
             Start Shopping
           </Button>
         </div>
-
-        {/* Past orders for reorder */}
         {orders.length > 0 && (
           <div className="px-4 mt-8">
             <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
@@ -61,18 +89,13 @@ const Cart = () => {
             </h3>
             <div className="space-y-2">
               {orders.map(order => (
-                <button
-                  key={order.id}
-                  onClick={() => handleReorder(order.id)}
-                  className="w-full rounded-2xl border-2 border-border bg-card p-4 text-left active:scale-[0.98] transition-all"
-                >
+                <button key={order.id} onClick={() => handleReorder(order.id)}
+                  className="w-full rounded-2xl border-2 border-border bg-card p-4 text-left active:scale-[0.98] transition-all">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-bold text-foreground">{order.id}</span>
                     <span className="text-xs text-muted-foreground">{order.date}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    {order.items.map(i => `${i.product.name} ×${i.quantity}`).join(', ')}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{order.items.map(i => `${i.product.name} ×${i.quantity}`).join(', ')}</p>
                   <div className="flex items-center justify-between mt-2">
                     <span className="text-sm font-bold text-foreground">${order.total.toFixed(2)}</span>
                     <span className="text-xs text-primary font-semibold">Tap to reorder</span>
@@ -122,16 +145,24 @@ const Cart = () => {
         </button>
       </div>
 
-      {/* Store info bar */}
+      {/* Dynamic pickup timing bar */}
       <div className="mx-4 mb-3 flex items-center gap-3 rounded-2xl bg-muted/50 px-4 py-3">
         <MapPin className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm text-muted-foreground flex-1 md:text-base">
           Pickup at <span className="font-bold text-foreground">Amapola — {selectedStore.name}</span>
         </span>
         <span className="flex items-center gap-1.5 text-sm text-accent font-bold md:text-base">
-          <Clock className="h-4 w-4" />{selectedStore.pickupTime}
+          <Clock className="h-4 w-4" />{dynamicLabel}
         </span>
       </div>
+
+      {/* Pickup warning */}
+      {pickupWarning && (
+        <div className="mx-4 mb-3 flex items-start gap-2 rounded-2xl bg-secondary/30 border border-secondary p-3">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-secondary-foreground" />
+          <p className="text-xs font-semibold text-secondary-foreground">{pickupWarning}</p>
+        </div>
+      )}
 
       {unavailableItems.length > 0 && (
         <div className="mx-4 mb-3 flex items-start gap-2 rounded-2xl bg-destructive/5 border border-destructive/20 p-4">
@@ -142,6 +173,17 @@ const Cart = () => {
           </div>
         </div>
       )}
+
+      {/* Smart inline messages */}
+      {smartMessages.map((msg, i) => {
+        const Icon = msg.icon;
+        return (
+          <div key={i} className={`mx-4 mb-2 flex items-center gap-2 rounded-xl px-4 py-2.5 ${msg.style}`}>
+            <Icon className="h-4 w-4 shrink-0" />
+            <p className="text-xs font-semibold">{msg.text}</p>
+          </div>
+        );
+      })}
 
       <div className="mx-4 mb-4 flex items-start gap-2 rounded-2xl bg-primary/5 p-4">
         <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />

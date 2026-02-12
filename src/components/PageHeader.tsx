@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock, ChevronDown, CalendarDays, UtensilsCrossed, ShoppingBag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import logoAmapola from '@/assets/logo-amapola.avif';
 import { useStore } from '@/store/storeContext';
 import { useMode } from '@/store/modeContext';
 import { usePickup } from '@/store/pickupContext';
+import { useCart } from '@/store/cartStore';
+import { useCustomer } from '@/store/customerContext';
 import StoreSwitcher from '@/components/StoreSwitcher';
 import PickupScheduler from '@/components/PickupScheduler';
-
 interface PageHeaderProps {
   title?: string;
   subtitle?: string;
@@ -16,12 +18,20 @@ interface PageHeaderProps {
 }
 
 const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
+  const navigate = useNavigate();
   const { selectedStore } = useStore();
   const { isRestaurant } = useMode();
-  const { scheduleLabel } = usePickup();
+  const { scheduleLabel, dynamicLabel } = usePickup();
+  const { clearCart } = useCart();
+  const { clearCustomer } = useCustomer();
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [schedulerOpen, setSchedulerOpen] = useState(false);
 
+  const handleLogoReset = () => {
+    clearCart();
+    clearCustomer();
+    navigate('/');
+  };
   return (
     <>
       <div className="sticky top-0 z-20 bg-background/95 px-4 pb-2 pt-4 backdrop-blur-md">
@@ -32,7 +42,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
                 <ArrowLeft className="h-5 w-5" />
               </button>
             ) : (
-              <motion.img src={logoAmapola} alt="Amapola Market" className="h-8 w-auto object-contain md:h-10" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} />
+              <motion.img src={logoAmapola} alt="Amapola Market" className="h-8 w-auto object-contain md:h-10 cursor-pointer active:scale-95 transition-transform" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} onClick={handleLogoReset} />
             )}
             {title && (
               <div>
@@ -61,7 +71,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
             <span className="truncate">{selectedStore.name}</span>
             <span className="flex items-center gap-1 font-medium text-foreground shrink-0">
               <Clock className="h-3 w-3" />
-              {selectedStore.pickupTime}
+              {dynamicLabel}
             </span>
             <ChevronDown className="ml-auto h-3.5 w-3.5 text-muted-foreground shrink-0" />
           </button>

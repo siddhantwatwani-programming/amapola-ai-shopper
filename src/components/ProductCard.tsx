@@ -4,8 +4,8 @@ import type { Product } from '@/data/products';
 import { useCart } from '@/store/cartStore';
 import { useStore } from '@/store/storeContext';
 import { useMode } from '@/store/modeContext';
+import { useMarketSignal } from '@/hooks/useMarketSignals';
 import { Button } from '@/components/ui/button';
-import { useMemo } from 'react';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -15,30 +15,16 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, compact }: ProductCardProps) => {
   const { items, addItem, updateQuantity } = useCart();
-  const { isAvailable, isSpecialty, selectedStore } = useStore();
+  const { isAvailable } = useStore();
   const { isRestaurant, qtyStep } = useMode();
+  const signal = useMarketSignal(product);
   const cartItem = items.find(i => i.product.id === product.id);
   const qty = cartItem?.quantity ?? 0;
   const available = isAvailable(product.id);
-  const specialty = isSpecialty(product.id);
-
-  const badge = useMemo(() => {
-    if (specialty) return { text: `${selectedStore.name} specialty`, style: 'bg-primary/10 text-primary' };
-    if (!available) return { text: 'Not at this location', style: 'bg-destructive/10 text-destructive' };
-    const hash = product.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-    const options = [
-      { text: 'Fresh today', style: 'bg-accent/15 text-accent' },
-      { text: 'Popular here', style: 'bg-secondary text-secondary-foreground' },
-      { text: 'House made', style: 'bg-primary/10 text-primary' },
-      { text: 'Recommended', style: 'bg-accent/15 text-accent' },
-    ];
-    return options[hash % options.length];
-  }, [product.id, specialty, available, selectedStore.name]);
 
   const handleAdd = () => {
     for (let i = 0; i < qtyStep; i++) addItem(product);
   };
-
   const handleInc = () => updateQuantity(product.id, qty + qtyStep);
   const handleDec = () => updateQuantity(product.id, Math.max(0, qty - qtyStep));
 
@@ -53,6 +39,7 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
             ${product.price.toFixed(2)}
             {isRestaurant && <span className="ml-1 text-secondary-foreground font-semibold">· Bulk</span>}
           </p>
+          {signal.text && <span className={`inline-block mt-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold ${signal.style}`}>{signal.text}</span>}
         </div>
         {available ? (
           qty === 0 ? (
@@ -82,7 +69,9 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
       className={cn('flex flex-col overflow-hidden rounded-2xl border-2 border-border bg-card shadow-sm', !available && 'opacity-50')}>
       <div className="relative flex h-32 items-center justify-center bg-muted/50 text-5xl md:h-40 md:text-6xl">
         {product.emoji}
-        <span className={`absolute left-2 top-2 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${badge.style}`}>{badge.text}</span>
+        {signal.text && (
+          <span className={`absolute left-2 top-2 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${signal.style}`}>{signal.text}</span>
+        )}
         {isRestaurant && available && (
           <span className="absolute right-2 top-2 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-secondary-foreground flex items-center gap-0.5">
             <Package className="h-2.5 w-2.5" />Bulk
