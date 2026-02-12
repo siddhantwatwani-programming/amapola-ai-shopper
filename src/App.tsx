@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/store/cartStore";
+import { StoreProvider } from "@/store/storeContext";
 import Welcome from "./pages/Welcome";
 import Browse from "./pages/Browse";
 import AiAssistant from "./pages/AiAssistant";
@@ -17,23 +18,25 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <CartProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <div className="mx-auto min-h-screen max-w-md bg-background sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
-            <Routes>
-              <Route path="/" element={<Welcome />} />
-              <Route path="/browse" element={<Browse />} />
-              <Route path="/assistant" element={<AiAssistant />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/confirmation" element={<Confirmation />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <BottomNav />
-          </div>
-        </BrowserRouter>
-      </CartProvider>
+      <StoreProvider>
+        <CartProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <div className="mx-auto min-h-screen max-w-md bg-background sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
+              <Routes>
+                <Route path="/" element={<Welcome />} />
+                <Route path="/browse" element={<Browse />} />
+                <Route path="/assistant" element={<AiAssistant />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/confirmation" element={<Confirmation />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <BottomNav />
+            </div>
+          </BrowserRouter>
+        </CartProvider>
+      </StoreProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
