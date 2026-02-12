@@ -13,6 +13,32 @@ interface ProductCardProps {
   compact?: boolean;
 }
 
+const ProductImage = ({ product, className }: { product: Product; className?: string }) => {
+  if (product.image) {
+    return (
+      <img
+        src={product.image}
+        alt={product.name}
+        loading="lazy"
+        className={cn('h-full w-full object-cover', className)}
+        onError={(e) => {
+          // Fallback to emoji if image fails
+          const target = e.currentTarget;
+          target.style.display = 'none';
+          const parent = target.parentElement;
+          if (parent) {
+            const fallback = document.createElement('span');
+            fallback.textContent = product.emoji;
+            fallback.className = 'text-5xl';
+            parent.appendChild(fallback);
+          }
+        }}
+      />
+    );
+  }
+  return <span className="text-5xl">{product.emoji}</span>;
+};
+
 const ProductCard = ({ product, compact }: ProductCardProps) => {
   const { items, addItem, updateQuantity } = useCart();
   const { isAvailable } = useStore();
@@ -32,7 +58,13 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
     return (
       <motion.div layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
         className={cn('flex items-center gap-3 rounded-2xl border border-border bg-card p-3', !available && 'opacity-50')}>
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted text-3xl md:h-16 md:w-16">{product.emoji}</div>
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted overflow-hidden md:h-16 md:w-16">
+          {product.image ? (
+            <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+          ) : (
+            <span className="text-3xl">{product.emoji}</span>
+          )}
+        </div>
         <div className="flex-1 min-w-0">
           <p className="truncate text-sm font-bold text-foreground md:text-base">{product.name}</p>
           <p className="text-xs text-muted-foreground md:text-sm">
@@ -67,13 +99,17 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
   return (
     <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} whileTap={available ? { scale: 0.97 } : undefined}
       className={cn('flex flex-col overflow-hidden rounded-2xl border-2 border-border bg-card shadow-sm', !available && 'opacity-50')}>
-      <div className="relative flex h-32 items-center justify-center bg-muted/50 text-5xl md:h-40 md:text-6xl">
-        {product.emoji}
+      <div className="relative flex h-32 items-center justify-center bg-muted/50 overflow-hidden md:h-40">
+        {product.image ? (
+          <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+        ) : (
+          <span className="text-5xl md:text-6xl">{product.emoji}</span>
+        )}
         {signal.text && (
-          <span className={`absolute left-2 top-2 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${signal.style}`}>{signal.text}</span>
+          <span className={`absolute left-2 top-2 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${signal.style} backdrop-blur-sm`}>{signal.text}</span>
         )}
         {isRestaurant && available && (
-          <span className="absolute right-2 top-2 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-secondary-foreground flex items-center gap-0.5">
+          <span className="absolute right-2 top-2 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-secondary-foreground flex items-center gap-0.5 backdrop-blur-sm">
             <Package className="h-2.5 w-2.5" />Bulk
           </span>
         )}
