@@ -13,32 +13,6 @@ interface ProductCardProps {
   compact?: boolean;
 }
 
-const ProductImage = ({ product, className }: { product: Product; className?: string }) => {
-  if (product.image) {
-    return (
-      <img
-        src={product.image}
-        alt={product.name}
-        loading="lazy"
-        className={cn('h-full w-full object-cover', className)}
-        onError={(e) => {
-          // Fallback to emoji if image fails
-          const target = e.currentTarget;
-          target.style.display = 'none';
-          const parent = target.parentElement;
-          if (parent) {
-            const fallback = document.createElement('span');
-            fallback.textContent = product.emoji;
-            fallback.className = 'text-5xl';
-            parent.appendChild(fallback);
-          }
-        }}
-      />
-    );
-  }
-  return <span className="text-5xl">{product.emoji}</span>;
-};
-
 const ProductCard = ({ product, compact }: ProductCardProps) => {
   const { items, addItem, updateQuantity } = useCart();
   const { isAvailable } = useStore();
@@ -58,11 +32,11 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
     return (
       <motion.div layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
         className={cn('flex items-center gap-3 rounded-2xl border border-border bg-card p-3', !available && 'opacity-50')}>
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted overflow-hidden md:h-16 md:w-16">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-muted md:h-16 md:w-16">
           {product.image ? (
-            <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+            <img src={product.image} alt={product.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
           ) : (
-            <span className="text-3xl">{product.emoji}</span>
+            <span className="flex h-full w-full items-center justify-center text-3xl">{product.emoji}</span>
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -71,7 +45,6 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
             ${product.price.toFixed(2)}
             {isRestaurant && <span className="ml-1 text-secondary-foreground font-semibold">· Bulk</span>}
           </p>
-          {signal.text && <span className={`inline-block mt-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold ${signal.style}`}>{signal.text}</span>}
         </div>
         {available ? (
           qty === 0 ? (
@@ -99,28 +72,38 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
   return (
     <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} whileTap={available ? { scale: 0.97 } : undefined}
       className={cn('flex flex-col overflow-hidden rounded-2xl border-2 border-border bg-card shadow-sm', !available && 'opacity-50')}>
-      <div className="relative flex h-32 items-center justify-center bg-muted/50 overflow-hidden md:h-40">
+      {/* 1:1 square image container */}
+      <div className="relative w-full overflow-hidden bg-muted/40" style={{ paddingBottom: '100%' }}>
         {product.image ? (
-          <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         ) : (
-          <span className="text-5xl md:text-6xl">{product.emoji}</span>
-        )}
-        {signal.text && (
-          <span className={`absolute left-2 top-2 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${signal.style} backdrop-blur-sm`}>{signal.text}</span>
-        )}
-        {isRestaurant && available && (
-          <span className="absolute right-2 top-2 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-secondary-foreground flex items-center gap-0.5 backdrop-blur-sm">
-            <Package className="h-2.5 w-2.5" />Bulk
-          </span>
+          <span className="absolute inset-0 flex items-center justify-center text-5xl md:text-6xl">{product.emoji}</span>
         )}
       </div>
+      {/* Info below image — no overlays on photos */}
       <div className="flex flex-1 flex-col p-3 md:p-4">
-        <h3 className="text-sm font-bold leading-tight text-foreground md:text-base">{product.name}</h3>
-        <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2 md:text-sm">{product.description}</p>
+        {/* Signal + bulk badges below image */}
+        <div className="flex flex-wrap items-center gap-1.5 mb-1.5 min-h-[20px]">
+          {signal.text && (
+            <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold leading-tight ${signal.style}`}>{signal.text}</span>
+          )}
+          {isRestaurant && available && (
+            <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-secondary-foreground flex items-center gap-0.5 leading-tight">
+              <Package className="h-2.5 w-2.5" />Bulk
+            </span>
+          )}
+        </div>
+        <h3 className="text-sm font-bold leading-tight text-foreground line-clamp-2 md:text-base">{product.name}</h3>
+        <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1 md:text-sm">{product.description}</p>
         <div className="mt-auto flex items-center justify-between pt-3">
           <div>
             <span className="text-lg font-bold text-foreground md:text-xl">${product.price.toFixed(2)}</span>
-            {isRestaurant && <span className="block text-[10px] text-muted-foreground">per unit · +{qtyStep} per tap</span>}
+            {isRestaurant && <span className="block text-[10px] text-muted-foreground">per unit · +{qtyStep}</span>}
           </div>
           {available ? (
             <AnimatePresence mode="wait">
