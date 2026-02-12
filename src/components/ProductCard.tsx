@@ -113,8 +113,8 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
           <div className="flex w-[110px] items-center justify-end">
             {available ? (
               qty === 0 ? (
-                <Button size="icon" onClick={handleAdd} className="h-11 w-11 rounded-xl active:scale-90 transition-transform md:h-12 md:w-12">
-                  <Plus className="h-5 w-5" />
+                <Button size="icon" onClick={handleAdd} className="h-8 w-8 rounded-lg active:scale-90 transition-transform">
+                  <Plus className="h-4 w-4" />
                 </Button>
               ) : (
                 <div className="flex items-center gap-0.5">
