@@ -176,7 +176,7 @@ const Welcome = () => {
                   value={firstName}
                   onChange={e => setFirstName(e.target.value)}
                   placeholder={mode === 'restaurant' ? 'e.g. Taqueria El Sol' : 'e.g. Maria'}
-                  className="h-14 rounded-xl text-lg px-4 border-2 border-border focus:border-primary"
+                  className="h-14 rounded-xl text-lg px-4 border border-border focus:border-primary"
                   autoFocus
                 />
               </div>
@@ -188,7 +188,7 @@ const Welcome = () => {
                   placeholder="(555) 123-4567"
                   type="tel"
                   inputMode="numeric"
-                  className="h-14 rounded-xl text-lg px-4 border-2 border-border focus:border-primary"
+                  className="h-14 rounded-xl text-lg px-4 border border-border focus:border-primary"
                 />
               </div>
             </div>
