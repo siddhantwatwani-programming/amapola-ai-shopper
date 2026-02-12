@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, RotateCcw, Lightbulb } from 'lucide-react';
+import { Send, RotateCcw, Lightbulb, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { findAiResponse, getProductById, productPairings, products } from '@/data/products';
@@ -545,12 +545,24 @@ const AiAssistant = () => {
               ) : (
                 <div className="space-y-2">
                   <div className="max-w-[90%] rounded-2xl rounded-bl-md bg-muted px-4 py-2.5 text-sm text-foreground whitespace-pre-line">{msg.text}</div>
-                  {msg.productIds && (
+                  {msg.productIds && msg.productIds.length > 0 && (
                     <div className="space-y-1.5 pl-1">
                       {msg.productIds.map(id => {
                         const product = getProductById(id);
                         return product ? <ProductCard key={id} product={product} compact /> : null;
                       })}
+                      <button
+                        onClick={() => {
+                          msg.productIds!.forEach(id => {
+                            const product = getProductById(id);
+                            if (product) addItem(product);
+                          });
+                        }}
+                        className="mt-1 flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground active:scale-95 transition-transform"
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add all to cart
+                      </button>
                     </div>
                   )}
                 </div>
