@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Minus, Plus, Trash2, Sparkles, MapPin, Clock, AlertTriangle } from 'lucide-react';
+import { Minus, Plus, Trash2, Sparkles, MapPin, Clock, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/store/cartStore';
 import { useStore } from '@/store/storeContext';
@@ -16,12 +16,19 @@ const Cart = () => {
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col pb-24">
+      <div className="flex flex-col pb-28">
         <PageHeader title="Cart" />
-        <div className="flex flex-col items-center justify-center px-6 pt-16 text-center">
-          <span className="mb-4 text-6xl">🛒</span>
-          <h2 className="mb-1 text-xl font-bold text-foreground">Your cart is empty</h2>
-          <p className="text-sm text-muted-foreground">Browse our store and add some items!</p>
+        <div className="flex flex-col items-center justify-center px-6 pt-20 text-center">
+          <span className="mb-5 text-7xl">🛒</span>
+          <h2 className="mb-2 text-2xl font-bold text-foreground md:text-3xl">Your cart is empty</h2>
+          <p className="text-base text-muted-foreground md:text-lg">Browse our store and add some items!</p>
+          <Button
+            size="lg"
+            onClick={() => navigate('/browse')}
+            className="mt-8 h-14 rounded-2xl px-10 text-lg font-bold active:scale-95 transition-transform"
+          >
+            Start Shopping
+          </Button>
         </div>
       </div>
     );
@@ -44,30 +51,30 @@ const Cart = () => {
     : 'Add some items to get started!';
 
   return (
-    <div className="flex flex-col pb-24">
+    <div className="flex flex-col pb-28">
       <PageHeader title="Cart" subtitle={`${totalItems} item${totalItems !== 1 ? 's' : ''}`} />
 
       {/* Store info bar */}
-      <div className="mx-4 mb-3 flex items-center gap-3 rounded-xl bg-muted/50 px-3 py-2">
-        <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground flex-1">
-          Pickup at <span className="font-semibold text-foreground">Amapola — {selectedStore.name}</span>
+      <div className="mx-4 mb-3 flex items-center gap-3 rounded-2xl bg-muted/50 px-4 py-3">
+        <MapPin className="h-4 w-4 text-muted-foreground" />
+        <span className="text-sm text-muted-foreground flex-1 md:text-base">
+          Pickup at <span className="font-bold text-foreground">Amapola — {selectedStore.name}</span>
         </span>
-        <span className="flex items-center gap-1 text-xs text-accent font-medium">
-          <Clock className="h-3 w-3" />
+        <span className="flex items-center gap-1.5 text-sm text-accent font-bold md:text-base">
+          <Clock className="h-4 w-4" />
           {selectedStore.pickupTime}
         </span>
       </div>
 
       {/* Unavailable warning */}
       {unavailableItems.length > 0 && (
-        <div className="mx-4 mb-3 flex items-start gap-2 rounded-2xl bg-destructive/5 border border-destructive/20 p-3">
-          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+        <div className="mx-4 mb-3 flex items-start gap-2 rounded-2xl bg-destructive/5 border border-destructive/20 p-4">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
           <div>
-            <p className="text-xs font-medium text-destructive">
+            <p className="text-sm font-bold text-destructive">
               {unavailableItems.length} item{unavailableItems.length > 1 ? 's' : ''} not available at {selectedStore.name}
             </p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {unavailableItems.map(i => i.product.name).join(', ')}
             </p>
           </div>
@@ -75,9 +82,9 @@ const Cart = () => {
       )}
 
       {/* AI Summary */}
-      <div className="mx-4 mb-4 flex items-start gap-2 rounded-2xl bg-primary/5 p-3">
-        <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-        <p className="text-sm text-foreground">{aiSummary}</p>
+      <div className="mx-4 mb-4 flex items-start gap-2 rounded-2xl bg-primary/5 p-4">
+        <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+        <p className="text-sm text-foreground md:text-base">{aiSummary}</p>
       </div>
 
       {/* Items */}
@@ -91,37 +98,37 @@ const Cart = () => {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className={`flex items-center gap-3 rounded-2xl border border-border bg-card p-3 ${!avail ? 'opacity-50' : ''}`}
+              className={`flex items-center gap-3 rounded-2xl border-2 border-border bg-card p-4 ${!avail ? 'opacity-50' : ''}`}
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-muted text-2xl">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted text-3xl md:h-16 md:w-16">
                 {product.emoji}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="truncate text-sm font-semibold text-foreground">{product.name}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="truncate text-base font-bold text-foreground">{product.name}</p>
+                <p className="text-sm text-muted-foreground">
                   ${(product.price * quantity).toFixed(2)}
-                  {!avail && <span className="ml-1 text-destructive">· Not at {selectedStore.name}</span>}
+                  {!avail && <span className="ml-1 text-destructive font-semibold">· Not at {selectedStore.name}</span>}
                 </p>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => updateQuantity(product.id, quantity - 1)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-foreground"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform"
                 >
-                  <Minus className="h-3.5 w-3.5" />
+                  <Minus className="h-4 w-4" />
                 </button>
-                <span className="w-7 text-center text-sm font-semibold text-foreground">{quantity}</span>
+                <span className="w-8 text-center text-base font-bold text-foreground">{quantity}</span>
                 <button
                   onClick={() => updateQuantity(product.id, quantity + 1)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-foreground"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform"
                 >
-                  <Plus className="h-3.5 w-3.5" />
+                  <Plus className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => removeItem(product.id)}
-                  className="ml-1 flex h-8 w-8 items-center justify-center rounded-lg text-destructive"
+                  className="ml-1 flex h-10 w-10 items-center justify-center rounded-xl text-destructive active:scale-90 transition-transform"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash2 className="h-4 w-4" />
                 </button>
               </div>
             </motion.div>
@@ -130,17 +137,25 @@ const Cart = () => {
       </div>
 
       {/* Total + Checkout */}
-      <div className="mx-4 mt-6 space-y-3">
-        <div className="flex items-center justify-between rounded-2xl bg-muted/60 px-4 py-3">
-          <span className="text-sm font-medium text-muted-foreground">Subtotal</span>
-          <span className="text-lg font-bold text-foreground">${totalPrice.toFixed(2)}</span>
+      <div className="mx-4 mt-6 space-y-4">
+        <div className="flex items-center justify-between rounded-2xl bg-muted/60 px-5 py-4">
+          <span className="text-base font-semibold text-muted-foreground">Subtotal</span>
+          <span className="text-2xl font-bold text-foreground">${totalPrice.toFixed(2)}</span>
         </div>
         <Button
           size="lg"
           onClick={() => navigate('/confirmation')}
-          className="h-14 w-full rounded-2xl text-lg font-semibold shadow-lg"
+          className="h-16 w-full rounded-2xl text-xl font-bold shadow-lg active:scale-[0.97] transition-transform md:h-20 md:text-2xl"
         >
-          Place Order for Pickup
+          Confirm Pickup Order
+        </Button>
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => navigate('/')}
+          className="h-14 w-full rounded-2xl text-lg font-semibold border-2 active:scale-[0.97] transition-transform"
+        >
+          Change Store
         </Button>
       </div>
     </div>
