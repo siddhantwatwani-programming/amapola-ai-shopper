@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, RotateCcw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { useCustomer } from '@/store/customerContext';
 import { useMode } from '@/store/modeContext';
 import { usePickup } from '@/store/pickupContext';
 import { useOrderHistory } from '@/store/orderHistoryContext';
+import { useCart } from '@/store/cartStore';
 import ProductCard from '@/components/ProductCard';
 import PageHeader from '@/components/PageHeader';
 
@@ -23,11 +24,13 @@ const AiAssistant = () => {
   const { selectedStore } = useStore();
   const { customer } = useCustomer();
   const { isRestaurant, mode } = useMode();
-  const { scheduleLabel } = usePickup();
+  const { scheduleLabel, dynamicLabel, pickupWarning } = usePickup();
   const { orders } = useOrderHistory();
+  const { items: cartItems, totalItems: cartTotal } = useCart();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [responseCount, setResponseCount] = useState(0);
 
   const name = customer?.firstName ?? '';
 
@@ -47,6 +50,29 @@ const AiAssistant = () => {
         { label: '💰 Budget', query: 'budget' },
       ];
 
+  // Build session context string for AI awareness
+  const buildSessionContext = useCallback(() => {
+    const parts: string[] = [];
+
+    // Cart awareness
+    if (cartTotal > 0) {
+      const cartCategories = [...new Set(cartItems.map(i => i.product.category))];
+      parts.push(`You have ${cartTotal} items in cart (${cartCategories.join(', ')})`);
+    }
+
+    // Pickup timing
+    parts.push(`Pickup: ${dynamicLabel} at ${selectedStore.name}`);
+
+    if (pickupWarning) parts.push(`⚠️ ${pickupWarning}`);
+
+    // Restaurant context
+    if (isRestaurant && cartTotal > 15) {
+      parts.push('This is a large bulk order — I\'ll suggest accordingly.');
+    }
+
+    return parts.join(' · ');
+  }, [cartTotal, cartItems, dynamicLabel, selectedStore.name, pickupWarning, isRestaurant]);
+
   useEffect(() => {
     const greeting = name ? `${name}, welcome` : 'Welcome';
     const modeNote = isRestaurant
@@ -55,12 +81,16 @@ const AiAssistant = () => {
     const reorderNote = orders.length > 0
       ? `\n\n🔄 I noticed you have ${orders.length} past order${orders.length > 1 ? 's' : ''}. Ask me to "reorder" anytime!`
       : '';
+    const cartNote = cartTotal > 0
+      ? `\n\n🛒 You already have ${cartTotal} items in your cart. I'll keep that in mind.`
+      : '';
 
     setMessages([{
       id: 'welcome',
       role: 'ai',
-      text: `${greeting} to Amapola — ${selectedStore.name} 🌺\n\nI'm your market assistant. I know every aisle, every specialty, and what's fresh right now.\n\nPickup: ${scheduleLabel} · Ready in ${selectedStore.pickupTime}.${modeNote}${reorderNote}\n\nTell me what you're cooking or tap a suggestion below.`,
+      text: `${greeting} to Amapola — ${selectedStore.name} 🌺\n\nI'm your market assistant. I know every aisle, every specialty, and what's fresh right now.\n\nPickup: ${scheduleLabel} · Ready in ${dynamicLabel}.${modeNote}${reorderNote}${cartNote}\n\nTell me what you're cooking or tap a suggestion below.`,
     }]);
+    setResponseCount(0);
   }, [selectedStore, customer, isRestaurant, scheduleLabel]);
 
   useEffect(() => {
@@ -72,6 +102,8 @@ const AiAssistant = () => {
     if (!q) return;
 
     const userMsg: Message = { id: Date.now().toString(), role: 'user', text: q };
+    const newCount = responseCount + 1;
+    setResponseCount(newCount);
 
     // Handle reorder query
     if (q.toLowerCase().includes('reorder') && orders.length > 0) {
@@ -79,7 +111,7 @@ const AiAssistant = () => {
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        text: `${name ? `${name}, ` : ''}your last order (${lastOrder.id}) from ${lastOrder.storeName} was ${lastOrder.date}:\n\n${lastOrder.items.map(i => `• ${i.product.name} ×${i.quantity}`).join('\n')}\n\nTotal: $${lastOrder.total.toFixed(2)}\n\n${isRestaurant ? 'This looks like a regular business restock.' : 'Want me to add these to your cart?'} Tap the items below to add them!`,
+        text: `${name ? `${name}, ` : ''}your last order (${lastOrder.id}) from ${lastOrder.storeName} was ${lastOrder.date}:\n\n${lastOrder.items.map(i => `• ${i.product.name} ×${i.quantity}`).join('\n')}\n\nTotal: $${lastOrder.total.toFixed(2)}\n\n${isRestaurant ? 'This looks like a regular business restock. I recommend repeating it.' : 'Want me to add these to your cart?'} Tap the items below to add them!`,
         productIds: lastOrder.items.map(i => i.product.id),
       };
       setMessages(prev => [...prev, userMsg, aiMsg]);
@@ -103,12 +135,26 @@ const AiAssistant = () => {
     }
 
     const bulkNote = isRestaurant ? `\n\n📦 Restaurant tip: Tap + to add in bulk increments of 5.` : '';
-    const personalNote = name ? `\n\n📍 ${name}, your order from ${selectedStore.name} will be ready in ${selectedStore.pickupTime}.` : '';
+    const personalNote = name ? `\n\n📍 ${name}, your order from ${selectedStore.name} will be ready in ${dynamicLabel}.` : `\n\n📍 Estimated pickup: ${dynamicLabel}`;
+
+    // Session-aware context notes (evolve with conversation)
+    let sessionNote = '';
+    if (newCount >= 3 && cartTotal > 0) {
+      sessionNote = `\n\n💡 ${buildSessionContext()}`;
+    }
+    if (newCount >= 2 && isRestaurant && cartTotal > 10) {
+      sessionNote += `\n\n📊 Bulk order tip: Consider scheduling pickup for later to ensure everything is prepared.`;
+    }
+
+    // Pickup warning injection
+    if (pickupWarning) {
+      sessionNote += `\n\n⏰ ${pickupWarning}`;
+    }
 
     const aiMsg: Message = {
       id: (Date.now() + 1).toString(),
       role: 'ai',
-      text: aiRes.message + storeNote + bulkNote + personalNote,
+      text: aiRes.message + storeNote + bulkNote + personalNote + sessionNote,
       productIds: aiRes.productIds,
     };
 

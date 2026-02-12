@@ -16,7 +16,7 @@ const Confirmation = () => {
   const { selectedStore } = useStore();
   const { customer, clearCustomer } = useCustomer();
   const { isRestaurant, mode } = useMode();
-  const { scheduleLabel, schedule } = usePickup();
+  const { scheduleLabel, schedule, dynamicLabel } = usePickup();
   const { addOrder } = useOrderHistory();
   const navigate = useNavigate();
 
@@ -69,7 +69,7 @@ const Confirmation = () => {
         {/* Schedule info */}
         <div className="mb-2 flex items-center gap-2 text-base font-bold text-accent">
           <Clock className="h-4 w-4" />
-          {schedule.type === 'now' ? `Ready in ${selectedStore.pickupTime}` : scheduleLabel}
+          {schedule.type === 'now' ? `Ready in ${dynamicLabel}` : scheduleLabel}
         </div>
         {schedule.type !== 'now' && (
           <div className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground">

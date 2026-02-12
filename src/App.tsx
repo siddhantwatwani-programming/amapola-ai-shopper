@@ -15,6 +15,7 @@ import AiAssistant from "./pages/AiAssistant";
 import Cart from "./pages/Cart";
 import Confirmation from "./pages/Confirmation";
 import BottomNav from "./components/BottomNav";
+import IdleOverlay from "./components/IdleOverlay";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                       <BottomNav />
+                      <IdleOverlay />
                     </div>
                   </BrowserRouter>
                 </CartProvider>
