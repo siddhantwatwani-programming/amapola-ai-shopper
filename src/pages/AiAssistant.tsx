@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, RotateCcw, Lightbulb } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { findAiResponse, getProductById, productPairings } from '@/data/products';
+import { findAiResponse, getProductById, productPairings, products } from '@/data/products';
 import { useStore } from '@/store/storeContext';
 import { useCustomer } from '@/store/customerContext';
 import { useMode } from '@/store/modeContext';
@@ -32,12 +32,13 @@ const AiAssistant = () => {
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const [responseCount, setResponseCount] = useState(0);
-  // Track topics discussed this session for context continuity
   const [sessionTopics, setSessionTopics] = useState<string[]>([]);
-  // Track last recommended product IDs to avoid repeating
   const [lastRecommendedIds, setLastRecommendedIds] = useState<string[]>([]);
+  // Track categories already explored in session to avoid repetition
+  const [exploredCategories, setExploredCategories] = useState<string[]>([]);
 
   const name = customer?.firstName ?? '';
+  const addr = (n: string) => n ? `${n}, ` : '';
 
   const quickPrompts = isRestaurant
     ? [
@@ -55,72 +56,200 @@ const AiAssistant = () => {
         { label: '💰 Budget', query: 'budget' },
       ];
 
-  // Generate follow-up prompts based on cart contents
-  const generateFollowUps = useCallback((recommendedIds: string[]): { label: string; query: string }[] => {
+  // --- Dynamic follow-up engine ---
+  // Always returns 2-4 context-aware, session-evolving options. Never empty.
+  const generateFollowUps = useCallback((recommendedIds: string[], context?: string): { label: string; query: string }[] => {
     const prompts: { label: string; query: string }[] = [];
     const cartProductIds = cartItems.map(i => i.product.id);
     const allRelevantIds = [...cartProductIds, ...recommendedIds];
+    const cartCats = [...new Set(cartItems.map(i => i.product.category))];
+    const topicSet = new Set(sessionTopics);
 
-    // Find pairings for recently added/recommended items
-    for (const id of allRelevantIds) {
+    // 1. Pairing-based follow-up (most contextual)
+    for (const id of recommendedIds) {
       const pairing = productPairings[id];
       if (pairing) {
-        const missingItems = pairing.ids.filter(pid => !cartProductIds.includes(pid));
-        if (missingItems.length > 0) {
+        const missing = pairing.ids.filter(pid => !cartProductIds.includes(pid) && !recommendedIds.includes(pid));
+        if (missing.length > 0) {
           const product = getProductById(id);
           if (product) {
-            prompts.push({
-              label: `🔗 What goes with ${product.name}?`,
-              query: `what goes with ${product.name}`,
-            });
-            break; // Only one pairing prompt
+            prompts.push({ label: `🔗 Pairs with ${product.name}`, query: `what goes with ${product.name}` });
+            break;
           }
         }
       }
     }
 
-    // Suggest based on what's NOT in cart yet from session topics
-    if (sessionTopics.length > 0 && !sessionTopics.includes('dessert')) {
-      prompts.push({ label: '🍰 Add dessert?', query: 'dessert' });
-    }
-    if (sessionTopics.length > 0 && !sessionTopics.includes('drink')) {
-      prompts.push({ label: '🥤 Add drinks?', query: 'drinks' });
+    // 2. Category exploration (suggest unexplored categories)
+    const allCats = ['bakery', 'deli', 'produce', 'beverages', 'snacks', 'pantry', 'meat', 'dairy'] as const;
+    const unexploredCats = allCats.filter(c => !exploredCategories.includes(c) && !cartCats.includes(c as any));
+    const catSuggestions: Record<string, { label: string; query: string }> = {
+      bakery: { label: '🥖 Fresh from our Bakery', query: 'bakery items' },
+      deli: { label: '🥩 Deli counter picks', query: 'deli meats' },
+      produce: { label: '🥬 Fresh produce', query: 'fresh produce' },
+      beverages: { label: '🥤 Add drinks', query: 'drinks' },
+      snacks: { label: '🍿 Snacks & sweets', query: 'snacks' },
+      pantry: { label: '🫘 Pantry staples', query: 'pantry essentials' },
+      meat: { label: '🐟 Meat & seafood', query: 'seafood' },
+      dairy: { label: '🧀 Dairy & cheese', query: 'cheese' },
+    };
+    if (unexploredCats.length > 0) {
+      const nextCat = unexploredCats[0];
+      const suggestion = catSuggestions[nextCat];
+      if (suggestion && !prompts.some(p => p.query === suggestion.query)) {
+        prompts.push(suggestion);
+      }
     }
 
-    // Bulk suggestion for restaurant
-    if (isRestaurant && cartTotal > 5) {
-      prompts.push({ label: '📊 Optimize my bulk order', query: 'optimize bulk order' });
+    // 3. Cart-progression prompts (evolve with cart size)
+    if (cartTotal === 0) {
+      if (!prompts.some(p => p.query.includes('popular'))) {
+        prompts.push({ label: '⭐ What\'s popular today?', query: 'popular' });
+      }
+    } else if (cartTotal > 0 && cartTotal < 5) {
+      if (!topicSet.has('dessert') && !cartCats.includes('snacks')) {
+        prompts.push({ label: '🍰 Something sweet?', query: 'dessert' });
+      }
+    } else if (cartTotal >= 5 && cartTotal < 15) {
+      prompts.push({ label: '⏱️ Best pickup time?', query: 'when should I pick up' });
+    } else if (cartTotal >= 15) {
+      if (isRestaurant) {
+        prompts.push({ label: '📊 Optimize my bulk order', query: 'optimize bulk order' });
+      } else {
+        prompts.push({ label: '✅ Ready to checkout', query: 'I\'m done ordering' });
+      }
     }
 
-    return prompts.slice(0, 3);
-  }, [cartItems, sessionTopics, isRestaurant, cartTotal]);
+    // 4. Restaurant-specific bulk prompts
+    if (isRestaurant && cartTotal > 3 && !prompts.some(p => p.query.includes('optimize'))) {
+      prompts.push({ label: '📦 Review bulk quantities', query: 'optimize bulk order' });
+    }
 
+    // 5. Reorder prompt if user has history and hasn't used it
+    if (orders.length > 0 && !topicSet.has('reorder') && cartTotal < 3) {
+      prompts.push({ label: '🔄 Reorder last order', query: 'reorder' });
+    }
+
+    // 6. Store specialty prompt
+    if (selectedStore.specialties.length > 0 && responseCount < 3 && !topicSet.has('specialty')) {
+      const specName = getProductById(selectedStore.specialties[0])?.name;
+      if (specName) {
+        prompts.push({ label: `⭐ ${selectedStore.name} specialty`, query: `what's special at this store` });
+      }
+    }
+
+    // 7. Conversation-specific context-aware fallbacks
+    if (context === 'done') {
+      return [
+        { label: '🛒 Go to cart', query: 'take me to cart' },
+        { label: '🍰 Wait, add dessert', query: 'dessert' },
+        ...(isRestaurant ? [{ label: '📅 Schedule for tomorrow', query: 'schedule pickup' }] : []),
+      ].slice(0, 3);
+    }
+    if (context === 'pickup') {
+      return [
+        { label: '📅 Schedule for later', query: 'schedule pickup' },
+        ...(cartTotal > 0 ? [{ label: '✅ Ready to checkout', query: 'I\'m done ordering' }] : []),
+        { label: '➕ Add more items', query: 'what else should I add' },
+      ].slice(0, 3);
+    }
+
+    // Deduplicate and cap at 4
+    const seen = new Set<string>();
+    const deduped = prompts.filter(p => {
+      if (seen.has(p.query)) return false;
+      seen.add(p.query);
+      return true;
+    });
+
+    // Ensure minimum 2 — add fallback options
+    if (deduped.length < 2) {
+      const fallbacks = [
+        { label: '🌮 What\'s for dinner?', query: 'dinner ideas' },
+        { label: '💰 Best deals today', query: 'budget' },
+        { label: '⭐ Customer favorites', query: 'popular' },
+        { label: '🛒 Review my cart', query: 'what\'s in my cart' },
+      ];
+      for (const fb of fallbacks) {
+        if (!seen.has(fb.query) && !topicSet.has(fb.query)) {
+          deduped.push(fb);
+          seen.add(fb.query);
+          if (deduped.length >= 2) break;
+        }
+      }
+    }
+
+    return deduped.slice(0, 4);
+  }, [cartItems, sessionTopics, isRestaurant, cartTotal, exploredCategories, orders, selectedStore, responseCount]);
+
+  // --- Welcome message ---
   useEffect(() => {
-    const greeting = name ? `${name}, welcome` : 'Welcome';
+    const storeSpecialties = selectedStore.specialties.slice(0, 2).map(id => getProductById(id)?.name).filter(Boolean);
+    const specialtyLine = storeSpecialties.length > 0 ? `\n\nToday's ${selectedStore.name} highlights: ${storeSpecialties.join(' and ')}.` : '';
     const modeNote = isRestaurant
-      ? `\n\nI see you're ordering for your business. I'll suggest bulk quantities and restaurant-ready items.`
+      ? `\n\nI see you're ordering for your business — I'll prioritize bulk-ready items and volume pricing.`
       : '';
     const reorderNote = orders.length > 0
-      ? `\n\n🔄 I noticed you have ${orders.length} past order${orders.length > 1 ? 's' : ''}. Ask me to "reorder" anytime!`
+      ? `\n\n🔄 Your last order is on file — say "reorder" to repeat it.`
       : '';
     const cartNote = cartTotal > 0
-      ? `\n\n🛒 You already have ${cartTotal} items in your cart. I'll keep that in mind.`
+      ? `\n\n🛒 ${cartTotal} items already in your cart. I'll build on that.`
       : '';
 
     setMessages([{
       id: 'welcome',
       role: 'ai',
-      text: `${greeting} to Amapola — ${selectedStore.name} 🌺\n\nI'm your market assistant. I know every aisle, every specialty, and what's fresh right now.\n\nPickup: ${scheduleLabel} · Ready in ${dynamicLabel}.${modeNote}${reorderNote}${cartNote}\n\nTell me what you're cooking or tap a suggestion below.`,
+      text: `${name ? `${name}, welcome back` : 'Welcome'} to Amapola — ${selectedStore.name}. 🌺\n\nI know this store inside and out. Tell me what you're making and I'll pull everything you need.\n\nPickup: ${scheduleLabel} · Ready in ${dynamicLabel}.${specialtyLine}${modeNote}${reorderNote}${cartNote}`,
+      followUpPrompts: undefined, // Initial prompts handled by quickPrompts
     }]);
     setResponseCount(0);
     setSessionTopics([]);
     setLastRecommendedIds([]);
+    setExploredCategories([]);
   }, [selectedStore, customer, isRestaurant, scheduleLabel]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages]);
 
+  // --- "What's in my cart" handler ---
+  const handleCartReview = (userMsg: Message): Message => {
+    if (cartTotal === 0) {
+      return {
+        id: (Date.now() + 1).toString(),
+        role: 'ai',
+        text: `${addr(name)}your cart is empty. Let's change that — what are you in the mood for?`,
+        followUpPrompts: generateFollowUps([], undefined),
+      };
+    }
+    const cartCats = [...new Set(cartItems.map(i => i.product.category))];
+    const cartSummary = cartItems.map(i => `• ${i.product.name} ×${i.quantity}`).join('\n');
+    const missingCats = (['produce', 'bakery', 'beverages', 'deli'] as const).filter(c => !cartCats.includes(c));
+    const missingNote = missingCats.length > 0
+      ? `\n\nI notice you haven't added anything from ${missingCats.slice(0, 2).join(' or ')} yet — want me to suggest some items?`
+      : '\n\nLooks like a well-rounded order.';
+    return {
+      id: (Date.now() + 1).toString(),
+      role: 'ai',
+      text: `${addr(name)}here's your current cart (${cartTotal} items):\n\n${cartSummary}\n\nTotal: $${cartItems.reduce((s, i) => s + i.product.price * i.quantity, 0).toFixed(2)}${missingNote}`,
+      followUpPrompts: generateFollowUps(cartItems.map(i => i.product.id)),
+    };
+  };
+
+  // --- Store specialty handler ---
+  const handleStoreSpecialty = (userMsg: Message): Message => {
+    const specProducts = selectedStore.specialties.map(id => getProductById(id)).filter(Boolean);
+    const specNames = specProducts.map(p => p!.name).join(', ');
+    return {
+      id: (Date.now() + 1).toString(),
+      role: 'ai',
+      text: `${addr(name)}${selectedStore.name} is known for a few items you won't find this fresh anywhere else:\n\n${specProducts.map(p => `⭐ ${p!.name} — ${p!.description}`).join('\n')}\n\nThese move fast, especially on weekends. I'd grab them now.`,
+      productIds: selectedStore.specialties,
+      followUpPrompts: generateFollowUps(selectedStore.specialties),
+    };
+  };
+
+  // --- Main send function ---
   const send = (query?: string) => {
     const q = (query ?? input).trim();
     if (!q) return;
@@ -129,11 +258,43 @@ const AiAssistant = () => {
     const newCount = responseCount + 1;
     setResponseCount(newCount);
 
-    // Track topic
     const lowerQ = q.toLowerCase();
     setSessionTopics(prev => [...prev, lowerQ]);
 
-    // Handle "what goes with X" queries — pairing-based follow-ups
+    // Track explored categories from query keywords
+    const catKeywords: Record<string, string> = {
+      bakery: 'bakery', tortilla: 'bakery', bread: 'bakery', pan: 'bakery',
+      deli: 'deli', meat: 'meat', seafood: 'meat', fish: 'meat',
+      produce: 'produce', vegetable: 'produce', fruit: 'produce',
+      drink: 'beverages', beverage: 'beverages', agua: 'beverages',
+      snack: 'snacks', candy: 'snacks', sweet: 'snacks',
+      cheese: 'dairy', milk: 'dairy', egg: 'dairy',
+      bean: 'pantry', rice: 'pantry', chile: 'pantry',
+    };
+    for (const [kw, cat] of Object.entries(catKeywords)) {
+      if (lowerQ.includes(kw)) {
+        setExploredCategories(prev => prev.includes(cat) ? prev : [...prev, cat]);
+      }
+    }
+
+    // --- Cart review ---
+    if (lowerQ.includes('what\'s in my cart') || lowerQ.includes('review my cart') || lowerQ.includes('my cart')) {
+      const aiMsg = handleCartReview(userMsg);
+      setMessages(prev => [...prev, userMsg, aiMsg]);
+      setInput('');
+      return;
+    }
+
+    // --- Store specialty ---
+    if (lowerQ.includes('special') && (lowerQ.includes('store') || lowerQ.includes('this'))) {
+      setSessionTopics(prev => [...prev, 'specialty']);
+      const aiMsg = handleStoreSpecialty(userMsg);
+      setMessages(prev => [...prev, userMsg, aiMsg]);
+      setInput('');
+      return;
+    }
+
+    // --- "What goes with X" ---
     const goesWithMatch = lowerQ.match(/what goes with (.+)/);
     if (goesWithMatch) {
       const itemName = goesWithMatch[1];
@@ -144,11 +305,10 @@ const AiAssistant = () => {
         const product = 'product' in matchedProduct ? (matchedProduct as any).product : matchedProduct;
         const pairing = productPairings[product.id];
         if (pairing) {
-          const pairingProducts = pairing.ids.map(id => getProductById(id)).filter(Boolean);
           const aiMsg: Message = {
             id: (Date.now() + 1).toString(),
             role: 'ai',
-            text: `${name ? `${name}, ` : ''}great choice with ${product.name}! ${pairing.reason}.\n\n${isRestaurant ? '📦 All available in bulk quantities.' : 'These are the items our regulars always grab together.'}`,
+            text: `${addr(name)}${product.name} is one of our strongest sellers. ${pairing.reason}.\n\n${isRestaurant ? '📦 All available in bulk. Tap + to add in restaurant quantities.' : 'Our regulars never grab one without the other — here\'s the full combo:'}`,
             productIds: pairing.ids,
             followUpPrompts: generateFollowUps(pairing.ids),
           };
@@ -160,14 +320,14 @@ const AiAssistant = () => {
       }
     }
 
-    // Handle "optimize bulk order" 
+    // --- Optimize bulk order ---
     if (lowerQ.includes('optimize') && lowerQ.includes('bulk')) {
       const cartCats = [...new Set(cartItems.map(i => i.product.category))];
-      const suggestions: string[] = [];
-      if (!cartCats.includes('bakery')) suggestions.push('tortillas (flour or corn)');
-      if (!cartCats.includes('produce')) suggestions.push('fresh produce (cilantro, limes, onions)');
-      if (!cartCats.includes('beverages')) suggestions.push('beverages for your customers');
-      if (!cartCats.includes('pantry')) suggestions.push('pantry staples (rice, beans, chiles)');
+      const gaps: string[] = [];
+      if (!cartCats.includes('bakery')) gaps.push('tortillas — essential for any restaurant');
+      if (!cartCats.includes('produce')) gaps.push('fresh produce (cilantro, limes, onions)');
+      if (!cartCats.includes('beverages')) gaps.push('beverages for your customers');
+      if (!cartCats.includes('pantry')) gaps.push('pantry staples (rice, beans)');
 
       const missingIds: string[] = [];
       if (!cartCats.includes('bakery')) missingIds.push('b3', 'b5');
@@ -178,11 +338,12 @@ const AiAssistant = () => {
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        text: `${name ? `${name}, ` : ''}analyzing your ${cartTotal}-item bulk order...\n\n${suggestions.length > 0 ? `I notice you're missing: ${suggestions.join(', ')}.\n\nFor a complete restaurant restock, I'd recommend adding these:` : 'Your order looks comprehensive! Here are a few items that pair well with what you have:'}\n\n${isRestaurant ? '📦 All quantities can be adjusted in bulk increments of 5.' : ''}`,
+        text: `${addr(name)}I've reviewed your ${cartTotal}-item order.\n\n${gaps.length > 0 ? `Gaps I see:\n${gaps.map(g => `→ ${g}`).join('\n')}\n\nHere's what I'd add to round it out:` : 'Solid order — you\'ve covered the essentials. A few items that move well alongside what you have:'}\n\n${isRestaurant ? '📦 All available in bulk increments.' : ''}`,
         productIds: missingIds.slice(0, 6),
         followUpPrompts: [
-          { label: '✅ Looks good, checkout', query: 'I\'m done ordering' },
-          { label: '🕐 Best pickup time?', query: 'when should I pick up' },
+          { label: '✅ Looks complete', query: 'I\'m done ordering' },
+          { label: '⏱️ Pickup timing?', query: 'when should I pick up' },
+          { label: '➕ Show me more', query: 'what else should I add' },
         ],
       };
       setLastRecommendedIds(missingIds);
@@ -191,45 +352,45 @@ const AiAssistant = () => {
       return;
     }
 
-    // Handle pickup timing question
+    // --- Pickup timing ---
     if (lowerQ.includes('pick up') || lowerQ.includes('pickup') || lowerQ.includes('when should')) {
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        text: `${name ? `${name}, ` : ''}based on your current order (${cartTotal} items${isRestaurant ? ', bulk' : ''}):\n\n⏱️ Estimated pickup: ${dynamicLabel} at ${selectedStore.name}\n${pickupWarning ? `\n⚠️ ${pickupWarning}` : ''}\n\n${isRestaurant && cartTotal > 15 ? 'For large bulk orders, I recommend scheduling early morning pickup — less wait time and everything is freshly prepared.' : 'The earlier you order, the faster we can have it ready!'}`,
-        followUpPrompts: [
-          { label: '📅 Schedule for later', query: 'schedule pickup' },
-          { label: '✅ Ready to checkout', query: 'I\'m done ordering' },
-        ],
+        text: `${addr(name)}for your ${cartTotal}-item order${isRestaurant ? ' (bulk)' : ''}:\n\n⏱️ ${dynamicLabel} at ${selectedStore.name}\n${pickupWarning ? `\n⚠️ ${pickupWarning}` : ''}\n\n${isRestaurant && cartTotal > 15 ? 'For bulk orders this size, early morning pickup gives you the freshest items and shortest wait.' : 'We start prepping as soon as you confirm — the sooner you order, the sooner it\'s ready.'}`,
+        followUpPrompts: generateFollowUps(lastRecommendedIds, 'pickup'),
       };
       setMessages(prev => [...prev, userMsg, aiMsg]);
       setInput('');
       return;
     }
 
-    // Handle "done ordering"
-    if (lowerQ.includes('done') || lowerQ.includes('checkout') || lowerQ.includes('that\'s all')) {
+    // --- Done ordering ---
+    if (lowerQ.includes('done') || lowerQ.includes('checkout') || lowerQ.includes('that\'s all') || lowerQ.includes('take me to cart')) {
+      const cartValue = cartItems.reduce((s, i) => s + i.product.price * i.quantity, 0);
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        text: `${name ? `${name}, ` : ''}your order looks great! 🎉\n\n🛒 ${cartTotal} items · Pickup in ${dynamicLabel}\n📍 ${selectedStore.name}\n\nHead to your cart to confirm the order. ${isRestaurant ? 'All bulk quantities are set.' : ''}\n\n¡Gracias por comprar en Amapola! 🌺`,
+        text: `${addr(name)}solid order. Here's the summary:\n\n🛒 ${cartTotal} items · $${cartValue.toFixed(2)}\n📍 Pickup: ${dynamicLabel} at ${selectedStore.name}\n\nHead to your cart to confirm.${isRestaurant ? ' All bulk quantities are locked in.' : ''}\n\n¡Gracias por comprar en Amapola! 🌺`,
+        followUpPrompts: generateFollowUps(lastRecommendedIds, 'done'),
       };
       setMessages(prev => [...prev, userMsg, aiMsg]);
       setInput('');
       return;
     }
 
-    // Handle reorder query
+    // --- Reorder ---
     if (lowerQ.includes('reorder') && orders.length > 0) {
       const lastOrder = orders[0];
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        text: `${name ? `${name}, ` : ''}your last order (${lastOrder.id}) from ${lastOrder.storeName} was ${lastOrder.date}:\n\n${lastOrder.items.map(i => `• ${i.product.name} ×${i.quantity}`).join('\n')}\n\nTotal: $${lastOrder.total.toFixed(2)}\n\n${isRestaurant ? 'This looks like a regular business restock. I recommend repeating it.' : 'Want me to add these to your cart?'} Tap the items below to add them!`,
+        text: `${addr(name)}pulling up your last order (${lastOrder.id}) from ${lastOrder.storeName}, placed ${lastOrder.date}:\n\n${lastOrder.items.map(i => `• ${i.product.name} ×${i.quantity}`).join('\n')}\n\nTotal was $${lastOrder.total.toFixed(2)}. ${isRestaurant ? 'Looks like a standard restock — I\'d keep the same quantities.' : 'Everything here is still in stock.'} Tap below to add it all, or pick individual items.`,
         productIds: lastOrder.items.map(i => i.product.id),
         followUpPrompts: [
           { label: '➕ Add all to cart', query: 'add reorder to cart' },
-          { label: '✏️ Modify order', query: 'I want to change some items' },
+          { label: '✏️ Modify items', query: 'I want to change some items' },
+          { label: '🔗 Add pairings', query: `what goes with ${lastOrder.items[0]?.product.name ?? 'this'}` },
         ],
       };
       setLastRecommendedIds(lastOrder.items.map(i => i.product.id));
@@ -238,19 +399,21 @@ const AiAssistant = () => {
       return;
     }
 
-    // Handle "add reorder to cart"
+    // --- Add reorder to cart ---
     if (lowerQ.includes('add reorder') && orders.length > 0) {
       const lastOrder = orders[0];
       lastOrder.items.forEach(({ product, quantity }) => {
         for (let i = 0; i < quantity; i++) addItem(product);
       });
+      const newTotal = cartTotal + lastOrder.items.reduce((s, i) => s + i.quantity, 0);
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        text: `Done! I've added all ${lastOrder.items.length} items from order ${lastOrder.id} to your cart. ${isRestaurant ? 'Quantities set to match your last business order.' : ''}\n\n🛒 Your cart now has ${cartTotal + lastOrder.items.reduce((s, i) => s + i.quantity, 0)} items.`,
+        text: `Done — ${lastOrder.items.length} items added from your last order.${isRestaurant ? ' Quantities match your previous business order.' : ''}\n\n🛒 Cart now has ${newTotal} items.\n\nAnything else to add, or are we good to go?`,
         followUpPrompts: [
-          { label: '🛒 Go to cart', query: 'I\'m done ordering' },
-          { label: '➕ Add more items', query: 'what else should I add' },
+          { label: '✅ That\'s everything', query: 'I\'m done ordering' },
+          { label: '🥤 Add drinks', query: 'drinks' },
+          { label: '🍰 Add dessert', query: 'dessert' },
         ],
       };
       setMessages(prev => [...prev, userMsg, aiMsg]);
@@ -258,72 +421,113 @@ const AiAssistant = () => {
       return;
     }
 
-    // Standard AI response
+    // --- "What else should I add" / general advice ---
+    if (lowerQ.includes('what else') || lowerQ.includes('what should i add') || lowerQ.includes('dinner idea')) {
+      const cartCats = [...new Set(cartItems.map(i => i.product.category))];
+      const suggestions: string[] = [];
+      const suggestedIds: string[] = [];
+
+      if (!cartCats.includes('beverages')) { suggestions.push('Drinks'); suggestedIds.push('bv3', 'bv1'); }
+      if (!cartCats.includes('snacks')) { suggestions.push('Snacks'); suggestedIds.push('s6', 's1'); }
+      if (!cartCats.includes('bakery')) { suggestions.push('Bakery'); suggestedIds.push('b2', 'b3'); }
+      if (!cartCats.includes('deli') && !cartCats.includes('meat')) { suggestions.push('Protein'); suggestedIds.push('d1', 'm3'); }
+      if (suggestedIds.length === 0) suggestedIds.push('b4', 'f2', 'bv4'); // Dessert/treat fallback
+
+      const aiMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'ai',
+        text: `${addr(name)}based on what's in your cart, I'd round it out with${suggestions.length > 0 ? ` something from ${suggestions.join(', ')}` : ' a few treats'}. Here's what I'd pick:`,
+        productIds: suggestedIds.slice(0, 4),
+        followUpPrompts: generateFollowUps(suggestedIds),
+      };
+      setLastRecommendedIds(suggestedIds);
+      setMessages(prev => [...prev, userMsg, aiMsg]);
+      setInput('');
+      return;
+    }
+
+    // --- Standard AI response ---
     const aiRes = findAiResponse(q);
 
+    // Unavailable items — suggest alternatives
     let storeNote = '';
-    const unavailableInResponse = aiRes.productIds.filter(id => selectedStore.unavailable.includes(id));
-    if (unavailableInResponse.length > 0) {
-      const names = unavailableInResponse.map(id => getProductById(id)?.name).filter(Boolean).join(', ');
-      storeNote = `\n\n⚠️ Heads up${name ? `, ${name}` : ''}: ${names} may not be available at ${selectedStore.name} right now.`;
+    const unavailable = aiRes.productIds.filter(id => selectedStore.unavailable.includes(id));
+    const available = aiRes.productIds.filter(id => !selectedStore.unavailable.includes(id));
+    if (unavailable.length > 0) {
+      const names = unavailable.map(id => getProductById(id)?.name).filter(Boolean).join(', ');
+      // Find alternatives in same category
+      const altIds: string[] = [];
+      for (const uid of unavailable) {
+        const uProd = getProductById(uid);
+        if (uProd) {
+          const alt = products.find(p => p.category === uProd.category && !selectedStore.unavailable.includes(p.id) && !available.includes(p.id) && p.id !== uid);
+          if (alt) altIds.push(alt.id);
+        }
+      }
+      storeNote = `\n\n⚠️ ${names} ${unavailable.length === 1 ? 'isn\'t' : 'aren\'t'} available at ${selectedStore.name} right now.${altIds.length > 0 ? ` I've swapped in alternatives below.` : ' I\'ve adjusted the list.'}`;
+      available.push(...altIds);
     }
 
-    const specialtiesInResponse = aiRes.productIds.filter(id => selectedStore.specialties.includes(id));
-    if (specialtiesInResponse.length > 0) {
-      const names = specialtiesInResponse.map(id => getProductById(id)?.name).filter(Boolean).join(', ');
-      storeNote += `\n\n⭐ ${selectedStore.name} specialty: ${names}`;
+    const specialties = aiRes.productIds.filter(id => selectedStore.specialties.includes(id));
+    if (specialties.length > 0) {
+      const names = specialties.map(id => getProductById(id)?.name).filter(Boolean).join(', ');
+      storeNote += `\n\n⭐ ${selectedStore.name} house specialty: ${names} — made fresh here.`;
     }
 
-    const bulkNote = isRestaurant ? `\n\n📦 Restaurant tip: Tap + to add in bulk increments of 5.` : '';
-    const personalNote = name ? `\n\n📍 ${name}, your order from ${selectedStore.name} will be ready in ${dynamicLabel}.` : `\n\n📍 Estimated pickup: ${dynamicLabel}`;
+    const bulkNote = isRestaurant ? `\n\n📦 All items available in bulk. Tap + to add in quantities of 5.` : '';
 
-    // Session-aware context: reference previous topics
+    // Session-aware context notes
     let sessionNote = '';
     if (newCount >= 2 && sessionTopics.length > 1) {
       const prevTopics = sessionTopics.slice(0, -1);
       const relatedTopic = prevTopics.find(t =>
         (t.includes('taco') && lowerQ.includes('drink')) ||
         (t.includes('meat') && lowerQ.includes('tortilla')) ||
-        (t.includes('breakfast') && lowerQ.includes('drink'))
+        (t.includes('breakfast') && lowerQ.includes('drink')) ||
+        (t.includes('carne') && lowerQ.includes('tortilla')) ||
+        (t.includes('seafood') && lowerQ.includes('lime'))
       );
       if (relatedTopic) {
-        sessionNote = `\n\n💡 Since you were also looking at ${relatedTopic} earlier, these pair perfectly together.`;
+        sessionNote = `\n\n💡 Good call — this pairs perfectly with the ${relatedTopic} you were looking at earlier.`;
       }
     }
 
-    // Cart-aware suggestions
+    // Cart-aware note
     if (cartTotal > 0 && newCount >= 2) {
       const cartCats = [...new Set(cartItems.map(i => i.product.category))];
-      const recommended = aiRes.productIds.filter(id => {
+      const newCatItems = available.filter(id => {
         const p = getProductById(id);
         return p && !cartCats.includes(p.category) && !cartItems.some(ci => ci.product.id === id);
       });
-      if (recommended.length > 0) {
-        sessionNote += `\n\n🛒 Based on your cart, I'd especially recommend the items you don't have yet.`;
+      if (newCatItems.length > 0) {
+        sessionNote += `\n\n🛒 These fill gaps in your current cart — categories you haven't covered yet.`;
       }
     }
 
-    if (pickupWarning && newCount >= 2) {
+    if (pickupWarning && newCount >= 3) {
       sessionNote += `\n\n⏰ ${pickupWarning}`;
     }
 
-    // Generate contextual follow-ups
-    const followUps = generateFollowUps(aiRes.productIds);
+    // Pickup context on later turns
+    const pickupNote = newCount <= 1
+      ? `\n\n📍 Pickup from ${selectedStore.name} in ${dynamicLabel}.`
+      : '';
+
+    const followUps = generateFollowUps(available);
 
     const aiMsg: Message = {
       id: (Date.now() + 1).toString(),
       role: 'ai',
-      text: aiRes.message + storeNote + bulkNote + personalNote + sessionNote,
-      productIds: aiRes.productIds,
-      followUpPrompts: followUps.length > 0 ? followUps : undefined,
+      text: aiRes.message + storeNote + bulkNote + pickupNote + sessionNote,
+      productIds: available.length > 0 ? available : aiRes.productIds,
+      followUpPrompts: followUps,
     };
 
-    setLastRecommendedIds(aiRes.productIds);
+    setLastRecommendedIds(available.length > 0 ? available : aiRes.productIds);
     setMessages(prev => [...prev, userMsg, aiMsg]);
     setInput('');
   };
 
-  // Find the last message's follow-up prompts
   const lastAiMessage = [...messages].reverse().find(m => m.role === 'ai');
   const activeFollowUps = lastAiMessage?.followUpPrompts;
 
@@ -374,7 +578,7 @@ const AiAssistant = () => {
           </div>
         )}
 
-        {/* Contextual follow-up prompts after AI responses */}
+        {/* Contextual follow-up prompts — always visible after first exchange */}
         {messages.length > 1 && activeFollowUps && activeFollowUps.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 6 }}
