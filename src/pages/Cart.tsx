@@ -196,7 +196,13 @@ const Cart = () => {
           return (
             <motion.div key={product.id} layout initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}
               className={`flex items-center gap-3 rounded-2xl border-2 border-border bg-card p-4 ${!avail ? 'opacity-50' : ''}`}>
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted text-3xl md:h-16 md:w-16">{product.emoji}</div>
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted overflow-hidden text-3xl md:h-16 md:w-16">
+                {product.image ? (
+                  <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+                ) : (
+                  product.emoji
+                )}
+              </div>
               <div className="flex-1 min-w-0">
                 <p className="truncate text-base font-bold text-foreground">{product.name}</p>
                 <p className="text-sm text-muted-foreground">
