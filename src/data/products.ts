@@ -92,85 +92,100 @@ export interface AiResponse {
 export const aiResponses: AiResponse[] = [
   {
     keywords: ['taco', 'tacos', 'taco night'],
-    message: "🌮 Great choice! Here's everything you need for an amazing taco night at home. Carne asada or al pastor for the protein, fresh tortillas, and all the classic toppings:",
+    message: "🌮 Taco night is what we do best at Amapola! Grab our marinated carne asada or al pastor from the Deli counter, fresh flour tortillas from our Tortilla Factory, and load up on cilantro, jalapeños, and limes from Produce. Don't forget the crema!",
     productIds: ['d1', 'd5', 'b3', 'p3', 'p4', 'p5', 'p2', 'da2', 'p8'],
   },
   {
+    keywords: ['tamale', 'tamales', 'masa'],
+    message: "🫔 Making tamales? You'll want our pork shoulder from the Meat counter, dried guajillo chiles from Pantry, and corn tortillas for the masa base. We also carry frozen tamales if you want a shortcut — they're made with our own recipe!",
+    productIds: ['m5', 'pa4', 'b5', 'f1', 'p8', 'da2', 'pa1'],
+  },
+  {
     keywords: ['pasta', 'spaghetti', 'italian'],
-    message: "🍝 For a delicious pasta dinner for 4, I'd recommend our spaghetti noodles with fresh tomatoes, olive oil, and Oaxaca cheese for a Mexican-Italian twist. Add bolillo rolls on the side:",
+    message: "🍝 For a pasta dinner with an Amapola twist — grab our spaghetti noodles from Pantry, vine-ripened Roma tomatoes, extra virgin olive oil, and Oaxaca cheese for melting on top. Our bolillo rolls make perfect garlic bread on the side.",
     productIds: ['pa6', 'p2', 'pa5', 'da3', 'p3', 'b1', 'p7'],
   },
   {
     keywords: ['breakfast', 'morning', 'desayuno'],
-    message: "☀️ Here's a wholesome breakfast spread! Free-range eggs, fresh tortillas, chorizo, and a glass of horchata to start your morning right:",
+    message: "☀️ Start your morning the Amapola way! Our free-range eggs with house-made chorizo from the Deli, warm flour tortillas from the Tortilla Factory, and a fresh horchata from our Beverage section. Grab some pan dulce from our Bakery too!",
     productIds: ['da4', 'b3', 'd3', 'da1', 'b2', 'bv3'],
   },
   {
     keywords: ['healthy', 'salad', 'light', 'vegetable', 'vegetables'],
-    message: "🥗 Great picks for a healthy meal! Fresh organic produce with a light, clean preparation. The spinach and avocados are especially fresh today:",
+    message: "🥗 Our Produce section has everything for a fresh, healthy meal! The organic baby spinach and avocados came in fresh this morning. Pair with Roma tomatoes, cilantro, and a squeeze of lime — add our olive oil for a simple dressing.",
     productIds: ['p1', 'p7', 'p2', 'p3', 'p5', 'p6', 'pa5'],
   },
   {
-    keywords: ['cheese', 'queso'],
-    message: "🧀 We have some amazing cheese options — perfect for quesadillas, snacking, or topping your favorite dishes:",
+    keywords: ['cheese', 'queso', 'quesadilla'],
+    message: "🧀 Our cheese selection is a neighborhood favorite! Try the queso fresco from our Deli for crumbling, Oaxaca cheese for melting (perfect for quesadillas), and crema Mexicana to finish. Pair with our fresh flour tortillas.",
     productIds: ['d4', 'da3', 'da2', 'b3'],
   },
   {
-    keywords: ['snack', 'snacks', 'munchies'],
-    message: "🍿 Here are some crowd-favorite snacks! From spicy Takis to sweet Mazapán — great for movie night or sharing:",
+    keywords: ['snack', 'snacks', 'munchies', 'antojito'],
+    message: "🍿 Our Snacks & Sweets aisle has all the favorites! Takis Fuego for the spice lovers, Mazapán and Duvalin for a sweet treat, and our Chips & Guac Kit is made fresh in-store. Perfect for movie night or sharing with friends.",
     productIds: ['s1', 's2', 's3', 's4', 's5', 's6'],
   },
   {
-    keywords: ['drink', 'beverage', 'thirsty', 'drinks'],
-    message: "🥤 Our beverage selection is amazing — try a classic Jarritos, fresh horchata, or sparkling Topo Chico:",
+    keywords: ['drink', 'beverage', 'thirsty', 'drinks', 'agua'],
+    message: "🥤 From our Beverage cooler — the Jarritos and Mexican Coca-Cola are always popular. But if you haven't tried our fresh horchata or agua de Jamaica, you're missing out! Both are made in-house daily at Amapola.",
     productIds: ['bv1', 'bv2', 'bv3', 'bv4', 'bv5'],
   },
   {
     keywords: ['picnic', 'outdoor', 'park'],
-    message: "🧺 Perfect picnic spread! Easy-to-carry items that taste great outdoors. The chips & guac kit is a must-have:",
+    message: "🧺 Heading to the park? Our in-store Chips & Guac Kit travels perfectly. Add some bolillo rolls, queso fresco, and Topo Chico. Grab paletas from our Frozen section for a sweet finish!",
     productIds: ['s6', 'bv5', 's1', 'b1', 'd4', 'f2'],
   },
   {
     keywords: ['carnitas', 'pork'],
-    message: "🐖 For authentic carnitas, start with our pork shoulder — slow-cook it with dried chiles and serve with corn tortillas and fresh toppings:",
+    message: "🐖 For real-deal carnitas, start with pork shoulder from our Meat counter — slow-cook it low and slow. Grab dried guajillo chiles from Pantry, our fresh corn tortillas, and pile on the cilantro, onion, and lime from Produce.",
     productIds: ['m5', 'pa4', 'b5', 'p3', 'p8', 'p5', 'da2'],
   },
   {
-    keywords: ['seafood', 'fish', 'shrimp', 'ceviche'],
-    message: "🦐 Our seafood selection is perfect for tacos de pescado or fresh ceviche! Pair with limes and cilantro:",
+    keywords: ['seafood', 'fish', 'shrimp', 'ceviche', 'pescado'],
+    message: "🦐 Our Meat & Seafood counter has fresh tilapia and shell-on shrimp — perfect for tacos de pescado or ceviche. Grab limes, cilantro, and jalapeños from Produce. Use our corn tortillas from the Tortilla Factory to serve.",
     productIds: ['m2', 'm4', 'p5', 'p3', 'p4', 'p2', 'b5'],
   },
   {
     keywords: ['party', 'fiesta', 'gathering', 'friends'],
-    message: "🎉 Throwing a fiesta? Here's a party-ready spread with crowd-pleasers across snacks, drinks, and appetizers:",
+    message: "🎉 Fiesta time! Our Deli has marinated carne asada ready to grill. Grab flour tortillas, our Chips & Guac Kit, and stock up on Jarritos and agua de Jamaica from Beverages. Frozen empanadas make great appetizers!",
     productIds: ['s6', 's1', 'bv1', 'bv3', 'd1', 'b3', 'f4', 'bv4'],
   },
   {
     keywords: ['budget', 'cheap', 'affordable', 'under'],
-    message: "💰 Smart shopping! Here are great-value items under $4 that pack a lot of flavor:",
+    message: "💰 Great value finds at Amapola! Fresh cilantro, jalapeños, and onions from Produce are all under $2. Dried beans and chiles from Pantry stretch a long way. A Jarritos is just $1.79 — hard to beat!",
     productIds: ['p3', 'p4', 'p8', 'pa1', 'pa4', 'bv1', 's5', 'pa6'],
   },
   {
     keywords: ['egg', 'eggs', 'spinach'],
-    message: "🥚 With eggs and spinach you're halfway to a great meal! Add some cheese, tortillas and salsa for a complete dish:",
+    message: "🥚 You're already set with eggs and spinach! I'd add Oaxaca cheese for melting, flour tortillas for wraps, and our salsa verde from Pantry. That's a complete meal right there — classic Amapola style.",
     productIds: ['da3', 'b3', 'pa3', 'd4', 'p2'],
   },
   {
-    keywords: ['dessert', 'sweet', 'cake', 'treat'],
-    message: "🍰 Satisfy your sweet tooth! Our tres leches is made fresh daily, and don't miss the pan dulce and ice cream bars:",
+    keywords: ['dessert', 'sweet', 'cake', 'treat', 'postre'],
+    message: "🍰 Our Bakery makes tres leches fresh daily — it's a neighborhood legend! Pair with our pan dulce assortment. From Frozen, try our paletas (ice cream bars). And don't sleep on the Mazapán and churro chips from Snacks!",
     productIds: ['b4', 'b2', 'f2', 's2', 's4', 's3'],
   },
   {
     keywords: ['soup', 'caldo', 'warm', 'comfort'],
-    message: "🍲 For a warm, comforting meal try making a classic caldo. Here's what you'll need from our store:",
+    message: "🍲 Nothing beats a warm caldo on a cold day! Grab bone-in chicken thighs from our Meat counter, sweet corn and tomatoes from Produce, and dried beans from Pantry. Add cilantro, onions, and jalapeños for the classic Amapola touch.",
     productIds: ['m3', 'p6', 'p2', 'p3', 'p8', 'pa1', 'p4'],
+  },
+  {
+    keywords: ['carne asada', 'grill', 'bbq', 'asada', 'barbecue'],
+    message: "🔥 Our Deli team marinates the carne asada fresh every morning — it's the most popular item at Amapola! Pair with flour tortillas, fresh salsa fixings from Produce, and crema Mexicana. Grab some Jarritos to keep cool while grilling.",
+    productIds: ['d1', 'b3', 'p2', 'p3', 'p5', 'p8', 'da2', 'bv1'],
+  },
+  {
+    keywords: ['recommend', 'suggestion', 'popular', 'best', 'favorite'],
+    message: "⭐ Here are Amapola Market's all-time favorites! Our carne asada from the Deli, fresh pan dulce from the Bakery, horchata made daily, and our famous Chips & Guac Kit. These are what keep our neighbors coming back!",
+    productIds: ['d1', 'b2', 'bv3', 's6', 'da4', 'b4', 'p1'],
   },
 ];
 
 export const defaultAiResponse: AiResponse = {
   keywords: [],
-  message: "Here are some popular picks from Amapola Market that I think you'll love! We have fresh produce, house-made deli items, and authentic Mexican staples:",
-  productIds: ['p1', 'd1', 'b2', 'bv3', 'da4', 'pa3', 's6', 'm4'],
+  message: "Welcome to Amapola Market! 🌺 Here are some of our most popular items — from the Deli counter to our Bakery to fresh Produce. What are you cooking today? I can help you find exactly what you need!",
+  productIds: ['d1', 'b2', 'bv3', 's6', 'da4', 'pa3', 'p1', 'm4'],
 };
 
 export function findAiResponse(query: string): AiResponse {

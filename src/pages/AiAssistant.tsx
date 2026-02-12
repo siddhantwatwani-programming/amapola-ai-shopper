@@ -19,7 +19,7 @@ const AiAssistant = () => {
     {
       id: 'welcome',
       role: 'ai',
-      text: "Hi! I'm your Amapola Market assistant 🌺 Ask me anything — like \"What should I buy for taco night?\" or \"Suggest a healthy breakfast.\"",
+      text: "Hi! I'm your Amapola Market shopping assistant 🌺 I know every aisle — from our Deli counter to the Tortilla Factory. Try asking:\n\n• \"What do I need for taco night?\"\n• \"I'm making tamales — help me shop\"\n• \"Suggest a healthy meal under $20\"",
     },
   ]);
   const [input, setInput] = useState('');
