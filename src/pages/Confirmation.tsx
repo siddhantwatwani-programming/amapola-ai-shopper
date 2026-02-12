@@ -41,7 +41,8 @@ const Confirmation = () => {
         <CheckCircle2 className="mb-3 h-14 w-14 text-accent" />
 
         <h1 className="mb-1 text-2xl font-bold text-foreground">Order Placed!</h1>
-        <p className="mb-6 text-muted-foreground">Your groceries will be ready for pickup.</p>
+        <p className="mb-1 text-muted-foreground">Your groceries will be ready for pickup.</p>
+        <p className="mb-6 text-sm font-medium text-accent">Estimated ready in ~30–45 minutes</p>
 
         <div className="mb-6 w-full rounded-2xl border border-border bg-card p-5 text-left">
           <div className="mb-3 flex items-center justify-between">
@@ -59,9 +60,12 @@ const Confirmation = () => {
           <QrCode className="h-16 w-16 text-muted-foreground/50" />
         </div>
 
-        <div className="mb-8 rounded-2xl bg-muted/60 px-5 py-4 text-sm text-muted-foreground">
-          📍 Show this screen at the pickup counter when you arrive at Amapola Market.
+        <div className="mb-3 rounded-2xl bg-muted/60 px-5 py-4 text-sm text-muted-foreground">
+          📍 Show this screen at the front counter or in-store kiosk when you arrive at Amapola Market.
         </div>
+        <p className="mb-8 text-xs text-muted-foreground">
+          123 Main St, Los Angeles, CA · Open until 9:00 PM
+        </p>
 
         <Button
           size="lg"
