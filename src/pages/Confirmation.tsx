@@ -108,11 +108,11 @@ const Confirmation = () => {
           <div className="border-t border-border pt-3 space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-base text-muted-foreground">Order Number</span>
-              <span className="text-xl font-bold text-foreground">{orderNumber}</span>
+              <span className="text-base font-bold text-foreground">{orderNumber}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-base text-muted-foreground">Total ({totalItems} items)</span>
-              <span className="text-lg font-bold text-foreground">${totalPrice.toFixed(2)}</span>
+              <span className="text-base font-bold text-foreground">${totalPrice.toFixed(2)}</span>
             </div>
             {isRestaurant && (
               <div className="flex items-center justify-between">
