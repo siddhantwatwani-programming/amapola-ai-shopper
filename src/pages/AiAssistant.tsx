@@ -4,6 +4,7 @@ import { Send, RotateCcw, Lightbulb, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { findAiResponse, getProductById, productPairings, products } from '@/data/products';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/storeContext';
 import { useCustomer } from '@/store/customerContext';
 import { useMode } from '@/store/modeContext';
@@ -22,6 +23,7 @@ interface Message {
 }
 
 const AiAssistant = () => {
+  const navigate = useNavigate();
   const { selectedStore } = useStore();
   const { customer } = useCustomer();
   const { isRestaurant, mode, qtyStep } = useMode();
@@ -366,7 +368,12 @@ const AiAssistant = () => {
     }
 
     // --- Done ordering ---
-    if (lowerQ.includes('done') || lowerQ.includes('checkout') || lowerQ.includes('that\'s all') || lowerQ.includes('take me to cart')) {
+    if (lowerQ.includes('take me to cart') || lowerQ.includes('go to cart')) {
+      navigate('/cart');
+      return;
+    }
+
+    if (lowerQ.includes('done') || lowerQ.includes('checkout') || lowerQ.includes('that\'s all')) {
       const cartValue = cartItems.reduce((s, i) => s + i.product.price * i.quantity, 0);
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
