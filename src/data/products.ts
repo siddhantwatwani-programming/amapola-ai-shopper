@@ -23,47 +23,47 @@ export const categories: { id: Category; label: string; emoji: string }[] = [
 ];
 
 export const products: Product[] = [
-  // Produce — verified real food photos
+  // Produce
   { id: 'p1', name: 'Organic Avocados', description: 'Ripe & ready, pack of 3', price: 4.99, category: 'produce', emoji: '🥑', image: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400&h=400&fit=crop&crop=center' },
-  { id: 'p2', name: 'Roma Tomatoes', description: 'Vine-ripened, per lb', price: 2.49, category: 'produce', emoji: '🍅', image: 'https://images.unsplash.com/photo-1592924357228-91a4daadce55?w=400&h=400&fit=crop&crop=center' },
-  { id: 'p3', name: 'Fresh Cilantro', description: 'Locally grown bunch', price: 0.99, category: 'produce', emoji: '🌿', image: 'https://images.unsplash.com/photo-1526318472351-c75fcf070305?w=400&h=400&fit=crop&crop=center' },
+  { id: 'p2', name: 'Roma Tomatoes', description: 'Vine-ripened, per lb', price: 2.49, category: 'produce', emoji: '🍅', image: 'https://images.unsplash.com/photo-1546470427-0d4db154ceb8?w=400&h=400&fit=crop&crop=center' },
+  { id: 'p3', name: 'Fresh Cilantro', description: 'Locally grown bunch', price: 0.99, category: 'produce', emoji: '🌿', image: 'https://images.unsplash.com/photo-1592928302636-c83cf1e1c2f0?w=400&h=400&fit=crop&crop=center' },
   { id: 'p4', name: 'Jalapeños', description: 'Fresh hot peppers, per lb', price: 1.99, category: 'produce', emoji: '🌶️', image: 'https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?w=400&h=400&fit=crop&crop=center' },
   { id: 'p5', name: 'Limes', description: 'Bag of 6', price: 2.99, category: 'produce', emoji: '🍋', image: 'https://images.unsplash.com/photo-1590502593747-42a996133562?w=400&h=400&fit=crop&crop=center' },
   { id: 'p6', name: 'Sweet Corn', description: 'Fresh ears, pack of 4', price: 3.49, category: 'produce', emoji: '🌽', image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&h=400&fit=crop&crop=center' },
   { id: 'p7', name: 'Fresh Spinach', description: 'Organic baby spinach, 5oz', price: 3.99, category: 'produce', emoji: '🥬', image: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400&h=400&fit=crop&crop=center' },
-  { id: 'p8', name: 'White Onions', description: 'Per lb, great for salsa', price: 1.29, category: 'produce', emoji: '🧅', image: 'https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=400&h=400&fit=crop&crop=center' },
-  // Bakery — real bakery / tortilla photos
-  { id: 'b1', name: 'Bolillo Rolls', description: 'Freshly baked, bag of 6', price: 3.49, category: 'bakery', emoji: '🥖', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop&crop=center' },
-  { id: 'b2', name: 'Pan Dulce Assorted', description: 'Mixed sweet bread, 4 pieces', price: 5.99, category: 'bakery', emoji: '🍩', image: 'https://images.unsplash.com/photo-1558303065-7414ff41f2ca?w=400&h=400&fit=crop&crop=center' },
+  { id: 'p8', name: 'White Onions', description: 'Per lb, great for salsa', price: 1.29, category: 'produce', emoji: '🧅', image: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400&h=400&fit=crop&crop=center' },
+  // Bakery
+  { id: 'b1', name: 'Bolillo Rolls', description: 'Freshly baked, bag of 6', price: 3.49, category: 'bakery', emoji: '🥖', image: 'https://images.unsplash.com/photo-1549931319-a545753467c8?w=400&h=400&fit=crop&crop=center' },
+  { id: 'b2', name: 'Pan Dulce Assorted', description: 'Mixed sweet bread, 4 pieces', price: 5.99, category: 'bakery', emoji: '🍩', image: 'https://images.unsplash.com/photo-1619221882220-947b3d3c8861?w=400&h=400&fit=crop&crop=center' },
   { id: 'b3', name: 'Flour Tortillas', description: 'Homestyle, pack of 12', price: 4.29, category: 'bakery', emoji: '🫓', image: 'https://images.unsplash.com/photo-1612966809280-f9a32b3e2500?w=400&h=400&fit=crop&crop=center' },
   { id: 'b4', name: 'Tres Leches Cake', description: 'Slice, made fresh daily', price: 4.99, category: 'bakery', emoji: '🍰', image: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=400&h=400&fit=crop&crop=center' },
   { id: 'b5', name: 'Corn Tortillas', description: 'Fresh pressed, pack of 30', price: 3.99, category: 'bakery', emoji: '🫓', image: 'https://images.unsplash.com/photo-1629385701021-fcd568a743e8?w=400&h=400&fit=crop&crop=center' },
-  // Deli — real meat / prepared food photos
-  { id: 'd1', name: 'Carne Asada', description: 'Marinated beef, per lb', price: 8.99, category: 'deli', emoji: '🥩', image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=400&fit=crop&crop=center' },
+  // Deli
+  { id: 'd1', name: 'Carne Asada', description: 'Marinated beef, per lb', price: 8.99, category: 'deli', emoji: '🥩', image: 'https://images.unsplash.com/photo-1529694157872-4e0c0f3b238b?w=400&h=400&fit=crop&crop=center' },
   { id: 'd2', name: 'Pollo Asado', description: 'Seasoned chicken, per lb', price: 6.49, category: 'deli', emoji: '🍗', image: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=400&fit=crop&crop=center' },
-  { id: 'd3', name: 'Chorizo', description: 'House-made, per lb', price: 5.99, category: 'deli', emoji: '🌭', image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=400&fit=crop&crop=center' },
+  { id: 'd3', name: 'Chorizo', description: 'House-made, per lb', price: 5.99, category: 'deli', emoji: '🌭', image: 'https://images.unsplash.com/photo-1625937286520-3c2ade899c58?w=400&h=400&fit=crop&crop=center' },
   { id: 'd4', name: 'Queso Fresco', description: 'Fresh cheese, 12oz', price: 4.49, category: 'deli', emoji: '🧀', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&h=400&fit=crop&crop=center' },
   { id: 'd5', name: 'Al Pastor', description: 'Seasoned pork, per lb', price: 7.99, category: 'deli', emoji: '🥩', image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&h=400&fit=crop&crop=center' },
   // Dairy
-  { id: 'da1', name: 'Whole Milk', description: 'Gallon, farm fresh', price: 4.99, category: 'dairy', emoji: '🥛', image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop&crop=center' },
+  { id: 'da1', name: 'Whole Milk', description: 'Gallon, farm fresh', price: 4.99, category: 'dairy', emoji: '🥛', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=400&fit=crop&crop=center' },
   { id: 'da2', name: 'Crema Mexicana', description: 'Sour cream, 15oz', price: 3.99, category: 'dairy', emoji: '🫙', image: 'https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=400&h=400&fit=crop&crop=center' },
   { id: 'da3', name: 'Oaxaca Cheese', description: 'String cheese, 12oz', price: 5.49, category: 'dairy', emoji: '🧀', image: 'https://images.unsplash.com/photo-1634487359989-3e90c9432133?w=400&h=400&fit=crop&crop=center' },
-  { id: 'da4', name: 'Eggs', description: 'Free-range, dozen', price: 5.99, category: 'dairy', emoji: '🥚', image: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400&h=400&fit=crop&crop=center' },
+  { id: 'da4', name: 'Eggs', description: 'Free-range, dozen', price: 5.99, category: 'dairy', emoji: '🥚', image: 'https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=400&h=400&fit=crop&crop=center' },
   { id: 'da5', name: 'Butter', description: 'Unsalted, 1lb', price: 4.49, category: 'dairy', emoji: '🧈', image: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=400&h=400&fit=crop&crop=center' },
   // Pantry
   { id: 'pa1', name: 'Black Beans', description: 'Dried, 2lb bag', price: 3.29, category: 'pantry', emoji: '🫘', image: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=400&h=400&fit=crop&crop=center' },
   { id: 'pa2', name: 'Mexican Rice', description: 'Long grain, 5lb', price: 4.99, category: 'pantry', emoji: '🍚', image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop&crop=center' },
   { id: 'pa3', name: 'Salsa Verde', description: 'Medium heat, 16oz jar', price: 3.99, category: 'pantry', emoji: '🫙', image: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=400&h=400&fit=crop&crop=center' },
-  { id: 'pa4', name: 'Dried Chiles', description: 'Guajillo, 4oz bag', price: 2.99, category: 'pantry', emoji: '🌶️', image: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=400&h=400&fit=crop&crop=center' },
+  { id: 'pa4', name: 'Dried Chiles', description: 'Guajillo, 4oz bag', price: 2.99, category: 'pantry', emoji: '🌶️', image: 'https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?w=400&h=400&fit=crop&crop=bottom' },
   { id: 'pa5', name: 'Olive Oil', description: 'Extra virgin, 500ml', price: 6.99, category: 'pantry', emoji: '🫒', image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&h=400&fit=crop&crop=center' },
-  { id: 'pa6', name: 'Pasta Noodles', description: 'Spaghetti, 16oz', price: 2.49, category: 'pantry', emoji: '🍝', image: 'https://images.unsplash.com/photo-1551462147-37885acc36f1?w=400&h=400&fit=crop&crop=center' },
+  { id: 'pa6', name: 'Pasta Noodles', description: 'Spaghetti, 16oz', price: 2.49, category: 'pantry', emoji: '🍝', image: 'https://images.unsplash.com/photo-1556060946-5e3e0cebd2fa?w=400&h=400&fit=crop&crop=center' },
   // Frozen
   { id: 'f1', name: 'Frozen Tamales', description: 'Pork, 6 count', price: 9.99, category: 'frozen', emoji: '🫔', image: 'https://images.unsplash.com/photo-1530062845289-9109b2c9c868?w=400&h=400&fit=crop&crop=center' },
-  { id: 'f2', name: 'Ice Cream Bars', description: 'Paletas, variety 6-pack', price: 6.49, category: 'frozen', emoji: '🍦', image: 'https://images.unsplash.com/photo-1488900128323-21503983a07e?w=400&h=400&fit=crop&crop=center' },
+  { id: 'f2', name: 'Ice Cream Bars', description: 'Paletas, variety 6-pack', price: 6.49, category: 'frozen', emoji: '🍦', image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=400&fit=crop&crop=center' },
   { id: 'f3', name: 'Frozen Fruit Mix', description: 'Mango, pineapple, strawberry', price: 5.99, category: 'frozen', emoji: '🍓', image: 'https://images.unsplash.com/photo-1577003811926-53b288a6e5d0?w=400&h=400&fit=crop&crop=center' },
   { id: 'f4', name: 'Frozen Empanadas', description: 'Beef, 8 count', price: 8.49, category: 'frozen', emoji: '🥟', image: 'https://images.unsplash.com/photo-1604579278540-db5599ce44d0?w=400&h=400&fit=crop&crop=center' },
   // Meat & Seafood
-  { id: 'm1', name: 'Ground Beef', description: '80/20, per lb', price: 6.99, category: 'meat', emoji: '🥩', image: 'https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=400&h=400&fit=crop&crop=center' },
+  { id: 'm1', name: 'Ground Beef', description: '80/20, per lb', price: 6.99, category: 'meat', emoji: '🥩', image: 'https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=400&h=400&fit=crop&crop=center' },
   { id: 'm2', name: 'Tilapia Fillets', description: 'Fresh, per lb', price: 7.49, category: 'meat', emoji: '🐟', image: 'https://images.unsplash.com/photo-1510130113581-82a3b7a40498?w=400&h=400&fit=crop&crop=center' },
   { id: 'm3', name: 'Chicken Thighs', description: 'Bone-in, per lb', price: 4.99, category: 'meat', emoji: '🍗', image: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400&h=400&fit=crop&crop=center' },
   { id: 'm4', name: 'Shrimp', description: 'Shell-on, per lb', price: 9.99, category: 'meat', emoji: '🦐', image: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&h=400&fit=crop&crop=center' },
@@ -73,9 +73,9 @@ export const products: Product[] = [
   { id: 'bv2', name: 'Mexican Coca-Cola', description: 'Glass bottle, 355ml', price: 2.49, category: 'beverages', emoji: '🥤', image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=400&fit=crop&crop=center' },
   { id: 'bv3', name: 'Horchata', description: 'Fresh, 32oz', price: 4.99, category: 'beverages', emoji: '🥛', image: 'https://images.unsplash.com/photo-1541658016709-82535e94bc69?w=400&h=400&fit=crop&crop=center' },
   { id: 'bv4', name: 'Agua de Jamaica', description: 'Hibiscus water, 32oz', price: 4.49, category: 'beverages', emoji: '🌺', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop&crop=center' },
-  { id: 'bv5', name: 'Topo Chico', description: 'Sparkling mineral water', price: 1.99, category: 'beverages', emoji: '💧', image: 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&h=400&fit=crop&crop=center' },
+  { id: 'bv5', name: 'Topo Chico', description: 'Sparkling mineral water', price: 1.99, category: 'beverages', emoji: '💧', image: 'https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400&h=400&fit=crop&crop=center' },
   // Snacks & Sweets
-  { id: 's1', name: 'Takis Fuego', description: 'Hot rolled tortilla chips', price: 3.49, category: 'snacks', emoji: '🌮', image: 'https://images.unsplash.com/photo-1621447504864-d8686e12698c?w=400&h=400&fit=crop&crop=center' },
+  { id: 's1', name: 'Takis Fuego', description: 'Hot rolled tortilla chips', price: 3.49, category: 'snacks', emoji: '🌮', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&h=400&fit=crop&crop=center' },
   { id: 's2', name: 'Mazapán', description: 'Peanut candy, 4 pack', price: 2.99, category: 'snacks', emoji: '🥜', image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=400&h=400&fit=crop&crop=center' },
   { id: 's3', name: 'Churro Chips', description: 'Cinnamon sugar, 8oz', price: 3.99, category: 'snacks', emoji: '🍩', image: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=400&h=400&fit=crop&crop=center' },
   { id: 's4', name: 'Duvalin', description: 'Hazelnut & vanilla cream', price: 1.49, category: 'snacks', emoji: '🍫', image: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=400&fit=crop&crop=center' },
