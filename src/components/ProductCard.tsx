@@ -74,7 +74,7 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
 
   return (
     <motion.div layout="position" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} whileTap={available ? { scale: 0.97 } : undefined}
-      className={cn('flex flex-col overflow-hidden rounded-2xl border-2 border-border bg-card shadow-sm', !available && 'opacity-50')}>
+      className={cn('flex flex-col overflow-hidden rounded-md border border-border bg-card shadow-sm', !available && 'opacity-50')}>
       {/* 1:1 square image container */}
       <div className="relative w-full overflow-hidden bg-muted/40" style={{ paddingBottom: '100%' }}>
         {product.image ? (
@@ -87,30 +87,29 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
         ) : (
           <span className="absolute inset-0 flex items-center justify-center text-5xl md:text-6xl">{product.emoji}</span>
         )}
-      </div>
-      {/* Fixed-height info section prevents card height changes */}
-      <div className="flex flex-col p-2.5 md:p-3" style={{ minHeight: '120px' }}>
-        {/* Signal + bulk badges */}
-        <div className="flex flex-wrap items-center gap-1.5 mb-1.5 h-5">
+        {/* Badges overlaid on image */}
+        <div className="absolute top-1.5 left-1.5 flex flex-wrap gap-1">
           {signal.text && (
-            <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold leading-tight ${signal.style}`}>{signal.text}</span>
+            <span className={`rounded-md px-1.5 py-0.5 text-[9px] font-bold leading-tight backdrop-blur-sm ${signal.style}`}>{signal.text}</span>
           )}
           {isRestaurant && available && (
-            <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-secondary-foreground flex items-center gap-0.5 leading-tight">
+            <span className="rounded-md bg-secondary/90 backdrop-blur-sm px-1.5 py-0.5 text-[9px] font-bold text-secondary-foreground flex items-center gap-0.5 leading-tight">
               <Package className="h-2.5 w-2.5" />Bulk
             </span>
           )}
         </div>
-        <h3 className="text-sm font-bold leading-tight text-foreground line-clamp-2 md:text-base">{product.name}</h3>
-        <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1 md:text-sm">{product.description}</p>
-        {/* Fixed-height bottom row: price + controls */}
-        <div className="mt-auto flex items-center justify-between pt-2 h-11">
+      </div>
+      {/* Info section */}
+      <div className="flex flex-col p-2 md:p-2.5" style={{ minHeight: '100px' }}>
+        <h3 className="text-xs font-bold leading-tight text-foreground line-clamp-2 md:text-sm">{product.name}</h3>
+        <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-1">{product.description}</p>
+        {/* Bottom row: price + controls */}
+        <div className="mt-auto flex items-center justify-between pt-1.5 h-10">
           <div>
-            <span className="text-lg font-bold text-foreground md:text-xl">${product.price.toFixed(2)}</span>
-            {isRestaurant && <span className="block text-[10px] text-muted-foreground">per unit · +{qtyStep}</span>}
+            <span className="text-base font-bold text-foreground md:text-lg">${product.price.toFixed(2)}</span>
+            {isRestaurant && <span className="block text-[9px] text-muted-foreground">per unit · +{qtyStep}</span>}
           </div>
-          {/* Fixed-width control zone — no layout shift on state change */}
-          <div className="flex w-[110px] items-center justify-end">
+          <div className="flex items-center justify-end">
             {available ? (
               qty === 0 ? (
                 <Button size="icon" onClick={handleAdd} className="h-8 w-8 rounded-md active:scale-90 transition-transform">
@@ -128,7 +127,7 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
                 </div>
               )
             ) : (
-              <span className="text-xs text-destructive font-semibold px-2">Unavailable</span>
+              <span className="text-[10px] text-destructive font-semibold">Unavailable</span>
             )}
           </div>
         </div>

@@ -25,7 +25,7 @@ export const categories: { id: Category; label: string; emoji: string; image: st
 export const products: Product[] = [
   // Produce
   { id: 'p1', name: 'Organic Avocados', description: 'Ripe & ready, pack of 3', price: 4.99, category: 'produce', emoji: '🥑', image: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400&h=400&fit=crop&crop=center' },
-  { id: 'p2', name: 'Roma Tomatoes', description: 'Vine-ripened, per lb', price: 2.49, category: 'produce', emoji: '🍅', image: 'https://images.unsplash.com/photo-1592924357228-91a4daadce55?w=400&h=400&fit=crop&crop=center' },
+  { id: 'p2', name: 'Roma Tomatoes', description: 'Vine-ripened, per lb', price: 2.49, category: 'produce', emoji: '🍅', image: 'https://images.unsplash.com/photo-1518977822534-7049a61ee0c2?w=400&h=400&fit=crop&crop=center' },
   { id: 'p3', name: 'Fresh Cilantro', description: 'Locally grown bunch', price: 0.99, category: 'produce', emoji: '🌿', image: 'https://images.unsplash.com/photo-1526346698789-22fd84314424?w=400&h=400&fit=crop&crop=center' },
   { id: 'p4', name: 'Jalapeños', description: 'Fresh hot peppers, per lb', price: 1.99, category: 'produce', emoji: '🌶️', image: 'https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?w=400&h=400&fit=crop&crop=center' },
   { id: 'p5', name: 'Limes', description: 'Bag of 6', price: 2.99, category: 'produce', emoji: '🍋', image: 'https://images.unsplash.com/photo-1590502593747-42a996133562?w=400&h=400&fit=crop&crop=center' },
