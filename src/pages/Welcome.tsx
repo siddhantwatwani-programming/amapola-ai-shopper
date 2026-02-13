@@ -248,7 +248,7 @@ const Welcome = () => {
         </div>
       </div>
 
-      <div className="flex-1 px-5 py-3 max-w-lg mx-auto w-full">
+      <div className="flex-1 px-5 py-3 pb-20 max-w-lg mx-auto w-full">
         <div className="space-y-2.5 mb-4">
           {stores.map((store, i) => {
             const isSelected = selectedStore.id === store.id;
