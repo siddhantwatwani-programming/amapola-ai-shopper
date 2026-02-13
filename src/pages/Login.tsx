@@ -85,7 +85,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email address"
                 type="email"
-                className="h-14 rounded-xl text-base pl-12 border border-border focus:border-primary"
+                className="h-14 rounded-xl text-base pl-14 border border-border focus:border-primary"
                 autoFocus
               />
             </div>
@@ -98,7 +98,7 @@ const Login = () => {
                 placeholder="+1 (555) 123-4567"
                 type="tel"
                 inputMode="numeric"
-                className="h-14 rounded-xl text-base pl-12 border border-border focus:border-primary"
+                className="h-14 rounded-xl text-base pl-14 border border-border focus:border-primary"
                 autoFocus
               />
             </div>
@@ -111,7 +111,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               type={showPassword ? 'text' : 'password'}
-              className="h-14 rounded-xl text-base pl-12 pr-12 border border-border focus:border-primary"
+              className="h-14 rounded-xl text-base pl-14 pr-14 border border-border focus:border-primary"
             />
             <button
               type="button"
