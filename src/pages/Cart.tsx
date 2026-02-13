@@ -195,31 +195,31 @@ const Cart = () => {
           const avail = isAvailable(product.id);
           return (
             <motion.div key={product.id} layout initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}
-              className={`flex items-center gap-2.5 rounded-2xl border-2 border-border bg-card p-3 ${!avail ? 'opacity-50' : ''}`}>
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted overflow-hidden text-3xl md:h-16 md:w-16">
+              className={`flex items-center gap-2.5 rounded-md border border-border bg-card p-2.5 ${!avail ? 'opacity-50' : ''}`}>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-muted overflow-hidden md:h-14 md:w-14">
                 {product.image ? (
                   <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
                 ) : (
-                  product.emoji
+                  <span className="text-2xl">{product.emoji}</span>
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="truncate text-base font-bold text-foreground">{product.name}</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="truncate text-xs font-bold text-foreground md:text-sm">{product.name}</p>
+                <p className="text-[11px] text-muted-foreground">
                   ${(product.price * quantity).toFixed(2)}
                   {!avail && <span className="ml-1 text-destructive font-semibold">· Not at {selectedStore.name}</span>}
                 </p>
               </div>
-              <div className="flex items-center gap-1.5">
-                <button onClick={() => updateQuantity(product.id, Math.max(0, quantity - qtyStep))} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform">
-                  <Minus className="h-4 w-4" />
+              <div className="flex items-center gap-1">
+                <button onClick={() => updateQuantity(product.id, Math.max(0, quantity - qtyStep))} className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-foreground active:scale-90 transition-transform">
+                  <Minus className="h-3.5 w-3.5" />
                 </button>
-                <span className="w-8 text-center text-base font-bold text-foreground">{quantity}</span>
-                <button onClick={() => updateQuantity(product.id, quantity + qtyStep)} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform">
-                  <Plus className="h-4 w-4" />
+                <span className="w-6 text-center text-sm font-bold text-foreground">{quantity}</span>
+                <button onClick={() => updateQuantity(product.id, quantity + qtyStep)} className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-foreground active:scale-90 transition-transform">
+                  <Plus className="h-3.5 w-3.5" />
                 </button>
-                <button onClick={() => removeItem(product.id)} className="ml-1 flex h-10 w-10 items-center justify-center rounded-xl text-destructive active:scale-90 transition-transform">
-                  <Trash2 className="h-4 w-4" />
+                <button onClick={() => removeItem(product.id)} className="ml-0.5 flex h-8 w-8 items-center justify-center rounded-md text-destructive active:scale-90 transition-transform">
+                  <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
             </motion.div>
