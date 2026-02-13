@@ -15,7 +15,8 @@ const BottomNav = () => {
   const navigate = useNavigate();
   const { totalItems } = useCart();
 
-  if (location.pathname === '/' || location.pathname === '/confirmation') return null;
+  const hiddenRoutes = ['/', '/login', '/signup', '/confirmation'];
+  if (hiddenRoutes.includes(location.pathname)) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-border bg-background/95 backdrop-blur-md">
