@@ -14,10 +14,10 @@ const Splash = () => {
       <img
         src={splashBg}
         alt=""
-        className="absolute inset-0 h-full w-full object-cover blur-md scale-105"
+        className="absolute inset-0 h-full w-full object-cover blur-sm scale-105"
       />
       {/* Light overlay */}
-      <div className="absolute inset-0 bg-white/40" />
+      <div className="absolute inset-0 bg-white/20" />
 
       {/* Centered logo */}
       <div className="relative z-10 flex flex-1 items-center justify-center px-6 w-full">
