@@ -1,18 +1,14 @@
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import logoAmapola from '@/assets/logo-amapola.png';
 
 const Splash = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const timer = setTimeout(() => navigate('/login', { replace: true }), 2400);
-    return () => clearTimeout(timer);
-  }, [navigate]);
-
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background px-6">
       <motion.img
         src={logoAmapola}
         alt="Amapola Market"
@@ -30,17 +26,18 @@ const Splash = () => {
         Your neighborhood market
       </motion.p>
       <motion.div
-        className="mt-8 h-1 w-16 rounded-full bg-primary/30 overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
+        className="mt-10 w-full max-w-xs"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, duration: 0.5 }}
       >
-        <motion.div
-          className="h-full rounded-full bg-primary"
-          initial={{ width: '0%' }}
-          animate={{ width: '100%' }}
-          transition={{ delay: 0.7, duration: 1.5, ease: 'easeInOut' }}
-        />
+        <Button
+          size="lg"
+          onClick={() => navigate('/login', { replace: true })}
+          className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform"
+        >
+          Get Started <ArrowRight className="ml-2 h-5 w-5" />
+        </Button>
       </motion.div>
     </div>
   );
