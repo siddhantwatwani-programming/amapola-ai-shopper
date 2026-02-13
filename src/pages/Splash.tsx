@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import logoAmapola from '@/assets/logo-amapola.avif';
+import logoAmapola from '@/assets/logo-amapola.png';
 
 const Splash = () => {
   const navigate = useNavigate();

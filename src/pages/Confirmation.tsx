@@ -9,7 +9,7 @@ import { useMode } from '@/store/modeContext';
 import { usePickup } from '@/store/pickupContext';
 import { useOrderHistory } from '@/store/orderHistoryContext';
 import { Button } from '@/components/ui/button';
-import logoAmapola from '@/assets/logo-amapola.avif';
+import logoAmapola from '@/assets/logo-amapola.png';
 
 const Confirmation = () => {
   const { items, clearCart, totalPrice, totalItems } = useCart();

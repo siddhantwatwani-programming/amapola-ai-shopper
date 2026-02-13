@@ -8,7 +8,7 @@ import { useStore, stores, type StoreLocation } from '@/store/storeContext';
 import { useCustomer } from '@/store/customerContext';
 import { useMode, type AppMode } from '@/store/modeContext';
 import { cn } from '@/lib/utils';
-import logoAmapola from '@/assets/logo-amapola.avif';
+import logoAmapola from '@/assets/logo-amapola.png';
 
 type Step = 'entry' | 'mode' | 'store' | 'identify';
 
