@@ -41,7 +41,7 @@ export const products: Product[] = [
   // Deli
   { id: 'd1', name: 'Carne Asada', description: 'Marinated beef, per lb', price: 8.99, category: 'deli', emoji: '🥩', image: 'https://images.unsplash.com/photo-1529694157872-4e0c0f3b238b?w=400&h=400&fit=crop&crop=center' },
   { id: 'd2', name: 'Pollo Asado', description: 'Seasoned chicken, per lb', price: 6.49, category: 'deli', emoji: '🍗', image: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=400&fit=crop&crop=center' },
-  { id: 'd3', name: 'Chorizo', description: 'House-made, per lb', price: 5.99, category: 'deli', emoji: '🌭', image: 'https://images.unsplash.com/photo-1625937286520-3c2ade899c58?w=400&h=400&fit=crop&crop=center' },
+  { id: 'd3', name: 'Chorizo', description: 'House-made, per lb', price: 5.99, category: 'deli', emoji: '🌭', image: 'https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=400&h=400&fit=crop&crop=center' },
   { id: 'd4', name: 'Queso Fresco', description: 'Fresh cheese, 12oz', price: 4.49, category: 'deli', emoji: '🧀', image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&h=400&fit=crop&crop=center' },
   { id: 'd5', name: 'Al Pastor', description: 'Seasoned pork, per lb', price: 7.99, category: 'deli', emoji: '🥩', image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&h=400&fit=crop&crop=center' },
   // Dairy
@@ -56,15 +56,15 @@ export const products: Product[] = [
   { id: 'pa3', name: 'Salsa Verde', description: 'Medium heat, 16oz jar', price: 3.99, category: 'pantry', emoji: '🫙', image: 'https://images.unsplash.com/photo-1600803907087-f56d462fd26b?w=400&h=400&fit=crop&crop=center' },
   { id: 'pa4', name: 'Dried Chiles', description: 'Guajillo, 4oz bag', price: 2.99, category: 'pantry', emoji: '🌶️', image: 'https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?w=400&h=400&fit=crop&crop=bottom' },
   { id: 'pa5', name: 'Olive Oil', description: 'Extra virgin, 500ml', price: 6.99, category: 'pantry', emoji: '🫒', image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&h=400&fit=crop&crop=center' },
-  { id: 'pa6', name: 'Pasta Noodles', description: 'Spaghetti, 16oz', price: 2.49, category: 'pantry', emoji: '🍝', image: 'https://images.unsplash.com/photo-1556060946-5e3e0cebd2fa?w=400&h=400&fit=crop&crop=center' },
+  { id: 'pa6', name: 'Pasta Noodles', description: 'Spaghetti, 16oz', price: 2.49, category: 'pantry', emoji: '🍝', image: 'https://images.unsplash.com/photo-1551462147-37885acc36f1?w=400&h=400&fit=crop&crop=center' },
   // Frozen
   { id: 'f1', name: 'Frozen Tamales', description: 'Pork, 6 count', price: 9.99, category: 'frozen', emoji: '🫔', image: 'https://images.unsplash.com/photo-1530062845289-9109b2c9c868?w=400&h=400&fit=crop&crop=center' },
   { id: 'f2', name: 'Ice Cream Bars', description: 'Paletas, variety 6-pack', price: 6.49, category: 'frozen', emoji: '🍦', image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=400&fit=crop&crop=center' },
   { id: 'f3', name: 'Frozen Fruit Mix', description: 'Mango, pineapple, strawberry', price: 5.99, category: 'frozen', emoji: '🍓', image: 'https://images.unsplash.com/photo-1577003811926-53b288a6e5d0?w=400&h=400&fit=crop&crop=center' },
-  { id: 'f4', name: 'Frozen Empanadas', description: 'Beef, 8 count', price: 8.49, category: 'frozen', emoji: '🥟', image: 'https://images.unsplash.com/photo-1604579278540-db5599ce44d0?w=400&h=400&fit=crop&crop=center' },
+  { id: 'f4', name: 'Frozen Empanadas', description: 'Beef, 8 count', price: 8.49, category: 'frozen', emoji: '🥟', image: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?w=400&h=400&fit=crop&crop=center' },
   // Meat & Seafood
   { id: 'm1', name: 'Ground Beef', description: '80/20, per lb', price: 6.99, category: 'meat', emoji: '🥩', image: 'https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=400&h=400&fit=crop&crop=center' },
-  { id: 'm2', name: 'Tilapia Fillets', description: 'Fresh, per lb', price: 7.49, category: 'meat', emoji: '🐟', image: 'https://images.unsplash.com/photo-1510130113581-82a3b7a40498?w=400&h=400&fit=crop&crop=center' },
+  { id: 'm2', name: 'Tilapia Fillets', description: 'Fresh, per lb', price: 7.49, category: 'meat', emoji: '🐟', image: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400&h=400&fit=crop&crop=center' },
   { id: 'm3', name: 'Chicken Thighs', description: 'Bone-in, per lb', price: 4.99, category: 'meat', emoji: '🍗', image: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400&h=400&fit=crop&crop=center' },
   { id: 'm4', name: 'Shrimp', description: 'Shell-on, per lb', price: 9.99, category: 'meat', emoji: '🦐', image: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&h=400&fit=crop&crop=center' },
   { id: 'm5', name: 'Pork Shoulder', description: 'For carnitas, per lb', price: 5.49, category: 'meat', emoji: '🐖', image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&h=400&fit=crop&crop=center' },
