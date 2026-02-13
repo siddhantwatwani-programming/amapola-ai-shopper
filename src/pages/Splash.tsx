@@ -9,28 +9,28 @@ const Splash = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-end bg-background">
-      {/* Background image */}
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background">
+      {/* Blurred background image */}
       <img
         src={splashBg}
         alt=""
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover blur-md scale-105"
       />
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50" />
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center px-6 pb-16 w-full">
+      {/* Centered content */}
+      <div className="relative z-10 flex flex-col items-center px-6 w-full">
         <motion.img
           src={logoAmapola}
           alt="Amapola Market"
-          className="h-24 w-auto object-contain md:h-36 drop-shadow-lg"
+          className="h-28 w-auto object-contain md:h-40 drop-shadow-xl"
           initial={{ opacity: 0, scale: 0.7 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, type: 'spring', stiffness: 120 }}
         />
         <motion.p
-          className="mt-3 text-lg font-semibold text-white/90 md:text-xl drop-shadow"
+          className="mt-4 text-lg font-semibold text-white/90 md:text-xl drop-shadow-md"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -38,7 +38,7 @@ const Splash = () => {
           Your neighborhood market
         </motion.p>
         <motion.div
-          className="mt-8 w-full max-w-xs"
+          className="mt-10 w-full max-w-xs"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.5 }}
