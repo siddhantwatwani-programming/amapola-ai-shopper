@@ -31,8 +31,8 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
   if (compact) {
     return (
       <motion.div layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-        className={cn('flex items-center gap-3 rounded-2xl border border-border bg-card p-3', !available && 'opacity-50')}>
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-muted md:h-16 md:w-16">
+        className={cn('flex items-center gap-3 rounded-md border border-border bg-card p-2.5', !available && 'opacity-50')}>
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-muted md:h-16 md:w-16">
           {product.image ? (
             <img src={product.image} alt={product.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
           ) : (
@@ -40,32 +40,32 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="truncate text-sm font-bold text-foreground md:text-base">{product.name}</p>
-          <p className="text-xs text-muted-foreground md:text-sm">
+          <p className="truncate text-xs font-bold text-foreground md:text-sm">{product.name}</p>
+          <p className="text-[11px] text-muted-foreground md:text-xs">
             ${product.price.toFixed(2)}
             {isRestaurant && <span className="ml-1 text-secondary-foreground font-semibold">· Bulk</span>}
           </p>
         </div>
         {/* Fixed-width interaction zone prevents layout shift */}
-        <div className="flex w-[120px] shrink-0 items-center justify-end">
+        <div className="flex w-[110px] shrink-0 items-center justify-end">
           {available ? (
             qty === 0 ? (
-              <Button size="icon" onClick={handleAdd} className="h-11 w-11 shrink-0 rounded-xl active:scale-95 transition-transform">
-                <Plus className="h-5 w-5" />
+              <Button size="icon" onClick={handleAdd} className="h-8 w-8 shrink-0 rounded-md active:scale-95 transition-transform">
+                <Plus className="h-4 w-4" />
               </Button>
             ) : (
-              <div className="flex items-center gap-1.5">
-                <button onClick={handleDec} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-90 transition-transform">
-                  <Minus className="h-4 w-4" />
+              <div className="flex items-center gap-0.5">
+                <button onClick={handleDec} className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-foreground active:scale-90 transition-transform">
+                  <Minus className="h-3.5 w-3.5" />
                 </button>
-                <span className="w-7 text-center text-base font-bold text-foreground">{qty}</span>
-                <button onClick={handleInc} className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground active:scale-90 transition-transform">
-                  <Plus className="h-4 w-4" />
+                <span className="w-6 text-center text-sm font-bold text-foreground">{qty}</span>
+                <button onClick={handleInc} className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground active:scale-90 transition-transform">
+                  <Plus className="h-3.5 w-3.5" />
                 </button>
               </div>
             )
           ) : (
-            <span className="text-xs text-destructive font-semibold">Unavailable</span>
+            <span className="text-[10px] text-destructive font-semibold">Unavailable</span>
           )}
         </div>
       </motion.div>

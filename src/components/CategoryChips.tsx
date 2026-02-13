@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
 
 interface Props {
-  categories: { id: Category; label: string; emoji: string }[];
+  categories: { id: Category; label: string; emoji: string; image?: string }[];
   active: Category | null;
   onSelect: (cat: Category | null) => void;
 }
@@ -41,11 +41,15 @@ const CategoryChips = ({ categories, active, onSelect }: Props) => {
             key={cat.id}
             onClick={() => onSelect(active === cat.id ? null : cat.id)}
             className={cn(
-              'flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-bold transition-colors active:scale-95',
+              'flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-colors active:scale-95',
               active === cat.id ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-muted text-muted-foreground'
             )}
           >
-            <span className="text-base">{cat.emoji}</span>
+            {cat.image ? (
+              <img src={cat.image} alt="" className="h-5 w-5 rounded-full object-cover" />
+            ) : (
+              <span className="text-sm">{cat.emoji}</span>
+            )}
             {cat.label}
             <span className={cn(
               'rounded-full px-1.5 py-0.5 text-[10px] font-bold',
