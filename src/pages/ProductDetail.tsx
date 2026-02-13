@@ -43,16 +43,17 @@ const ProductDetail = () => {
   return (
     <div className="flex flex-col pb-32">
       {/* Hero image */}
-      <div className="relative w-full bg-muted/40" style={{ paddingBottom: '90%' }}>
-        {product.image ? (
-          <img
-            src={product.image}
-            alt={product.name}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        ) : (
-          <span className="absolute inset-0 flex items-center justify-center text-8xl">{product.emoji}</span>
-        )}
+      <div className="p-4">
+        <div className="relative w-full overflow-hidden rounded-2xl bg-muted/40" style={{ paddingBottom: '90%' }}>
+          {product.image ? (
+            <img
+              src={product.image}
+              alt={product.name}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : (
+            <span className="absolute inset-0 flex items-center justify-center text-8xl">{product.emoji}</span>
+          )}
 
         {/* Back button */}
         <button
@@ -74,6 +75,7 @@ const ProductDetail = () => {
               <Package className="h-3 w-3" />Bulk
             </span>
           )}
+        </div>
         </div>
       </div>
 
