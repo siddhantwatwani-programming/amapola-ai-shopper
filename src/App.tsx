@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Welcome from "./pages/Welcome";
 import Browse from "./pages/Browse";
+import ProductDetail from "./pages/ProductDetail";
 import AiAssistant from "./pages/AiAssistant";
 import Cart from "./pages/Cart";
 import Confirmation from "./pages/Confirmation";
@@ -42,6 +43,7 @@ const App = () => (
                         <Route path="/signup" element={<Signup />} />
                         <Route path="/welcome" element={<Welcome />} />
                         <Route path="/browse" element={<Browse />} />
+                        <Route path="/product/:id" element={<ProductDetail />} />
                         <Route path="/assistant" element={<AiAssistant />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/confirmation" element={<Confirmation />} />
