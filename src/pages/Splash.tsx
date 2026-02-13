@@ -17,7 +17,7 @@ const Splash = () => {
         className="absolute inset-0 h-full w-full object-cover blur-md scale-105"
       />
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/25" />
+      <div className="absolute inset-0 bg-white/40" />
 
       {/* Centered content */}
       <div className="relative z-10 flex flex-col items-center px-6 w-full">
