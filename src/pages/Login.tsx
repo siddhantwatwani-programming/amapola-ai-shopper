@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import logoAmapola from '@/assets/logo-amapola.avif';
+import logoAmapola from '@/assets/logo-amapola.png';
 import { cn } from '@/lib/utils';
 
 type LoginMethod = 'email' | 'phone';

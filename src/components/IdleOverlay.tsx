@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '@/store/cartStore';
 import { useCustomer } from '@/store/customerContext';
-import logoAmapola from '@/assets/logo-amapola.avif';
+import logoAmapola from '@/assets/logo-amapola.png';
 
 const IDLE_TIMEOUT = 90_000; // 90 seconds
 const WARNING_AT = 60_000;  // show warning at 60s

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock, ChevronDown, CalendarDays, UtensilsCrossed, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import logoAmapola from '@/assets/logo-amapola.avif';
+import logoAmapola from '@/assets/logo-amapola.png';
 import { useStore } from '@/store/storeContext';
 import { useMode } from '@/store/modeContext';
 import { usePickup } from '@/store/pickupContext';
