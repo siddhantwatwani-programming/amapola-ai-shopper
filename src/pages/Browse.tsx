@@ -208,13 +208,22 @@ const Browse = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.04 }}
               onClick={() => handleCategoryTap(cat.id)}
-              className="relative flex flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-border bg-card p-4 shadow-sm active:scale-95 active:border-primary transition-all md:p-5"
+              className="relative flex flex-col items-center overflow-hidden rounded-2xl border-2 border-border bg-card shadow-sm active:scale-95 active:border-primary transition-all"
             >
-              <span className="text-4xl md:text-5xl">{cat.emoji}</span>
-              <span className="text-sm font-bold text-foreground md:text-base">{cat.label}</span>
-              <span className="absolute right-2 top-2 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground">
-                {categoryCounts[cat.id]}
-              </span>
+              <div className="relative w-full overflow-hidden bg-muted/40" style={{ paddingBottom: '80%' }}>
+                <img
+                  src={cat.image}
+                  alt={cat.label}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </div>
+              <div className="flex w-full items-center justify-between px-2.5 py-2">
+                <span className="text-xs font-bold text-foreground md:text-sm">{cat.label}</span>
+                <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground">
+                  {categoryCounts[cat.id]}
+                </span>
+              </div>
             </motion.button>
           ))}
         </div>

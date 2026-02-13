@@ -10,23 +10,23 @@ export interface Product {
   image?: string;
 }
 
-export const categories: { id: Category; label: string; emoji: string }[] = [
-  { id: 'produce', label: 'Produce', emoji: '🥬' },
-  { id: 'bakery', label: 'Bakery', emoji: '🍞' },
-  { id: 'deli', label: 'Deli', emoji: '🥩' },
-  { id: 'dairy', label: 'Dairy', emoji: '🧀' },
-  { id: 'pantry', label: 'Pantry', emoji: '🫘' },
-  { id: 'frozen', label: 'Frozen', emoji: '🧊' },
-  { id: 'meat', label: 'Meat & Seafood', emoji: '🐟' },
-  { id: 'beverages', label: 'Beverages', emoji: '🧃' },
-  { id: 'snacks', label: 'Snacks & Sweets', emoji: '🍬' },
+export const categories: { id: Category; label: string; emoji: string; image: string }[] = [
+  { id: 'produce', label: 'Produce', emoji: '🥬', image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&fit=crop&crop=center' },
+  { id: 'bakery', label: 'Bakery', emoji: '🍞', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop&crop=center' },
+  { id: 'deli', label: 'Deli', emoji: '🥩', image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=400&fit=crop&crop=center' },
+  { id: 'dairy', label: 'Dairy', emoji: '🧀', image: 'https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=400&h=400&fit=crop&crop=center' },
+  { id: 'pantry', label: 'Pantry', emoji: '🫘', image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop&crop=center' },
+  { id: 'frozen', label: 'Frozen', emoji: '🧊', image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=400&fit=crop&crop=center' },
+  { id: 'meat', label: 'Meat & Seafood', emoji: '🐟', image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&h=400&fit=crop&crop=center' },
+  { id: 'beverages', label: 'Beverages', emoji: '🧃', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop&crop=center' },
+  { id: 'snacks', label: 'Snacks & Sweets', emoji: '🍬', image: 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=400&fit=crop&crop=center' },
 ];
 
 export const products: Product[] = [
   // Produce
   { id: 'p1', name: 'Organic Avocados', description: 'Ripe & ready, pack of 3', price: 4.99, category: 'produce', emoji: '🥑', image: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400&h=400&fit=crop&crop=center' },
-  { id: 'p2', name: 'Roma Tomatoes', description: 'Vine-ripened, per lb', price: 2.49, category: 'produce', emoji: '🍅', image: 'https://images.unsplash.com/photo-1546470427-0d4db154ceb8?w=400&h=400&fit=crop&crop=center' },
-  { id: 'p3', name: 'Fresh Cilantro', description: 'Locally grown bunch', price: 0.99, category: 'produce', emoji: '🌿', image: 'https://images.unsplash.com/photo-1592928302636-c83cf1e1c2f0?w=400&h=400&fit=crop&crop=center' },
+  { id: 'p2', name: 'Roma Tomatoes', description: 'Vine-ripened, per lb', price: 2.49, category: 'produce', emoji: '🍅', image: 'https://images.unsplash.com/photo-1592924357228-91a4daadce55?w=400&h=400&fit=crop&crop=center' },
+  { id: 'p3', name: 'Fresh Cilantro', description: 'Locally grown bunch', price: 0.99, category: 'produce', emoji: '🌿', image: 'https://images.unsplash.com/photo-1526346698789-22fd84314424?w=400&h=400&fit=crop&crop=center' },
   { id: 'p4', name: 'Jalapeños', description: 'Fresh hot peppers, per lb', price: 1.99, category: 'produce', emoji: '🌶️', image: 'https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?w=400&h=400&fit=crop&crop=center' },
   { id: 'p5', name: 'Limes', description: 'Bag of 6', price: 2.99, category: 'produce', emoji: '🍋', image: 'https://images.unsplash.com/photo-1590502593747-42a996133562?w=400&h=400&fit=crop&crop=center' },
   { id: 'p6', name: 'Sweet Corn', description: 'Fresh ears, pack of 4', price: 3.49, category: 'produce', emoji: '🌽', image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&h=400&fit=crop&crop=center' },
