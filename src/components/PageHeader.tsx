@@ -77,7 +77,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
           </button>
           <button
             onClick={() => setSchedulerOpen(true)}
-            className="flex items-center gap-1.5 text-xs font-medium text-primary rounded-xl bg-primary/5 px-3 py-2 active:bg-primary/10 transition-colors w-full"
+            className="flex items-center justify-center gap-1.5 text-xs font-medium text-primary rounded-xl bg-primary/5 px-3 py-2 active:bg-primary/10 transition-colors w-full"
           >
             <CalendarDays className="h-3.5 w-3.5" />
             {scheduleLabel}
