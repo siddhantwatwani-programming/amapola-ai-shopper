@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, Package } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import type { Product } from '@/data/products';
 import { useCart } from '@/store/cartStore';
 import { useStore } from '@/store/storeContext';
@@ -14,6 +15,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, compact }: ProductCardProps) => {
+  const navigate = useNavigate();
   const { items, addItem, updateQuantity } = useCart();
   const { isAvailable } = useStore();
   const { isRestaurant, qtyStep } = useMode();
@@ -28,10 +30,13 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
   const handleInc = () => updateQuantity(product.id, qty + qtyStep);
   const handleDec = () => updateQuantity(product.id, Math.max(0, qty - qtyStep));
 
+  const goToDetail = () => navigate(`/product/${product.id}`);
+
   if (compact) {
     return (
       <motion.div layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-        className={cn('flex items-center gap-3 rounded-md border border-border bg-card p-2.5', !available && 'opacity-50')}>
+        onClick={goToDetail}
+        className={cn('flex items-center gap-3 rounded-md border border-border bg-card p-2.5 cursor-pointer', !available && 'opacity-50')}>
         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-muted md:h-16 md:w-16">
           {product.image ? (
             <img src={product.image} alt={product.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
@@ -50,16 +55,16 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
         <div className="flex w-[110px] shrink-0 items-center justify-end">
           {available ? (
             qty === 0 ? (
-              <Button size="icon" onClick={handleAdd} className="h-8 w-8 shrink-0 rounded-md active:scale-95 transition-transform">
+              <Button size="icon" onClick={(e) => { e.stopPropagation(); handleAdd(); }} className="h-8 w-8 shrink-0 rounded-md active:scale-95 transition-transform">
                 <Plus className="h-4 w-4" />
               </Button>
             ) : (
               <div className="flex items-center gap-0.5">
-                <button onClick={handleDec} className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-foreground active:scale-90 transition-transform">
+                <button onClick={(e) => { e.stopPropagation(); handleDec(); }} className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-foreground active:scale-90 transition-transform">
                   <Minus className="h-3.5 w-3.5" />
                 </button>
                 <span className="w-6 text-center text-sm font-bold text-foreground">{qty}</span>
-                <button onClick={handleInc} className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground active:scale-90 transition-transform">
+                <button onClick={(e) => { e.stopPropagation(); handleInc(); }} className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground active:scale-90 transition-transform">
                   <Plus className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -74,7 +79,8 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
 
   return (
     <motion.div layout="position" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} whileTap={available ? { scale: 0.97 } : undefined}
-      className={cn('flex flex-col overflow-hidden rounded-md border border-border bg-card shadow-sm', !available && 'opacity-50')}>
+      onClick={goToDetail}
+      className={cn('flex flex-col overflow-hidden rounded-md border border-border bg-card shadow-sm cursor-pointer', !available && 'opacity-50')}>
       {/* 1:1 square image container */}
       <div className="relative w-full overflow-hidden bg-muted/40" style={{ paddingBottom: '100%' }}>
         {product.image ? (
@@ -112,16 +118,16 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
           <div className="flex items-center justify-end">
             {available ? (
               qty === 0 ? (
-                <Button size="icon" onClick={handleAdd} className="h-8 w-8 rounded-md active:scale-90 transition-transform">
+                <Button size="icon" onClick={(e) => { e.stopPropagation(); handleAdd(); }} className="h-8 w-8 rounded-md active:scale-90 transition-transform">
                   <Plus className="h-4 w-4" />
                 </Button>
               ) : (
                 <div className="flex items-center gap-0.5">
-                  <button onClick={handleDec} className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-foreground active:scale-90 transition-transform">
+                  <button onClick={(e) => { e.stopPropagation(); handleDec(); }} className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-foreground active:scale-90 transition-transform">
                     <Minus className="h-3.5 w-3.5" />
                   </button>
                   <span className="w-6 text-center text-sm font-bold text-foreground">{qty}</span>
-                  <button onClick={handleInc} className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground active:scale-90 transition-transform">
+                  <button onClick={(e) => { e.stopPropagation(); handleInc(); }} className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground active:scale-90 transition-transform">
                     <Plus className="h-3.5 w-3.5" />
                   </button>
                 </div>
