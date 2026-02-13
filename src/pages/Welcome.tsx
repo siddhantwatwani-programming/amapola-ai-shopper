@@ -248,7 +248,7 @@ const Welcome = () => {
         </div>
       </div>
 
-      <div className="flex-1 px-5 py-3 pb-24 max-w-lg mx-auto w-full">
+      <div className="flex-1 px-5 py-3 max-w-lg mx-auto w-full">
         <div className="space-y-2.5 mb-4">
           {stores.map((store, i) => {
             const isSelected = selectedStore.id === store.id;
@@ -285,10 +285,7 @@ const Welcome = () => {
           <p className="text-base font-semibold text-foreground md:text-lg">Amapola — {selectedStore.name}</p>
           <p className="text-sm text-muted-foreground mt-1">Ready in <span className="font-bold text-foreground">{selectedStore.pickupTime}</span> · Pickup at front counter or kiosk</p>
         </motion.div>
-      </div>
 
-      {/* Fixed bottom button */}
-      <div className="sticky bottom-0 z-10 bg-background/95 backdrop-blur-md border-t border-border px-5 py-4 max-w-lg mx-auto w-full">
         <Button size="lg" onClick={handleStoreConfirm} className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform md:h-16 md:text-xl">
           <span className="flex items-center gap-2"><ShoppingBag className="h-6 w-6" />Continue</span>
         </Button>
