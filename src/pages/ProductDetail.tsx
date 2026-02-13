@@ -41,7 +41,7 @@ const ProductDetail = () => {
   const handleDec = () => updateQuantity(product.id, Math.max(0, qty - qtyStep));
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-24">
       {/* Hero image */}
       <div className="p-4">
         <div className="relative w-full overflow-hidden rounded-2xl bg-muted/40" style={{ paddingBottom: '90%' }}>
