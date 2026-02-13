@@ -41,7 +41,7 @@ const ProductDetail = () => {
   const handleDec = () => updateQuantity(product.id, Math.max(0, qty - qtyStep));
 
   return (
-    <div className="flex flex-col pb-32">
+    <div className="flex flex-col">
       {/* Hero image */}
       <div className="p-4">
         <div className="relative w-full overflow-hidden rounded-2xl bg-muted/40" style={{ paddingBottom: '90%' }}>
@@ -124,10 +124,9 @@ const ProductDetail = () => {
         </div>
       </motion.div>
 
-      {/* Sticky bottom add-to-cart bar */}
-      <div className="fixed bottom-16 left-0 right-0 z-30">
-        <div className="mx-auto max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-5xl px-4 pb-4">
-          <div className="rounded-2xl border border-border bg-card/95 backdrop-blur-md shadow-lg p-4">
+      {/* Add-to-cart bar */}
+      <div className="px-5 pb-6">
+        <div className="rounded-2xl border border-border bg-card p-4">
             {available ? (
               qty === 0 ? (
                 <Button onClick={handleAdd} className="w-full h-12 text-base font-bold rounded-xl">
@@ -164,7 +163,6 @@ const ProductDetail = () => {
             )}
           </div>
         </div>
-      </div>
     </div>
   );
 };
