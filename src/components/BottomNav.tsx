@@ -15,7 +15,7 @@ const BottomNav = () => {
   const navigate = useNavigate();
   const { totalItems } = useCart();
 
-  const hiddenRoutes = ['/', '/login', '/signup', '/confirmation'];
+  const hiddenRoutes = ['/', '/login', '/signup', '/welcome', '/confirmation'];
   if (hiddenRoutes.includes(location.pathname)) return null;
 
   return (
