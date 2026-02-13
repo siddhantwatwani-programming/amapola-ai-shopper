@@ -52,16 +52,16 @@ const PickupScheduler = ({ open, onOpenChange }: PickupSchedulerProps) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="rounded-t-3xl px-5 pb-8 pt-6 max-h-[85vh] overflow-y-auto">
-        <SheetHeader className="mb-4">
-          <SheetTitle className="text-xl font-bold">Pickup Schedule</SheetTitle>
-          <SheetDescription>
+      <SheetContent side="bottom" className="rounded-t-3xl px-5 pb-8 pt-6 overflow-hidden">
+        <SheetHeader className="mb-3">
+          <SheetTitle className="text-lg font-bold">Pickup Schedule</SheetTitle>
+          <SheetDescription className="text-xs">
             {selectedStore.name} · Ready in {selectedStore.pickupTime}
           </SheetDescription>
         </SheetHeader>
 
         {/* Type selector */}
-        <div className="flex gap-2 mb-5">
+        <div className="flex gap-2 mb-4">
           {types.map(t => {
             const Icon = t.icon;
             const isActive = activeType === t.id;
@@ -70,11 +70,11 @@ const PickupScheduler = ({ open, onOpenChange }: PickupSchedulerProps) => {
                 key={t.id}
                 onClick={() => setActiveType(t.id)}
                 className={cn(
-                  'flex-1 flex flex-col items-center gap-1.5 rounded-2xl border-2 py-4 text-sm font-bold transition-all active:scale-95',
+                  'flex-1 flex items-center justify-center gap-1.5 rounded-xl border-2 py-2.5 text-xs font-bold transition-all active:scale-95',
                   isActive ? 'border-primary bg-primary/5 text-primary' : 'border-border bg-card text-muted-foreground'
                 )}
               >
-                <Icon className="h-5 w-5" />
+                <Icon className="h-4 w-4" />
                 {t.label}
               </button>
             );
@@ -83,25 +83,25 @@ const PickupScheduler = ({ open, onOpenChange }: PickupSchedulerProps) => {
 
         {/* Now */}
         {activeType === 'now' && (
-          <div className="rounded-2xl bg-accent/10 p-4 text-center mb-5">
-            <p className="text-base font-bold text-foreground">Ready in {selectedStore.pickupTime}</p>
-            <p className="text-sm text-muted-foreground mt-1">Pickup at front counter or kiosk</p>
+          <div className="rounded-xl bg-accent/10 p-3 text-center mb-4">
+            <p className="text-sm font-bold text-foreground">Ready in {selectedStore.pickupTime}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Pickup at front counter or kiosk</p>
           </div>
         )}
 
-        {/* Later — date + time */}
+        {/* Later — date + time compact */}
         {(activeType === 'later' || activeType === 'recurring') && (
-          <div className="space-y-4 mb-5">
+          <div className="space-y-3 mb-4">
             <div>
-              <label className="block text-sm font-bold text-foreground mb-2">Date</label>
-              <div className="flex gap-2 overflow-x-auto pb-1">
+              <label className="block text-xs font-bold text-foreground mb-1.5">Date</label>
+              <div className="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
                 {dateOptions.map(d => (
                   <button
                     key={d}
                     onClick={() => setSelectedDate(d)}
                     className={cn(
-                      'shrink-0 rounded-xl border-2 px-4 py-2.5 text-sm font-bold transition-all active:scale-95',
-                      selectedDate === d ? 'border-primary bg-primary/5 text-primary' : 'border-border bg-card text-muted-foreground'
+                      'shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all active:scale-95',
+                      selectedDate === d ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground'
                     )}
                   >
                     {d}
@@ -110,15 +110,15 @@ const PickupScheduler = ({ open, onOpenChange }: PickupSchedulerProps) => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-bold text-foreground mb-2">Time</label>
-              <div className="grid grid-cols-3 gap-2">
+              <label className="block text-xs font-bold text-foreground mb-1.5">Time</label>
+              <div className="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
                 {timeSlots.map(t => (
                   <button
                     key={t}
                     onClick={() => setSelectedTime(t)}
                     className={cn(
-                      'rounded-xl border-2 py-2.5 text-sm font-bold transition-all active:scale-95',
-                      selectedTime === t ? 'border-primary bg-primary/5 text-primary' : 'border-border bg-card text-muted-foreground'
+                      'shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all active:scale-95',
+                      selectedTime === t ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground'
                     )}
                   >
                     {t}
@@ -131,16 +131,16 @@ const PickupScheduler = ({ open, onOpenChange }: PickupSchedulerProps) => {
 
         {/* Recurring cadence */}
         {activeType === 'recurring' && (
-          <div className="mb-5">
-            <label className="block text-sm font-bold text-foreground mb-2">Repeat</label>
-            <div className="flex gap-2">
+          <div className="mb-4">
+            <label className="block text-xs font-bold text-foreground mb-1.5">Repeat</label>
+            <div className="flex gap-1.5">
               {cadenceOptions.map(c => (
                 <button
                   key={c.id}
                   onClick={() => setSelectedCadence(c.id)}
                   className={cn(
-                    'flex-1 rounded-xl border-2 py-3 text-sm font-bold transition-all active:scale-95',
-                    selectedCadence === c.id ? 'border-primary bg-primary/5 text-primary' : 'border-border bg-card text-muted-foreground'
+                    'flex-1 rounded-lg border py-2 text-xs font-semibold transition-all active:scale-95',
+                    selectedCadence === c.id ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground'
                   )}
                 >
                   {c.label}
@@ -153,10 +153,10 @@ const PickupScheduler = ({ open, onOpenChange }: PickupSchedulerProps) => {
         <Button
           size="lg"
           onClick={handleConfirm}
-          className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform"
+          className="h-12 w-full rounded-xl text-base font-bold shadow-lg active:scale-[0.97] transition-transform"
         >
-          <Check className="mr-2 h-5 w-5" />
-          Confirm Schedule
+          <Check className="mr-2 h-4 w-4" />
+          Confirm
         </Button>
       </SheetContent>
     </Sheet>
