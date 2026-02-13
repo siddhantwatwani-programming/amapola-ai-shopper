@@ -10,6 +10,8 @@ import { ModeProvider } from "@/store/modeContext";
 import { PickupProvider } from "@/store/pickupContext";
 import { OrderHistoryProvider } from "@/store/orderHistoryContext";
 import Splash from "./pages/Splash";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Welcome from "./pages/Welcome";
 import Browse from "./pages/Browse";
 import AiAssistant from "./pages/AiAssistant";
@@ -36,6 +38,8 @@ const App = () => (
                     <div className="mx-auto min-h-screen bg-background max-w-lg sm:max-w-2xl md:max-w-4xl lg:max-w-5xl">
                       <Routes>
                         <Route path="/" element={<Splash />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<Signup />} />
                         <Route path="/welcome" element={<Welcome />} />
                         <Route path="/browse" element={<Browse />} />
                         <Route path="/assistant" element={<AiAssistant />} />
