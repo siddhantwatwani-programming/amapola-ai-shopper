@@ -62,10 +62,10 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
           {children && <div className="flex items-center gap-2">{children}</div>}
         </div>
         {/* Store + schedule bar */}
-        <div className="mt-2.5 flex gap-2">
+        <div className="mt-2.5 flex flex-col gap-1.5">
           <button
             onClick={() => setSwitcherOpen(true)}
-            className="flex flex-1 items-center gap-2 text-xs text-muted-foreground md:text-sm rounded-xl bg-muted/40 px-3 py-2 active:bg-muted transition-colors"
+            className="flex items-center gap-2 text-xs text-muted-foreground md:text-sm rounded-xl bg-muted/40 px-3 py-2 active:bg-muted transition-colors"
           >
             <MapPin className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate">{selectedStore.name}</span>
@@ -77,7 +77,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
           </button>
           <button
             onClick={() => setSchedulerOpen(true)}
-            className="flex items-center gap-1.5 text-xs font-medium text-primary rounded-xl bg-primary/5 px-3 py-2 active:bg-primary/10 transition-colors shrink-0"
+            className="flex items-center gap-1.5 text-xs font-medium text-primary rounded-xl bg-primary/5 px-3 py-2 active:bg-primary/10 transition-colors w-full"
           >
             <CalendarDays className="h-3.5 w-3.5" />
             {scheduleLabel}
