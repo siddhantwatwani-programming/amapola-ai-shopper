@@ -1,10 +1,11 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, Package } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Plus, Minus, Package, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '@/data/products';
 import { useCart } from '@/store/cartStore';
 import { useStore } from '@/store/storeContext';
 import { useMode } from '@/store/modeContext';
+import { useFavorites } from '@/store/favoritesStore';
 import { useMarketSignal } from '@/hooks/useMarketSignals';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -19,10 +20,12 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
   const { items, addItem, updateQuantity } = useCart();
   const { isAvailable } = useStore();
   const { isRestaurant, qtyStep } = useMode();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const signal = useMarketSignal(product);
   const cartItem = items.find(i => i.product.id === product.id);
   const qty = cartItem?.quantity ?? 0;
   const available = isAvailable(product.id);
+  const fav = isFavorite(product.id);
 
   const handleAdd = () => {
     for (let i = 0; i < qtyStep; i++) addItem(product);
@@ -51,7 +54,6 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
             {isRestaurant && <span className="ml-1 text-secondary-foreground font-semibold">· Bulk</span>}
           </p>
         </div>
-        {/* Fixed-width interaction zone prevents layout shift */}
         <div className="flex w-[110px] shrink-0 items-center justify-end">
           {available ? (
             qty === 0 ? (
@@ -81,19 +83,20 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
     <motion.div layout="position" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} whileTap={available ? { scale: 0.97 } : undefined}
       onClick={goToDetail}
       className={cn('flex flex-col overflow-hidden rounded-md border border-border bg-card shadow-sm cursor-pointer', !available && 'opacity-50')}>
-      {/* 1:1 square image container */}
       <div className="relative w-full overflow-hidden bg-muted/40" style={{ paddingBottom: '100%' }}>
         {product.image ? (
-          <img
-            src={product.image}
-            alt={product.name}
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+          <img src={product.image} alt={product.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <span className="absolute inset-0 flex items-center justify-center text-5xl md:text-6xl">{product.emoji}</span>
         )}
-        {/* Badges overlaid on image */}
+        {/* Favorite button */}
+        <button
+          onClick={(e) => { e.stopPropagation(); toggleFavorite(product.id); }}
+          className="absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm active:scale-90 transition-transform"
+        >
+          <Heart className={cn('h-3.5 w-3.5', fav ? 'fill-destructive text-destructive' : 'text-muted-foreground')} />
+        </button>
+        {/* Badges */}
         <div className="absolute top-1.5 left-1.5 flex flex-wrap gap-1">
           {signal.text && (
             <span className={`rounded-md px-1.5 py-0.5 text-[9px] font-bold leading-tight backdrop-blur-sm ${signal.style}`}>{signal.text}</span>
@@ -105,11 +108,9 @@ const ProductCard = ({ product, compact }: ProductCardProps) => {
           )}
         </div>
       </div>
-      {/* Info section */}
       <div className="flex flex-col p-2 md:p-2.5" style={{ minHeight: '100px' }}>
         <h3 className="text-xs font-bold leading-tight text-foreground line-clamp-2 md:text-sm">{product.name}</h3>
         <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-1">{product.description}</p>
-        {/* Bottom row: price + controls */}
         <div className="mt-auto flex items-center justify-between pt-1.5 h-10">
           <div>
             <span className="text-base font-bold text-foreground md:text-lg">${product.price.toFixed(2)}</span>

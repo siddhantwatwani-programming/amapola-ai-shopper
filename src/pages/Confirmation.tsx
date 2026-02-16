@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, QrCode, MapPin, Clock, User, Phone, CalendarDays, UtensilsCrossed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { usePickup } from '@/store/pickupContext';
 import { useOrderHistory } from '@/store/orderHistoryContext';
 import { Button } from '@/components/ui/button';
 import logoAmapola from '@/assets/logo-amapola.png';
+import { fireConfetti } from '@/hooks/useConfetti';
 
 const Confirmation = () => {
   const { items, clearCart, totalPrice, totalItems } = useCart();
@@ -21,6 +22,11 @@ const Confirmation = () => {
   const navigate = useNavigate();
 
   const orderNumber = useMemo(() => `AMP-${Math.floor(1000 + Math.random() * 9000)}`, []);
+
+  // Fire confetti on mount
+  useEffect(() => {
+    fireConfetti();
+  }, []);
 
   // Save order to history on mount
   useMemo(() => {
@@ -132,7 +138,10 @@ const Confirmation = () => {
         </div>
         <p className="mb-5 text-xs text-muted-foreground">{selectedStore.address} · {selectedStore.distance} away</p>
 
-        <Button size="lg" onClick={handleDone} className="h-14 w-full rounded-2xl text-lg font-bold active:scale-[0.97] transition-transform md:h-16 md:text-xl">
+        <Button size="lg" onClick={() => navigate('/order-status')} className="h-14 w-full rounded-2xl text-lg font-bold active:scale-[0.97] transition-transform md:h-16 md:text-xl">
+          Track My Order
+        </Button>
+        <Button variant="outline" size="lg" onClick={handleDone} className="mt-2 h-12 w-full rounded-2xl text-base font-semibold border-2">
           Done
         </Button>
       </motion.div>

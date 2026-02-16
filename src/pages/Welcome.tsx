@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, ShoppingBag, Clock, Navigation, CheckCircle2, Zap, Users, Timer, User, Phone, ArrowRight, Store, UtensilsCrossed } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { useCustomer } from '@/store/customerContext';
 import { useMode, type AppMode } from '@/store/modeContext';
 import { cn } from '@/lib/utils';
 import logoAmapola from '@/assets/logo-amapola.png';
+import OnboardingTour from '@/components/OnboardingTour';
 
 type Step = 'entry' | 'mode' | 'store' | 'identify';
 
@@ -21,6 +22,9 @@ const Welcome = () => {
   const [confirmed, setConfirmed] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [phone, setPhone] = useState('');
+  const [showTour, setShowTour] = useState(() => {
+    try { return !localStorage.getItem('amapola-tour-seen'); } catch { return true; }
+  });
 
   const handleSelect = (store: StoreLocation) => setSelectedStore(store);
   const handleStoreConfirm = () => setStep('identify');
@@ -42,7 +46,16 @@ const Welcome = () => {
   // --- ENTRY ---
   if (step === 'entry') {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
+      <>
+        <AnimatePresence>
+          {showTour && (
+            <OnboardingTour onComplete={() => {
+              setShowTour(false);
+              localStorage.setItem('amapola-tour-seen', 'true');
+            }} />
+          )}
+        </AnimatePresence>
+        <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -81,6 +94,7 @@ const Welcome = () => {
           <p className="mt-5 text-xs text-muted-foreground">Touch to begin · No account needed</p>
         </motion.div>
       </div>
+      </>
     );
   }
 
