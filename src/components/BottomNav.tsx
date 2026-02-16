@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Sparkles, ShoppingCart, Search, RotateCcw } from 'lucide-react';
+import { Sparkles, ShoppingCart, Search, ClipboardList } from 'lucide-react';
 import { useCart } from '@/store/cartStore';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -8,6 +8,7 @@ const tabs = [
   { path: '/browse', label: 'Browse', icon: Search },
   { path: '/assistant', label: 'Ask AI', icon: Sparkles },
   { path: '/cart', label: 'Cart', icon: ShoppingCart },
+  { path: '/order-status', label: 'Orders', icon: ClipboardList },
 ];
 
 const BottomNav = () => {
@@ -28,26 +29,27 @@ const BottomNav = () => {
             <button
               key={tab.path}
               onClick={() => navigate(tab.path)}
-              className="relative flex flex-col items-center gap-1 px-6 py-2 active:scale-95 transition-transform"
+              className="relative flex flex-col items-center gap-1 px-4 py-2 active:scale-95 transition-transform"
             >
               <div className="relative">
-                <Icon className={cn('h-7 w-7 transition-colors md:h-8 md:w-8', active ? 'text-primary' : 'text-muted-foreground')} />
+                <Icon className={cn('h-6 w-6 transition-colors md:h-7 md:w-7', active ? 'text-primary' : 'text-muted-foreground')} />
                 {tab.path === '/cart' && totalItems > 0 && (
                   <motion.span
                     key={totalItems}
                     initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
+                    animate={{ scale: [1.3, 1] }}
+                    transition={{ type: 'spring', stiffness: 300 }}
                     className="absolute -right-2.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
                   >
                     {totalItems}
                   </motion.span>
                 )}
               </div>
-              <span className={cn('text-xs font-semibold md:text-sm', active ? 'text-primary' : 'text-muted-foreground')}>
+              <span className={cn('text-[10px] font-semibold md:text-xs', active ? 'text-primary' : 'text-muted-foreground')}>
                 {tab.label}
               </span>
               {active && (
-                <motion.div layoutId="bottomNavIndicator" className="absolute -top-px left-3 right-3 h-0.5 rounded-full bg-primary" />
+                <motion.div layoutId="bottomNavIndicator" className="absolute -top-px left-2 right-2 h-0.5 rounded-full bg-primary" />
               )}
             </button>
           );

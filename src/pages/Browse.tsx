@@ -1,13 +1,15 @@
 import { useState, useMemo } from 'react';
-import { Search, SlidersHorizontal, RotateCcw, X } from 'lucide-react';
+import { Search, SlidersHorizontal, RotateCcw, X, Mic, MicOff, Heart } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { products, categories, priceRanges, type Category } from '@/data/products';
+import { products, categories, priceRanges, type Category, getProductById } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
 import CategoryChips from '@/components/CategoryChips';
 import PageHeader from '@/components/PageHeader';
 import { useMode } from '@/store/modeContext';
 import { useOrderHistory } from '@/store/orderHistoryContext';
 import { useCart } from '@/store/cartStore';
+import { useFavorites } from '@/store/favoritesStore';
+import { useVoiceSearch } from '@/hooks/useVoiceSearch';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -16,10 +18,15 @@ const Browse = () => {
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [activePriceRange, setActivePriceRange] = useState<number | null>(null);
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<'categories' | 'products'>('categories');
+  const [viewMode, setViewMode] = useState<'categories' | 'products' | 'favorites'>('categories');
   const { isRestaurant } = useMode();
   const { orders } = useOrderHistory();
   const { addItem } = useCart();
+  const { favorites } = useFavorites();
+  const { isListening, startListening, stopListening, isSupported: voiceSupported } = useVoiceSearch((text) => {
+    setSearch(text);
+    setViewMode('products');
+  });
 
   const filtered = useMemo(() => {
     let list = products;
@@ -142,17 +149,39 @@ const Browse = () => {
               setSearch(e.target.value);
               if (e.target.value.trim()) setViewMode('products');
             }}
-            className="h-12 rounded-xl border-muted bg-muted/50 pl-11 text-base md:h-14 md:text-lg"
+            className="h-12 rounded-xl border-muted bg-muted/50 pl-11 pr-20 text-base md:h-14 md:text-lg"
           />
-          {search && (
-            <button
-              onClick={() => { setSearch(''); if (!activeCategory) setViewMode('categories'); }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full bg-muted text-muted-foreground active:scale-90"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            {search && (
+              <button
+                onClick={() => { setSearch(''); if (!activeCategory) setViewMode('categories'); }}
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-muted-foreground active:scale-90"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+            {voiceSupported && (
+              <button
+                onClick={isListening ? stopListening : startListening}
+                className={cn(
+                  'flex h-8 w-8 items-center justify-center rounded-full active:scale-90 transition-all',
+                  isListening ? 'bg-destructive text-destructive-foreground animate-pulse' : 'bg-muted text-muted-foreground'
+                )}
+              >
+                {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </button>
+            )}
+          </div>
         </div>
+        {isListening && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-1 text-xs font-semibold text-destructive text-center"
+          >
+            🎙️ Listening... speak now
+          </motion.p>
+        )}
       </div>
 
       {/* Price Filters — animated */}
@@ -199,7 +228,39 @@ const Browse = () => {
         )}
       </AnimatePresence>
 
-      {viewMode === 'categories' && !search.trim() ? (
+      {/* Favorites quick-access */}
+      {favorites.length > 0 && viewMode === 'categories' && !search.trim() && (
+        <div className="px-4 mb-2">
+          <button
+            onClick={() => setViewMode('favorites')}
+            className="w-full flex items-center gap-3 rounded-2xl border-2 border-destructive/20 bg-destructive/5 p-3 text-left active:scale-[0.98] transition-all"
+          >
+            <Heart className="h-5 w-5 text-destructive fill-destructive shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-bold text-foreground">My Favorites</p>
+              <p className="text-xs text-muted-foreground">{favorites.length} saved item{favorites.length !== 1 ? 's' : ''}</p>
+            </div>
+            <span className="text-xs font-bold text-destructive">View</span>
+          </button>
+        </div>
+      )}
+
+      {viewMode === 'favorites' ? (
+        <div className="px-4">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <Heart className="h-5 w-5 text-destructive fill-destructive" /> My Favorites
+            </h2>
+            <button onClick={() => setViewMode('categories')} className="text-xs font-bold text-primary">Back</button>
+          </div>
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
+            {favorites.map(id => {
+              const product = getProductById(id);
+              return product ? <ProductCard key={id} product={product} /> : null;
+            })}
+          </div>
+        </div>
+      ) : viewMode === 'categories' && !search.trim() ? (
         <div className="grid grid-cols-3 gap-2.5 px-4 pt-2 md:grid-cols-4 lg:grid-cols-5">
           {categories.map((cat, i) => (
             <motion.button

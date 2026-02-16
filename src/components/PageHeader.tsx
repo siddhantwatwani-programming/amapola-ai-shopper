@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Clock, ChevronDown, CalendarDays, UtensilsCrossed, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, ChevronDown, CalendarDays, UtensilsCrossed, ShoppingBag, Type } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import logoAmapola from '@/assets/logo-amapola.png';
 import { useStore } from '@/store/storeContext';
@@ -8,6 +8,7 @@ import { useMode } from '@/store/modeContext';
 import { usePickup } from '@/store/pickupContext';
 import { useCart } from '@/store/cartStore';
 import { useCustomer } from '@/store/customerContext';
+import { useAccessibility } from '@/store/accessibilityContext';
 import StoreSwitcher from '@/components/StoreSwitcher';
 import PickupScheduler from '@/components/PickupScheduler';
 interface PageHeaderProps {
@@ -24,6 +25,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
   const { scheduleLabel, dynamicLabel } = usePickup();
   const { clearCart } = useCart();
   const { clearCustomer } = useCustomer();
+  const { largeText, toggleLargeText } = useAccessibility();
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [schedulerOpen, setSchedulerOpen] = useState(false);
 
@@ -60,6 +62,13 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
             )}
           </div>
           {children && <div className="flex items-center gap-2">{children}</div>}
+          <button
+            onClick={toggleLargeText}
+            className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${largeText ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
+            title="Toggle large text"
+          >
+            <Type className="h-5 w-5" />
+          </button>
         </div>
         {/* Store + schedule bar */}
         <div className="mt-2.5 flex flex-col gap-1.5">

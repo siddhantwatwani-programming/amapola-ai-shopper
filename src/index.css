@@ -82,3 +82,17 @@
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+/* Accessibility: Large Text Mode */
+html.large-text {
+  font-size: 20px;
+}
+html.large-text .text-xs { font-size: 0.85rem; }
+html.large-text .text-sm { font-size: 1rem; }
+html.large-text .text-base { font-size: 1.15rem; }
+html.large-text .text-lg { font-size: 1.35rem; }
+html.large-text .text-xl { font-size: 1.55rem; }
+html.large-text .text-2xl { font-size: 1.85rem; }
+html.large-text .text-\\[9px\\],
+html.large-text .text-\\[10px\\],
+html.large-text .text-\\[11px\\] { font-size: 0.8rem; }

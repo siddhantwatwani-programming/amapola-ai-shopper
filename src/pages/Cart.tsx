@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import PageHeader from '@/components/PageHeader';
 import StoreSwitcher from '@/components/StoreSwitcher';
 import PickupScheduler from '@/components/PickupScheduler';
+import SmartCartSuggestions from '@/components/SmartCartSuggestions';
 
 const Cart = () => {
   const { items, updateQuantity, removeItem, totalPrice, totalItems, addItem } = useCart();
@@ -226,6 +227,9 @@ const Cart = () => {
           );
         })}
       </div>
+
+      {/* Smart suggestions */}
+      <SmartCartSuggestions />
 
       <div className="mx-4 mt-4 space-y-3">
         <div className="flex items-center justify-between rounded-2xl bg-muted/60 px-4 py-3">
