@@ -1,48 +1,83 @@
 
 
-# Amapola Market — Mobile Ordering App
+# Full Spanish Language Support via Splash Screen Toggle
 
-A mobile-first web app that delivers a native iOS-like grocery ordering experience for Amapola Market. Frontend-only proof of concept with mocked data and AI assistant.
+## Overview
+Add a second "Comenzar" button on the splash screen that, when tapped, switches the entire app to Spanish. This includes all UI text, the onboarding tour, navigation labels, page content, form labels, AI assistant responses, and the chatbot's system prompt.
+
+## How It Works
+
+1. **Splash screen gets two buttons**: The existing red "Get Started" button stays. Below it, a clear/outline-style button reads "Comenzar" (Spanish for "Get Started"). Tapping either sets the language globally.
+
+2. **Language context**: A new `LanguageProvider` wraps the app, storing `'en' | 'es'` in React context and `localStorage` (so it persists). Every component can call `useLanguage()` to get the current language and a translation helper `t(key)`.
+
+3. **Translation dictionary**: A single `src/i18n/translations.ts` file holds all English and Spanish strings keyed by identifier (e.g., `"cart.empty.title"`, `"nav.browse"`, `"onboarding.slide1.title"`). This keeps translations centralized and easy to maintain.
+
+4. **AI chatbot in Spanish**: The language preference is passed to the AI edge function so its system prompt instructs it to respond entirely in Spanish when `lang=es`.
 
 ---
 
-## 1. Welcome Screen
-- Amapola Market branding with warm, grocery-store aesthetic
-- Store location display (single location for POC)
-- Friendly welcome message
-- Large "Start Shopping" CTA button
+## What Changes
 
-## 2. Grocery Browsing Experience
-- **Bottom navigation bar** (Browse, AI Assistant, Cart, Order Status)
-- **Sticky search bar** at top of browse screen
-- **Horizontal scrollable category chips**: Produce, Bakery, Deli, Dairy, Pantry/Dry Goods, Snacks & Beverages
-- **Product cards** in a grid layout with placeholder image, name, short description, mocked price, and large "Add to Cart" button
-- **Floating cart icon** with live item count badge
-- Smooth add-to-cart animations
+### New Files
+- **`src/store/languageContext.tsx`** -- React context with `lang`, `setLang`, and `t(key)` helper
+- **`src/i18n/translations.ts`** -- All English/Spanish string pairs (~150-200 keys covering every page)
 
-## 3. AI Grocery Assistant (Key Feature)
-- Accessible via floating AI button and dedicated "Ask AI" tab in bottom nav
-- Chat-style interface where users can type queries like "What should I buy for taco night?"
-- AI responds with friendly recommendations shown as **tappable product cards** with one-tap "Add to Cart"
-- AI generates contextual shopping summaries
-- All AI responses are mocked/scripted to feel realistic and inventory-aware
-- Inline AI suggestions may also appear during browsing
+### Modified Files
 
-## 4. Cart & Order Review
-- Full cart screen with item list, quantity controls (+/−), remove option
-- Mocked subtotal and total
-- AI-generated order summary (e.g., "Ingredients for pasta dinner and a fresh side salad")
-- Large "Place Order for Pickup" button
+| File | Change |
+|------|--------|
+| `src/pages/Splash.tsx` | Add outline "Comenzar" button that sets language to Spanish before navigating |
+| `src/App.tsx` | Wrap app in `LanguageProvider` |
+| `src/components/BottomNav.tsx` | Replace hardcoded labels with `t('nav.browse')`, `t('nav.askAi')`, etc. |
+| `src/components/OnboardingTour.tsx` | Translate all 3 slide titles and descriptions |
+| `src/components/PageHeader.tsx` | Translate "BULK" badge and accessibility tooltip |
+| `src/components/SmartCartSuggestions.tsx` | Translate "You might also need" heading |
+| `src/pages/Login.tsx` | Translate all labels, placeholders, and buttons |
+| `src/pages/Signup.tsx` | Translate all labels and buttons |
+| `src/pages/Welcome.tsx` | Translate all 4 steps (entry, mode, store, identify) |
+| `src/pages/Browse.tsx` | Translate search placeholders, filter labels, empty states |
+| `src/pages/Cart.tsx` | Translate smart messages, summary text, buttons |
+| `src/pages/Confirmation.tsx` | Translate order confirmation text |
+| `src/pages/OrderStatus.tsx` | Translate tracking steps and labels |
+| `src/pages/AiAssistant.tsx` | Translate quick prompts, follow-ups, welcome message, and all hardcoded response text |
+| `src/components/StoreSwitcher.tsx` | Translate labels |
+| `src/components/PickupScheduler.tsx` | Translate scheduling labels |
+| `supabase/functions/grocery-ai/index.ts` | Accept `lang` param; switch system prompt to Spanish when `lang=es` |
 
-## 5. Pickup Confirmation
-- Success screen with order number, QR code placeholder
-- Pickup instructions: "Show this screen at the pickup counter"
-- Clean, calm, reassuring design with large text
+---
 
-## Design Approach
-- iOS-native look and feel (SF-style typography, rounded cards, subtle shadows)
-- Touch-first with large tap targets
-- Smooth page transitions
-- Minimal, clean layout optimized for iPhone screen sizes
-- Warm, friendly color palette fitting a neighborhood grocery store
+## Technical Details
+
+### Language Context API
+```typescript
+// Usage in any component:
+const { lang, t } = useLanguage();
+
+// Example:
+<Button>{t('splash.getStarted')}</Button>
+// Returns "Get Started" or "Comenzar" based on lang
+```
+
+### Translation file structure
+```typescript
+export const translations = {
+  'splash.getStarted': { en: 'Get Started', es: 'Comenzar' },
+  'nav.browse': { en: 'Browse', es: 'Explorar' },
+  'nav.askAi': { en: 'Ask AI', es: 'Preguntar IA' },
+  'nav.cart': { en: 'Cart', es: 'Carrito' },
+  'nav.orders': { en: 'Orders', es: 'Pedidos' },
+  'cart.empty.title': { en: 'Your cart is empty', es: 'Tu carrito esta vacio' },
+  // ... ~150-200 more keys
+};
+```
+
+### Splash screen layout
+- Red filled button: "Get Started" (sets lang to English)
+- Clear outline button below it: "Comenzar" (sets lang to Spanish)
+- Both navigate to `/login`
+
+### AI Edge Function
+- The `lang` parameter is sent with each request
+- When `lang=es`, the system prompt changes to: "Respond entirely in Spanish. You are a bilingual assistant at Amapola Market..."
 
