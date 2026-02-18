@@ -11,6 +11,7 @@ import { PickupProvider } from "@/store/pickupContext";
 import { OrderHistoryProvider } from "@/store/orderHistoryContext";
 import { FavoritesProvider } from "@/store/favoritesStore";
 import { AccessibilityProvider } from "@/store/accessibilityContext";
+import { LanguageProvider } from "@/store/languageContext";
 import Splash from "./pages/Splash";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -30,6 +31,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <LanguageProvider>
       <ModeProvider>
         <StoreProvider>
           <CustomerProvider>
@@ -67,6 +69,7 @@ const App = () => (
           </CustomerProvider>
         </StoreProvider>
       </ModeProvider>
+      </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

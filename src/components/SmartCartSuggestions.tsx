@@ -2,12 +2,14 @@ import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Plus } from 'lucide-react';
 import { useCart } from '@/store/cartStore';
+import { useLanguage } from '@/store/languageContext';
 import { useStore } from '@/store/storeContext';
 import { productPairings, getProductById, products, type Product } from '@/data/products';
 
 const SmartCartSuggestions = () => {
   const { items, addItem } = useCart();
   const { isAvailable } = useStore();
+  const { t } = useLanguage();
 
   const suggestions = useMemo((): Product[] => {
     if (items.length === 0) return [];
@@ -55,7 +57,7 @@ const SmartCartSuggestions = () => {
     >
       <div className="flex items-center gap-2 mb-2">
         <Sparkles className="h-4 w-4 text-primary" />
-        <h3 className="text-sm font-bold text-foreground">You might also need</h3>
+        <h3 className="text-sm font-bold text-foreground">{t('suggestions.youMightNeed')}</h3>
       </div>
       <div className="flex gap-2 overflow-x-auto pb-1">
         <AnimatePresence>

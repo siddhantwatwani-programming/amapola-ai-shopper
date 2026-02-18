@@ -9,6 +9,7 @@ import { usePickup } from '@/store/pickupContext';
 import { useCart } from '@/store/cartStore';
 import { useCustomer } from '@/store/customerContext';
 import { useAccessibility } from '@/store/accessibilityContext';
+import { useLanguage } from '@/store/languageContext';
 import StoreSwitcher from '@/components/StoreSwitcher';
 import PickupScheduler from '@/components/PickupScheduler';
 interface PageHeaderProps {
@@ -26,6 +27,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
   const { clearCart } = useCart();
   const { clearCustomer } = useCustomer();
   const { largeText, toggleLargeText } = useAccessibility();
+  const { t } = useLanguage();
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [schedulerOpen, setSchedulerOpen] = useState(false);
 
@@ -53,7 +55,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
                   {isRestaurant && (
                     <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold text-secondary-foreground flex items-center gap-1">
                       <UtensilsCrossed className="h-2.5 w-2.5" />
-                      BULK
+                      {t('header.bulk')}
                     </span>
                   )}
                 </div>
@@ -65,7 +67,7 @@ const PageHeader = ({ title, subtitle, children, onBack }: PageHeaderProps) => {
           <button
             onClick={toggleLargeText}
             className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${largeText ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}
-            title="Toggle large text"
+            title={t('header.toggleLargeText')}
           >
             <Type className="h-5 w-5" />
           </button>

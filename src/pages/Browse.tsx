@@ -10,6 +10,7 @@ import { useOrderHistory } from '@/store/orderHistoryContext';
 import { useCart } from '@/store/cartStore';
 import { useFavorites } from '@/store/favoritesStore';
 import { useVoiceSearch } from '@/hooks/useVoiceSearch';
+import { useLanguage } from '@/store/languageContext';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -23,6 +24,7 @@ const Browse = () => {
   const { orders } = useOrderHistory();
   const { addItem } = useCart();
   const { favorites } = useFavorites();
+  const { t } = useLanguage();
   const { isListening, startListening, stopListening, isSupported: voiceSupported } = useVoiceSearch((text) => {
     setSearch(text);
     setViewMode('products');
@@ -92,18 +94,17 @@ const Browse = () => {
     <div className="flex flex-col pb-24">
       <PageHeader
         title={activeCategory ? categories.find(c => c.id === activeCategory)?.label ?? '' : undefined}
-        subtitle={activeCategory ? `${filtered.length} items` : undefined}
+        subtitle={activeCategory ? `${filtered.length} ${filtered.length !== 1 ? t('browse.items') : t('browse.item')}` : undefined}
         onBack={activeCategory ? handleBack : undefined}
       >
         <div className="flex items-center gap-2">
-          {/* Active filter count badge */}
           {activeFilterCount > 0 && (
             <button
               onClick={clearAllFilters}
               className="flex items-center gap-1 rounded-xl bg-primary/10 px-3 py-2 text-xs font-bold text-primary active:scale-95 transition-transform"
             >
               <X className="h-3.5 w-3.5" />
-              Clear ({activeFilterCount})
+              {t('browse.clear')} ({activeFilterCount})
             </button>
           )}
           <button
@@ -123,7 +124,6 @@ const Browse = () => {
         </div>
       </PageHeader>
 
-      {/* Quick reorder banner for restaurant mode */}
       {isRestaurant && orders.length > 0 && viewMode === 'categories' && (
         <button
           onClick={handleQuickReorder}
@@ -131,19 +131,18 @@ const Browse = () => {
         >
           <RotateCcw className="h-5 w-5 text-primary shrink-0" />
           <div className="flex-1">
-            <p className="text-sm font-bold text-foreground">Quick Reorder</p>
-            <p className="text-xs text-muted-foreground">Repeat your last order ({orders[0].id}) · ${orders[0].total.toFixed(2)}</p>
+            <p className="text-sm font-bold text-foreground">{t('browse.quickReorder')}</p>
+            <p className="text-xs text-muted-foreground">{t('browse.repeatLastOrder')} ({orders[0].id}) · ${orders[0].total.toFixed(2)}</p>
           </div>
-          <span className="text-xs font-bold text-primary">Tap</span>
+          <span className="text-xs font-bold text-primary">{t('browse.tap')}</span>
         </button>
       )}
 
-      {/* Search */}
       <div className="px-4 pb-1.5 pt-2">
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder={isRestaurant ? 'Search bulk items...' : 'Search groceries...'}
+            placeholder={isRestaurant ? t('browse.searchBulk') : t('browse.searchGroceries')}
             value={search}
             onChange={e => {
               setSearch(e.target.value);
@@ -179,12 +178,11 @@ const Browse = () => {
             animate={{ opacity: 1 }}
             className="mt-1 text-xs font-semibold text-destructive text-center"
           >
-            🎙️ Listening... speak now
+            {t('browse.listening')}
           </motion.p>
         )}
       </div>
 
-      {/* Price Filters — animated */}
       <AnimatePresence>
         {showFilters && (
           <motion.div
@@ -228,7 +226,6 @@ const Browse = () => {
         )}
       </AnimatePresence>
 
-      {/* Favorites quick-access */}
       {favorites.length > 0 && viewMode === 'categories' && !search.trim() && (
         <div className="px-4 mb-2">
           <button
@@ -237,10 +234,10 @@ const Browse = () => {
           >
             <Heart className="h-5 w-5 text-destructive fill-destructive shrink-0" />
             <div className="flex-1">
-              <p className="text-sm font-bold text-foreground">My Favorites</p>
-              <p className="text-xs text-muted-foreground">{favorites.length} saved item{favorites.length !== 1 ? 's' : ''}</p>
+              <p className="text-sm font-bold text-foreground">{t('browse.myFavorites')}</p>
+              <p className="text-xs text-muted-foreground">{favorites.length} {favorites.length !== 1 ? t('browse.savedItems') : t('browse.savedItem')}</p>
             </div>
-            <span className="text-xs font-bold text-destructive">View</span>
+            <span className="text-xs font-bold text-destructive">{t('browse.view')}</span>
           </button>
         </div>
       )}
@@ -249,9 +246,9 @@ const Browse = () => {
         <div className="px-4">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-              <Heart className="h-5 w-5 text-destructive fill-destructive" /> My Favorites
+              <Heart className="h-5 w-5 text-destructive fill-destructive" /> {t('browse.myFavorites')}
             </h2>
-            <button onClick={() => setViewMode('categories')} className="text-xs font-bold text-primary">Back</button>
+            <button onClick={() => setViewMode('categories')} className="text-xs font-bold text-primary">{t('browse.back')}</button>
           </div>
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
             {favorites.map(id => {
@@ -299,11 +296,10 @@ const Browse = () => {
             }}
           />
 
-          {/* Results count */}
           <div className="px-4 pb-1">
             <p className="text-xs font-semibold text-muted-foreground">
-              {filtered.length} item{filtered.length !== 1 ? 's' : ''}
-              {activeCategory ? ` in ${categories.find(c => c.id === activeCategory)?.label}` : ''}
+              {filtered.length} {filtered.length !== 1 ? t('browse.items') : t('browse.item')}
+              {activeCategory ? ` ${t('browse.in')} ${categories.find(c => c.id === activeCategory)?.label}` : ''}
               {activePriceRange !== null ? ` · ${priceRanges[activePriceRange].label}` : ''}
             </p>
           </div>
@@ -316,10 +312,10 @@ const Browse = () => {
           {filtered.length === 0 && (
             <div className="flex flex-col items-center px-4 py-12 text-center">
               <span className="text-5xl mb-3">🔍</span>
-              <p className="text-lg font-bold text-foreground mb-1">No items found</p>
-              <p className="text-sm text-muted-foreground mb-4">Try a different search or filter.</p>
+              <p className="text-lg font-bold text-foreground mb-1">{t('browse.noItemsFound')}</p>
+              <p className="text-sm text-muted-foreground mb-4">{t('browse.tryDifferent')}</p>
               <button onClick={clearAllFilters} className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground active:scale-95 transition-transform">
-                Clear Filters
+                {t('browse.clearFilters')}
               </button>
             </div>
           )}

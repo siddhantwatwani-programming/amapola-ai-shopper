@@ -8,12 +8,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import logoAmapola from '@/assets/logo-amapola.png';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/store/languageContext';
 
 type LoginMethod = 'email' | 'phone';
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [method, setMethod] = useState<LoginMethod>('email');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -35,12 +37,12 @@ const Login = () => {
       const { error } = await supabase.auth.signInWithPassword(credentials);
 
       if (error) {
-        toast({ title: 'Login failed', description: error.message, variant: 'destructive' });
+        toast({ title: t('login.failed'), description: error.message, variant: 'destructive' });
       } else {
         navigate('/welcome', { replace: true });
       }
     } catch {
-      toast({ title: 'Error', description: 'Something went wrong', variant: 'destructive' });
+      toast({ title: t('login.error'), description: t('login.somethingWrong'), variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -56,11 +58,10 @@ const Login = () => {
       >
         <div className="flex flex-col items-center mb-8">
           <img src={logoAmapola} alt="Amapola" className="h-20 w-auto object-contain mb-3 md:h-24" />
-          <h1 className="text-2xl font-bold text-foreground md:text-3xl">Welcome back</h1>
-          <p className="text-sm text-muted-foreground mt-1">Sign in to your account</p>
+          <h1 className="text-2xl font-bold text-foreground md:text-3xl">{t('login.welcomeBack')}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t('login.signInToAccount')}</p>
         </div>
 
-        {/* Method toggle */}
         <div className="flex rounded-xl bg-muted p-1 mb-5">
           {(['email', 'phone'] as LoginMethod[]).map((m) => (
             <button
@@ -71,7 +72,7 @@ const Login = () => {
                 method === m ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'
               )}
             >
-              {m === 'email' ? 'Email' : 'Phone'}
+              {m === 'email' ? t('login.email') : t('login.phone')}
             </button>
           ))}
         </div>
@@ -83,7 +84,7 @@ const Login = () => {
               <Input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email address"
+                placeholder={t('login.emailPlaceholder')}
                 type="email"
                 className="h-14 rounded-xl text-base pl-14 border border-border focus:border-primary"
                 autoFocus
@@ -109,7 +110,7 @@ const Login = () => {
             <Input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
+              placeholder={t('login.password')}
               type={showPassword ? 'text' : 'password'}
               className="h-14 rounded-xl text-base pl-14 pr-14 border border-border focus:border-primary"
             />
@@ -129,15 +130,15 @@ const Login = () => {
           disabled={loading}
           className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform"
         >
-          {loading ? 'Signing in…' : (
-            <span className="flex items-center gap-2">Sign In <ArrowRight className="h-5 w-5" /></span>
+          {loading ? t('login.signingIn') : (
+            <span className="flex items-center gap-2">{t('login.signIn')} <ArrowRight className="h-5 w-5" /></span>
           )}
         </Button>
 
         <p className="mt-5 text-center text-sm text-muted-foreground">
-          Don't have an account?{' '}
+          {t('login.noAccount')}{' '}
           <Link to="/signup" className="font-semibold text-primary hover:underline">
-            Sign Up
+            {t('login.signUp')}
           </Link>
         </p>
 
@@ -145,7 +146,7 @@ const Login = () => {
           onClick={() => navigate('/welcome')}
           className="mt-3 w-full text-center text-sm font-medium text-muted-foreground active:text-foreground transition-colors"
         >
-          Continue as guest
+          {t('login.continueAsGuest')}
         </button>
       </motion.div>
     </div>

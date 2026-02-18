@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MapPin, Clock, CheckCircle2, Zap, Users, Timer } from 'lucide-react';
 import { useStore, stores, type StoreLocation } from '@/store/storeContext';
+import { useLanguage } from '@/store/languageContext';
 import { cn } from '@/lib/utils';
 import {
   Sheet,
@@ -23,6 +24,7 @@ const statusIcon = (status: string) => {
 
 const StoreSwitcher = ({ open, onOpenChange }: StoreSwitcherProps) => {
   const { selectedStore, setSelectedStore } = useStore();
+  const { t } = useLanguage();
 
   const handleSelect = (store: StoreLocation) => {
     setSelectedStore(store);
@@ -33,9 +35,9 @@ const StoreSwitcher = ({ open, onOpenChange }: StoreSwitcherProps) => {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="rounded-t-3xl px-5 pb-8 pt-6 max-h-[85vh] overflow-y-auto">
         <SheetHeader className="mb-4">
-          <SheetTitle className="text-xl font-bold">Switch Store</SheetTitle>
+          <SheetTitle className="text-xl font-bold">{t('store.switchStore')}</SheetTitle>
           <SheetDescription className="text-sm">
-            Your cart stays intact. Availability updates instantly.
+            {t('store.cartIntact')}
           </SheetDescription>
         </SheetHeader>
 
@@ -62,7 +64,7 @@ const StoreSwitcher = ({ open, onOpenChange }: StoreSwitcherProps) => {
                       </h3>
                       {isNearest && (
                         <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-bold text-accent">
-                          Nearest
+                          {t('welcome.nearest')}
                         </span>
                       )}
                     </div>
@@ -74,7 +76,7 @@ const StoreSwitcher = ({ open, onOpenChange }: StoreSwitcherProps) => {
                       </span>
                       <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                         <Clock className="h-3.5 w-3.5" />
-                        Ready in {store.pickupTime}
+                        {t('welcome.readyIn')} {store.pickupTime}
                       </span>
                     </div>
                   </div>

@@ -2,30 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, MapPin, CalendarDays, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-const slides = [
-  {
-    icon: Sparkles,
-    emoji: '🤖',
-    title: 'AI Grocery Assistant',
-    description: 'Tell us what you\'re cooking and we\'ll find everything you need. Meal plans, pairings, and budget tips — powered by AI.',
-    color: 'bg-primary/10 text-primary',
-  },
-  {
-    icon: CalendarDays,
-    emoji: '📅',
-    title: 'Flexible Pickup',
-    description: 'Pick up now, schedule for later, or set up recurring orders for your business. We adapt to your schedule.',
-    color: 'bg-accent/10 text-accent',
-  },
-  {
-    icon: MapPin,
-    emoji: '📍',
-    title: 'Store Specialties',
-    description: 'Each Amapola location has unique house-made items. Our AI knows what\'s fresh and special at your nearest store.',
-    color: 'bg-secondary text-secondary-foreground',
-  },
-];
+import { useLanguage } from '@/store/languageContext';
 
 interface OnboardingTourProps {
   onComplete: () => void;
@@ -33,6 +10,31 @@ interface OnboardingTourProps {
 
 const OnboardingTour = ({ onComplete }: OnboardingTourProps) => {
   const [current, setCurrent] = useState(0);
+  const { t } = useLanguage();
+
+  const slides = [
+    {
+      icon: Sparkles,
+      emoji: '🤖',
+      title: t('onboarding.slide1.title'),
+      description: t('onboarding.slide1.desc'),
+      color: 'bg-primary/10 text-primary',
+    },
+    {
+      icon: CalendarDays,
+      emoji: '📅',
+      title: t('onboarding.slide2.title'),
+      description: t('onboarding.slide2.desc'),
+      color: 'bg-accent/10 text-accent',
+    },
+    {
+      icon: MapPin,
+      emoji: '📍',
+      title: t('onboarding.slide3.title'),
+      description: t('onboarding.slide3.desc'),
+      color: 'bg-secondary text-secondary-foreground',
+    },
+  ];
 
   const next = () => {
     if (current < slides.length - 1) setCurrent(current + 1);
@@ -40,7 +42,6 @@ const OnboardingTour = ({ onComplete }: OnboardingTourProps) => {
   };
 
   const slide = slides[current];
-  const Icon = slide.icon;
 
   return (
     <motion.div
@@ -79,7 +80,6 @@ const OnboardingTour = ({ onComplete }: OnboardingTourProps) => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Dots */}
         <div className="flex justify-center gap-2 mt-8 mb-6">
           {slides.map((_, i) => (
             <button
@@ -98,9 +98,9 @@ const OnboardingTour = ({ onComplete }: OnboardingTourProps) => {
           className="h-14 w-full rounded-2xl text-lg font-bold active:scale-[0.97] transition-transform"
         >
           {current < slides.length - 1 ? (
-            <span className="flex items-center gap-2">Next <ChevronRight className="h-5 w-5" /></span>
+            <span className="flex items-center gap-2">{t('onboarding.next')} <ChevronRight className="h-5 w-5" /></span>
           ) : (
-            'Start Shopping 🛒'
+            t('onboarding.startShopping')
           )}
         </Button>
       </div>

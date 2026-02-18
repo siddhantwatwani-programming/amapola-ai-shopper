@@ -4,23 +4,24 @@ import { CheckCircle2, Clock, ChefHat, Package, MapPin, ArrowLeft } from 'lucide
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/storeContext';
 import { useOrderHistory } from '@/store/orderHistoryContext';
+import { useLanguage } from '@/store/languageContext';
 import { Button } from '@/components/ui/button';
 import logoAmapola from '@/assets/logo-amapola.png';
-
-const steps = [
-  { id: 'received', label: 'Order Received', icon: CheckCircle2, description: 'We got your order!' },
-  { id: 'preparing', label: 'Preparing', icon: ChefHat, description: 'Our team is gathering your items' },
-  { id: 'ready', label: 'Ready for Pickup', icon: Package, description: 'Head to the counter!' },
-];
 
 const OrderStatus = () => {
   const navigate = useNavigate();
   const { selectedStore } = useStore();
   const { orders } = useOrderHistory();
+  const { t } = useLanguage();
   const latestOrder = orders[0];
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Simulate order progress
+  const steps = [
+    { id: 'received', label: t('status.orderReceived'), icon: CheckCircle2, description: t('status.receivedDesc') },
+    { id: 'preparing', label: t('status.preparing'), icon: ChefHat, description: t('status.preparingDesc') },
+    { id: 'ready', label: t('status.readyForPickup'), icon: Package, description: t('status.readyDesc') },
+  ];
+
   useEffect(() => {
     if (currentStep >= steps.length - 1) return;
     const timer = setTimeout(() => setCurrentStep(prev => prev + 1), currentStep === 0 ? 8000 : 15000);
@@ -31,16 +32,15 @@ const OrderStatus = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen px-6">
         <span className="text-6xl mb-4">📦</span>
-        <h2 className="text-xl font-bold text-foreground mb-2">No active orders</h2>
-        <p className="text-muted-foreground mb-6">Place an order to track it here</p>
-        <Button onClick={() => navigate('/browse')}>Start Shopping</Button>
+        <h2 className="text-xl font-bold text-foreground mb-2">{t('status.noActiveOrders')}</h2>
+        <p className="text-muted-foreground mb-6">{t('status.placeAnOrder')}</p>
+        <Button onClick={() => navigate('/browse')}>{t('status.startShopping')}</Button>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col min-h-screen bg-background pb-28">
-      {/* Header */}
       <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b border-border px-4 py-3">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/browse')} className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-foreground active:scale-95 transition-transform">
@@ -48,14 +48,13 @@ const OrderStatus = () => {
           </button>
           <img src={logoAmapola} alt="Amapola" className="h-8 w-auto" />
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-foreground">Order {latestOrder.id}</h1>
+            <h1 className="text-lg font-bold text-foreground">{t('status.order')} {latestOrder.id}</h1>
             <p className="text-xs text-muted-foreground">{latestOrder.date}</p>
           </div>
         </div>
       </div>
 
       <div className="px-6 pt-8">
-        {/* Live status indicator */}
         <motion.div
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ repeat: Infinity, duration: 2 }}
@@ -65,10 +64,9 @@ const OrderStatus = () => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
             <span className="relative inline-flex rounded-full h-3 w-3 bg-accent" />
           </span>
-          <span className="text-sm font-bold text-accent">Live Tracking</span>
+          <span className="text-sm font-bold text-accent">{t('status.liveTracking')}</span>
         </motion.div>
 
-        {/* Progress Steps */}
         <div className="relative">
           {steps.map((step, index) => {
             const StepIcon = step.icon;
@@ -77,7 +75,6 @@ const OrderStatus = () => {
 
             return (
               <div key={step.id} className="flex gap-4 mb-8 last:mb-0">
-                {/* Vertical line + circle */}
                 <div className="flex flex-col items-center">
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0.5 }}
@@ -105,7 +102,6 @@ const OrderStatus = () => {
                   )}
                 </div>
 
-                {/* Content */}
                 <div className="pt-2">
                   <motion.h3
                     animate={{ opacity: isComplete ? 1 : 0.4 }}
@@ -123,7 +119,7 @@ const OrderStatus = () => {
                       className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-accent"
                     >
                       <Clock className="h-3.5 w-3.5" />
-                      {index === 0 ? 'Just now' : index === 1 ? '~10 min remaining' : 'Come to the counter!'}
+                      {index === 0 ? t('status.justNow') : index === 1 ? t('status.10minRemaining') : t('status.comeToCounter')}
                     </motion.div>
                   )}
                 </div>
@@ -132,7 +128,6 @@ const OrderStatus = () => {
           })}
         </div>
 
-        {/* Store info */}
         <div className="mt-6 rounded-2xl border-2 border-border bg-card p-4">
           <div className="flex items-center gap-3">
             <MapPin className="h-5 w-5 text-primary shrink-0" />
@@ -143,9 +138,8 @@ const OrderStatus = () => {
           </div>
         </div>
 
-        {/* Order summary */}
         <div className="mt-4 rounded-2xl bg-muted/50 p-4">
-          <h3 className="text-sm font-bold text-foreground mb-2">Order Summary</h3>
+          <h3 className="text-sm font-bold text-foreground mb-2">{t('status.orderSummary')}</h3>
           <div className="space-y-1">
             {latestOrder.items.slice(0, 5).map(i => (
               <div key={i.product.id} className="flex justify-between text-xs text-muted-foreground">
@@ -154,11 +148,11 @@ const OrderStatus = () => {
               </div>
             ))}
             {latestOrder.items.length > 5 && (
-              <p className="text-xs text-muted-foreground/60">+{latestOrder.items.length - 5} more items</p>
+              <p className="text-xs text-muted-foreground/60">+{latestOrder.items.length - 5} {t('status.moreItems')}</p>
             )}
           </div>
           <div className="flex justify-between mt-2 pt-2 border-t border-border">
-            <span className="text-sm font-bold text-foreground">Total</span>
+            <span className="text-sm font-bold text-foreground">{t('status.total')}</span>
             <span className="text-sm font-bold text-foreground">${latestOrder.total.toFixed(2)}</span>
           </div>
         </div>
@@ -169,7 +163,7 @@ const OrderStatus = () => {
           onClick={() => navigate('/browse')}
           className="mt-6 h-14 w-full rounded-2xl text-base font-bold"
         >
-          Continue Shopping
+          {t('status.continueShopping')}
         </Button>
       </div>
     </div>

@@ -11,6 +11,7 @@ import { useMode } from '@/store/modeContext';
 import { usePickup } from '@/store/pickupContext';
 import { useOrderHistory } from '@/store/orderHistoryContext';
 import { useCart } from '@/store/cartStore';
+import { useLanguage } from '@/store/languageContext';
 import ProductCard from '@/components/ProductCard';
 import PageHeader from '@/components/PageHeader';
 
@@ -27,6 +28,7 @@ const AiAssistant = () => {
   const { selectedStore } = useStore();
   const { customer } = useCustomer();
   const { isRestaurant, mode, qtyStep } = useMode();
+  const { t } = useLanguage();
   const { scheduleLabel, dynamicLabel, pickupWarning } = usePickup();
   const { orders } = useOrderHistory();
   const { items: cartItems, totalItems: cartTotal, addItem } = useCart();
@@ -540,7 +542,7 @@ const AiAssistant = () => {
 
   return (
     <div className="flex h-full flex-col pb-28">
-      <PageHeader title="Market Assistant" subtitle={`${isRestaurant ? 'Bulk ordering' : 'Shopping'} at ${selectedStore.name}`} />
+      <PageHeader title={t('ai.title')} subtitle={`${isRestaurant ? t('ai.bulkOrdering') : t('ai.shopping')} ${t('ai.at')} ${selectedStore.name}`} />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3">
         <AnimatePresence initial={false}>
@@ -570,7 +572,7 @@ const AiAssistant = () => {
                         className="mt-1 flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground active:scale-95 transition-transform"
                       >
                         <Plus className="h-4 w-4" />
-                        Add all to cart
+                        {t('ai.addAllToCart')}
                       </button>
                     </div>
                   )}
@@ -593,7 +595,7 @@ const AiAssistant = () => {
               <button onClick={() => send('reorder')}
                 className="rounded-full border-2 border-primary/30 bg-primary/5 px-3 py-2 text-xs font-bold text-primary active:scale-95 transition-all flex items-center gap-1.5">
                 <RotateCcw className="h-3.5 w-3.5" />
-                Reorder last
+                {t('ai.reorderLast')}
               </button>
             )}
           </div>
@@ -621,7 +623,7 @@ const AiAssistant = () => {
       <div className="border-t border-border bg-background/95 px-4 py-3 backdrop-blur-md">
         <div className="flex gap-2">
           <Input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()}
-            placeholder={isRestaurant ? 'What does your kitchen need?' : 'What are you cooking today?'}
+            placeholder={isRestaurant ? t('ai.placeholderRestaurant') : t('ai.placeholderConsumer')}
             className="h-13 flex-1 rounded-xl border-muted bg-muted/50 text-base md:text-lg px-4" />
           <Button size="icon" onClick={() => send()} className="h-13 w-13 shrink-0 rounded-xl px-3 active:scale-95 transition-transform">
             <Send className="h-5 w-5" />
