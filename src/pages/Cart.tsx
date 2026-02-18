@@ -8,6 +8,7 @@ import { useCustomer } from '@/store/customerContext';
 import { useMode } from '@/store/modeContext';
 import { usePickup } from '@/store/pickupContext';
 import { useOrderHistory } from '@/store/orderHistoryContext';
+import { useLanguage } from '@/store/languageContext';
 import { Button } from '@/components/ui/button';
 import PageHeader from '@/components/PageHeader';
 import StoreSwitcher from '@/components/StoreSwitcher';
@@ -21,6 +22,7 @@ const Cart = () => {
   const { isRestaurant, qtyStep } = useMode();
   const { scheduleLabel, dynamicLabel, pickupWarning } = usePickup();
   const { orders } = useOrderHistory();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [schedulerOpen, setSchedulerOpen] = useState(false);
@@ -73,20 +75,20 @@ const Cart = () => {
   if (items.length === 0) {
     return (
       <div className="flex flex-col pb-28">
-        <PageHeader title="Cart" />
+        <PageHeader title={t('cart.title')} />
         <div className="flex flex-col items-center justify-center px-6 pt-12 text-center">
           <span className="mb-5 text-7xl">🛒</span>
-          <h2 className="mb-2 text-2xl font-bold text-foreground md:text-3xl">Your cart is empty</h2>
-          <p className="text-base text-muted-foreground md:text-lg">Browse our store and add some items!</p>
+          <h2 className="mb-2 text-2xl font-bold text-foreground md:text-3xl">{t('cart.empty.title')}</h2>
+          <p className="text-base text-muted-foreground md:text-lg">{t('cart.empty.subtitle')}</p>
           <Button size="lg" onClick={() => navigate('/browse')} className="mt-8 h-14 rounded-2xl px-10 text-lg font-bold active:scale-95 transition-transform">
-            Start Shopping
+            {t('cart.startShopping')}
           </Button>
         </div>
         {orders.length > 0 && (
           <div className="px-4 mt-8">
             <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
               <RotateCcw className="h-5 w-5 text-primary" />
-              Reorder a Previous Order
+              {t('cart.reorderPrevious')}
             </h3>
             <div className="space-y-2">
               {orders.map(order => (
@@ -99,7 +101,7 @@ const Cart = () => {
                   <p className="text-xs text-muted-foreground">{order.items.map(i => `${i.product.name} ×${i.quantity}`).join(', ')}</p>
                   <div className="flex items-center justify-between mt-2">
                     <span className="text-sm font-bold text-foreground">${order.total.toFixed(2)}</span>
-                    <span className="text-xs text-primary font-semibold">Tap to reorder</span>
+                    <span className="text-xs text-primary font-semibold">{t('cart.tapToReorder')}</span>
                   </div>
                 </button>
               ))}
@@ -130,14 +132,14 @@ const Cart = () => {
 
   return (
     <div className="flex flex-col pb-28">
-      <PageHeader title="Cart" subtitle={`${totalItems} item${totalItems !== 1 ? 's' : ''}${isRestaurant ? ' · Bulk' : ''}`} />
+      <PageHeader title={t('cart.title')} subtitle={`${totalItems} ${totalItems !== 1 ? t('browse.items') : t('browse.item')}${isRestaurant ? ' · ' + t('cart.bulk') : ''}`} />
 
       {/* Mode + schedule info */}
       <div className="mx-4 mb-1.5 flex gap-2">
         {isRestaurant && (
           <div className="flex items-center gap-1.5 rounded-xl bg-secondary/50 px-3 py-1.5 text-xs font-bold text-secondary-foreground">
             <UtensilsCrossed className="h-3 w-3" />
-            Restaurant Order
+            {t('cart.restaurantOrder')}
           </div>
         )}
         <button onClick={() => setSchedulerOpen(true)} className="flex items-center gap-1.5 rounded-xl bg-primary/5 px-3 py-1.5 text-xs font-bold text-primary active:bg-primary/10 transition-colors">
@@ -150,7 +152,7 @@ const Cart = () => {
       <div className="mx-4 mb-2 flex items-center gap-3 rounded-2xl bg-muted/50 px-3 py-2.5">
         <MapPin className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm text-muted-foreground flex-1 md:text-base">
-          Pickup at <span className="font-bold text-foreground">Amapola — {selectedStore.name}</span>
+          {t('cart.pickupAt')} <span className="font-bold text-foreground">Amapola — {selectedStore.name}</span>
         </span>
         <span className="flex items-center gap-1.5 text-sm text-accent font-bold md:text-base">
           <Clock className="h-4 w-4" />{dynamicLabel}
@@ -169,7 +171,7 @@ const Cart = () => {
         <div className="mx-4 mb-2 flex items-start gap-2 rounded-2xl bg-destructive/5 border border-destructive/20 p-3">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
           <div>
-            <p className="text-sm font-bold text-destructive">{unavailableItems.length} item{unavailableItems.length > 1 ? 's' : ''} not available at {selectedStore.name}</p>
+            <p className="text-sm font-bold text-destructive">{unavailableItems.length} {unavailableItems.length > 1 ? t('browse.items') : t('browse.item')} {t('cart.notAvailableAt')} {selectedStore.name}</p>
             <p className="text-xs text-muted-foreground mt-0.5">{unavailableItems.map(i => i.product.name).join(', ')}</p>
           </div>
         </div>
@@ -208,7 +210,7 @@ const Cart = () => {
                 <p className="truncate text-xs font-bold text-foreground md:text-sm">{product.name}</p>
                 <p className="text-[11px] text-muted-foreground">
                   ${(product.price * quantity).toFixed(2)}
-                  {!avail && <span className="ml-1 text-destructive font-semibold">· Not at {selectedStore.name}</span>}
+                  {!avail && <span className="ml-1 text-destructive font-semibold">· {t('cart.notAvailableAt')} {selectedStore.name}</span>}
                 </p>
               </div>
               <div className="flex items-center gap-1">
@@ -233,14 +235,14 @@ const Cart = () => {
 
       <div className="mx-4 mt-4 space-y-3">
         <div className="flex items-center justify-between rounded-2xl bg-muted/60 px-4 py-3">
-          <span className="text-sm font-semibold text-muted-foreground">Subtotal</span>
+          <span className="text-sm font-semibold text-muted-foreground">{t('cart.subtotal')}</span>
           <span className="text-xl font-bold text-foreground">${totalPrice.toFixed(2)}</span>
         </div>
         <Button size="lg" onClick={() => navigate('/confirmation')} className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform md:h-16 md:text-xl">
-          Confirm Pickup Order
+          {t('cart.confirmPickup')}
         </Button>
         <Button variant="outline" size="lg" onClick={() => setSwitcherOpen(true)} className="h-12 w-full rounded-2xl text-base font-semibold border-2 active:scale-[0.97] transition-transform">
-          Change Store
+          {t('cart.changeStore')}
         </Button>
       </div>
 

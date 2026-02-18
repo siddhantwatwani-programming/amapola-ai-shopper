@@ -10,6 +10,7 @@ import { useMode, type AppMode } from '@/store/modeContext';
 import { cn } from '@/lib/utils';
 import logoAmapola from '@/assets/logo-amapola.png';
 import OnboardingTour from '@/components/OnboardingTour';
+import { useLanguage } from '@/store/languageContext';
 
 type Step = 'entry' | 'mode' | 'store' | 'identify';
 
@@ -18,6 +19,7 @@ const Welcome = () => {
   const { selectedStore, setSelectedStore } = useStore();
   const { setCustomer } = useCustomer();
   const { mode, setMode } = useMode();
+  const { t } = useLanguage();
   const [step, setStep] = useState<Step>('entry');
   const [confirmed, setConfirmed] = useState(false);
   const [firstName, setFirstName] = useState('');
@@ -70,8 +72,8 @@ const Welcome = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1, type: 'spring', stiffness: 180 }}
           />
-          <h1 className="text-2xl font-bold text-foreground mb-1.5 md:text-3xl">Welcome to Amapola</h1>
-          <p className="text-base text-muted-foreground mb-6 md:text-lg">Your neighborhood market, now on screen</p>
+          <h1 className="text-2xl font-bold text-foreground mb-1.5 md:text-3xl">{t('welcome.title')}</h1>
+          <p className="text-base text-muted-foreground mb-6 md:text-lg">{t('welcome.subtitle')}</p>
           <div className="w-full space-y-3 max-w-sm">
             <Button
               size="lg"
@@ -79,7 +81,7 @@ const Welcome = () => {
               className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform md:h-16 md:text-xl"
             >
               <ShoppingBag className="mr-3 h-6 w-6 md:h-7 md:w-7" />
-              Order for Pickup
+              {t('welcome.orderForPickup')}
             </Button>
             <Button
               variant="outline"
@@ -88,10 +90,10 @@ const Welcome = () => {
               className="h-12 w-full rounded-2xl text-base font-semibold border-2 active:scale-[0.97] transition-transform md:h-14 md:text-lg"
             >
               <MapPin className="mr-3 h-5 w-5 md:h-6 md:w-6" />
-              Find Nearest Store
+              {t('welcome.findNearestStore')}
             </Button>
           </div>
-          <p className="mt-5 text-xs text-muted-foreground">Touch to begin · No account needed</p>
+          <p className="mt-5 text-xs text-muted-foreground">{t('welcome.touchToBegin')}</p>
         </motion.div>
       </div>
       </>
@@ -101,8 +103,8 @@ const Welcome = () => {
   // --- MODE SELECTION ---
   if (step === 'mode') {
     const modes: { id: AppMode; icon: typeof Store; title: string; desc: string }[] = [
-      { id: 'consumer', icon: ShoppingBag, title: 'Personal Shopping', desc: 'Household groceries, everyday quantities' },
-      { id: 'restaurant', icon: UtensilsCrossed, title: 'Restaurant / Business', desc: 'Bulk ordering, repeat pickups, wholesale pricing' },
+      { id: 'consumer', icon: ShoppingBag, title: t('welcome.personalShopping'), desc: t('welcome.personalDesc') },
+      { id: 'restaurant', icon: UtensilsCrossed, title: t('welcome.restaurantBusiness'), desc: t('welcome.restaurantDesc') },
     ];
     return (
       <div className="flex min-h-screen flex-col bg-background">
@@ -113,8 +115,8 @@ const Welcome = () => {
         </div>
         <div className="flex flex-1 flex-col items-center justify-center px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
-            <h2 className="text-2xl font-bold text-foreground mb-2 text-center md:text-3xl">How are you ordering?</h2>
-            <p className="text-sm text-muted-foreground mb-5 text-center">Choose your ordering mode</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2 text-center md:text-3xl">{t('welcome.howOrdering')}</h2>
+            <p className="text-sm text-muted-foreground mb-5 text-center">{t('welcome.chooseMode')}</p>
             <div className="space-y-3">
               {modes.map(m => {
                 const Icon = m.icon;
@@ -150,7 +152,7 @@ const Welcome = () => {
               onClick={() => setStep('store')}
               className="mt-5 h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform"
             >
-              Continue <ArrowRight className="ml-2 h-5 w-5" />
+              {t('welcome.continue')} <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </motion.div>
         </div>
@@ -166,7 +168,7 @@ const Welcome = () => {
           <div className="flex items-center justify-between max-w-lg mx-auto">
             <img src={logoAmapola} alt="Amapola" className="h-8 w-auto object-contain" />
             <span className="text-xs font-semibold text-muted-foreground">
-              {mode === 'restaurant' ? '🏪 Restaurant' : '🛒 Personal'} · {selectedStore.name}
+              {mode === 'restaurant' ? `🏪 ${t('welcome.restaurant')}` : `🛒 ${t('welcome.personal')}`} · {selectedStore.name}
             </span>
           </div>
         </div>
@@ -176,15 +178,15 @@ const Welcome = () => {
               <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                 <User className="h-8 w-8 text-primary" />
               </div>
-              <h2 className="text-2xl font-bold text-foreground mb-2 md:text-3xl">Almost ready!</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-2 md:text-3xl">{t('welcome.almostReady')}</h2>
               <p className="text-base text-muted-foreground md:text-lg">
-                {mode === 'restaurant' ? 'Business name & contact for bulk orders' : 'So we can identify your order at pickup'}
+                {mode === 'restaurant' ? t('welcome.identifyRestaurant') : t('welcome.identifyConsumer')}
               </p>
             </div>
             <div className="space-y-3 mb-5">
               <div>
                 <label className="block text-sm font-bold text-foreground mb-1.5">
-                  {mode === 'restaurant' ? 'Business / Contact Name' : 'First Name'}
+                  {mode === 'restaurant' ? t('welcome.businessName') : t('welcome.firstNameLabel')}
                 </label>
                 <Input
                   value={firstName}
@@ -195,7 +197,7 @@ const Welcome = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold text-foreground mb-1.5">Mobile Number</label>
+                <label className="block text-sm font-bold text-foreground mb-1.5">{t('welcome.mobileNumber')}</label>
                 <Input
                   value={phone}
                   onChange={e => setPhone(e.target.value.replace(/[^0-9()-\s+]/g, ''))}
@@ -213,13 +215,13 @@ const Welcome = () => {
               className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform md:h-16 md:text-xl"
             >
               {confirmed ? (
-                <span className="flex items-center gap-2"><CheckCircle2 className="h-6 w-6" />Opening store…</span>
+                <span className="flex items-center gap-2"><CheckCircle2 className="h-6 w-6" />{t('welcome.openingStore')}</span>
               ) : (
-                <span className="flex items-center gap-2">Continue to Order<ArrowRight className="h-6 w-6" /></span>
+                <span className="flex items-center gap-2">{t('welcome.continueToOrder')}<ArrowRight className="h-6 w-6" /></span>
               )}
             </Button>
             <button onClick={handleIdentifyConfirm} className="mt-4 w-full text-center text-sm font-medium text-muted-foreground active:text-foreground transition-colors">
-              Skip for now
+              {t('welcome.skipForNow')}
             </button>
           </motion.div>
         </div>
@@ -235,7 +237,7 @@ const Welcome = () => {
           <img src={logoAmapola} alt="Amapola" className="h-8 w-auto object-contain" />
           <div className="flex items-center gap-1.5 text-accent">
             <Navigation className="h-3.5 w-3.5" />
-            <span className="text-xs font-semibold">Locating stores…</span>
+            <span className="text-xs font-semibold">{t('welcome.locatingStores')}</span>
           </div>
         </div>
       </div>
@@ -256,7 +258,7 @@ const Welcome = () => {
                   </motion.button>
                 ))}
               </div>
-              <p className="text-xs text-muted-foreground">Tap a pin to select</p>
+              <p className="text-xs text-muted-foreground">{t('welcome.tapAPin')}</p>
             </div>
           </div>
         </div>
@@ -274,12 +276,12 @@ const Welcome = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2.5 mb-1">
                       <h3 className="text-base font-bold text-foreground md:text-lg">Amapola — {store.name}</h3>
-                      {isNearest && <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-bold text-accent">Nearest</span>}
+                      {isNearest && <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-bold text-accent">{t('welcome.nearest')}</span>}
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">{store.address}</p>
                     <div className="flex items-center gap-4">
                       <span className="flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="h-3.5 w-3.5" />{store.distance}</span>
-                      <span className="flex items-center gap-1.5 text-sm font-medium text-foreground"><Clock className="h-3.5 w-3.5" />Ready in {store.pickupTime}</span>
+                      <span className="flex items-center gap-1.5 text-sm font-medium text-foreground"><Clock className="h-3.5 w-3.5" />{t('welcome.readyIn')} {store.pickupTime}</span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
@@ -297,11 +299,11 @@ const Welcome = () => {
 
         <motion.div key={selectedStore.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4 rounded-2xl bg-muted/60 px-4 py-3 text-center">
           <p className="text-base font-semibold text-foreground md:text-lg">Amapola — {selectedStore.name}</p>
-          <p className="text-sm text-muted-foreground mt-1">Ready in <span className="font-bold text-foreground">{selectedStore.pickupTime}</span> · Pickup at front counter or kiosk</p>
+          <p className="text-sm text-muted-foreground mt-1">{t('welcome.readyIn')} <span className="font-bold text-foreground">{selectedStore.pickupTime}</span> · {t('welcome.pickupAtCounter')}</p>
         </motion.div>
 
         <Button size="lg" onClick={handleStoreConfirm} className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform md:h-16 md:text-xl">
-          <span className="flex items-center gap-2"><ShoppingBag className="h-6 w-6" />Continue</span>
+          <span className="flex items-center gap-2"><ShoppingBag className="h-6 w-6" />{t('welcome.continue')}</span>
         </Button>
       </div>
     </div>

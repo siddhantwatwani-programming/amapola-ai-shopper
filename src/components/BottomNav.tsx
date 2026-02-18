@@ -1,20 +1,22 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Sparkles, ShoppingCart, Search, ClipboardList } from 'lucide-react';
 import { useCart } from '@/store/cartStore';
+import { useLanguage } from '@/store/languageContext';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-
-const tabs = [
-  { path: '/browse', label: 'Browse', icon: Search },
-  { path: '/assistant', label: 'Ask AI', icon: Sparkles },
-  { path: '/cart', label: 'Cart', icon: ShoppingCart },
-  { path: '/order-status', label: 'Orders', icon: ClipboardList },
-];
 
 const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { totalItems } = useCart();
+  const { t } = useLanguage();
+
+  const tabs = [
+    { path: '/browse', label: t('nav.browse'), icon: Search },
+    { path: '/assistant', label: t('nav.askAi'), icon: Sparkles },
+    { path: '/cart', label: t('nav.cart'), icon: ShoppingCart },
+    { path: '/order-status', label: t('nav.orders'), icon: ClipboardList },
+  ];
 
   const hiddenRoutes = ['/', '/login', '/signup', '/welcome', '/confirmation'];
   if (hiddenRoutes.includes(location.pathname)) return null;

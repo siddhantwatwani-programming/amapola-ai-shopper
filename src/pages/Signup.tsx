@@ -7,10 +7,12 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import logoAmapola from '@/assets/logo-amapola.png';
+import { useLanguage } from '@/store/languageContext';
 
 const Signup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -21,8 +23,8 @@ const Signup = () => {
   const handleSignup = async () => {
     if (!email.trim() || !password || password.length < 6) {
       toast({
-        title: 'Invalid input',
-        description: 'Please enter a valid email and password (min 6 characters)',
+        title: t('signup.invalidInput'),
+        description: t('signup.invalidDesc'),
         variant: 'destructive',
       });
       return;
@@ -43,15 +45,14 @@ const Signup = () => {
       });
 
       if (error) {
-        toast({ title: 'Signup failed', description: error.message, variant: 'destructive' });
+        toast({ title: t('signup.invalidInput'), description: error.message, variant: 'destructive' });
       } else if (data.user && !data.session) {
         toast({
-          title: 'Check your email',
-          description: 'We sent you a confirmation link. Please verify your email to sign in.',
+          title: t('signup.checkEmail'),
+          description: t('signup.confirmationSent'),
         });
         navigate('/login');
       } else {
-        // Auto-confirmed, update profile
         if (data.user) {
           await supabase.from('profiles').update({
             first_name: firstName.trim() || null,
@@ -61,7 +62,7 @@ const Signup = () => {
         navigate('/welcome', { replace: true });
       }
     } catch {
-      toast({ title: 'Error', description: 'Something went wrong', variant: 'destructive' });
+      toast({ title: t('login.error'), description: t('login.somethingWrong'), variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -77,8 +78,8 @@ const Signup = () => {
       >
         <div className="flex flex-col items-center mb-8">
           <img src={logoAmapola} alt="Amapola" className="h-20 w-auto object-contain mb-3 md:h-24" />
-          <h1 className="text-2xl font-bold text-foreground md:text-3xl">Create account</h1>
-          <p className="text-sm text-muted-foreground mt-1">Join Amapola Market</p>
+          <h1 className="text-2xl font-bold text-foreground md:text-3xl">{t('signup.createAccount')}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t('signup.joinAmapola')}</p>
         </div>
 
         <div className="space-y-3 mb-5">
@@ -87,7 +88,7 @@ const Signup = () => {
             <Input
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              placeholder="First name"
+              placeholder={t('signup.firstName')}
               className="h-14 rounded-xl text-base pl-14 border border-border focus:border-primary"
               autoFocus
             />
@@ -98,7 +99,7 @@ const Signup = () => {
             <Input
               value={phone}
               onChange={(e) => setPhone(e.target.value.replace(/[^0-9()\-\s+]/g, ''))}
-              placeholder="Phone number"
+              placeholder={t('signup.phoneNumber')}
               type="tel"
               inputMode="numeric"
               className="h-14 rounded-xl text-base pl-14 border border-border focus:border-primary"
@@ -110,7 +111,7 @@ const Signup = () => {
             <Input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email address"
+              placeholder={t('login.emailPlaceholder')}
               type="email"
               className="h-14 rounded-xl text-base pl-14 border border-border focus:border-primary"
             />
@@ -121,7 +122,7 @@ const Signup = () => {
             <Input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password (min 6 characters)"
+              placeholder={t('signup.passwordMin')}
               type={showPassword ? 'text' : 'password'}
               className="h-14 rounded-xl text-base pl-14 pr-14 border border-border focus:border-primary"
             />
@@ -141,15 +142,15 @@ const Signup = () => {
           disabled={loading}
           className="h-14 w-full rounded-2xl text-lg font-bold shadow-lg active:scale-[0.97] transition-transform"
         >
-          {loading ? 'Creating account…' : (
-            <span className="flex items-center gap-2">Create Account <ArrowRight className="h-5 w-5" /></span>
+          {loading ? t('signup.creatingAccount') : (
+            <span className="flex items-center gap-2">{t('signup.createAccountBtn')} <ArrowRight className="h-5 w-5" /></span>
           )}
         </Button>
 
         <p className="mt-5 text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
+          {t('signup.haveAccount')}{' '}
           <Link to="/login" className="font-semibold text-primary hover:underline">
-            Sign In
+            {t('login.signIn')}
           </Link>
         </p>
 
@@ -157,7 +158,7 @@ const Signup = () => {
           onClick={() => navigate('/welcome')}
           className="mt-3 w-full text-center text-sm font-medium text-muted-foreground active:text-foreground transition-colors"
         >
-          Continue as guest
+          {t('login.continueAsGuest')}
         </button>
       </motion.div>
     </div>

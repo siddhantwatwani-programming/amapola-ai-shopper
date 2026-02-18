@@ -8,6 +8,7 @@ import { useCustomer } from '@/store/customerContext';
 import { useMode } from '@/store/modeContext';
 import { usePickup } from '@/store/pickupContext';
 import { useOrderHistory } from '@/store/orderHistoryContext';
+import { useLanguage } from '@/store/languageContext';
 import { Button } from '@/components/ui/button';
 import logoAmapola from '@/assets/logo-amapola.png';
 import { fireConfetti } from '@/hooks/useConfetti';
@@ -19,16 +20,13 @@ const Confirmation = () => {
   const { isRestaurant, mode } = useMode();
   const { scheduleLabel, schedule, dynamicLabel } = usePickup();
   const { addOrder } = useOrderHistory();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const orderNumber = useMemo(() => `AMP-${Math.floor(1000 + Math.random() * 9000)}`, []);
 
-  // Fire confetti on mount
-  useEffect(() => {
-    fireConfetti();
-  }, []);
+  useEffect(() => { fireConfetti(); }, []);
 
-  // Save order to history on mount
   useMemo(() => {
     if (items.length > 0) {
       addOrder({
@@ -60,22 +58,20 @@ const Confirmation = () => {
 
         <CheckCircle2 className="mb-3 h-14 w-14 text-accent md:h-16 md:w-16" />
 
-        <h1 className="mb-1.5 text-2xl font-bold text-foreground md:text-3xl">Order Placed!</h1>
+        <h1 className="mb-1.5 text-2xl font-bold text-foreground md:text-3xl">{t('confirm.orderPlaced')}</h1>
 
-        {/* Mode badge */}
         {isRestaurant && (
           <div className="mb-2 flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-bold text-secondary-foreground">
             <UtensilsCrossed className="h-3 w-3" />
-            Restaurant / Bulk Order
+            {t('confirm.restaurantBulk')}
           </div>
         )}
 
-        <p className="mb-1 text-base text-muted-foreground">Your groceries will be ready for pickup.</p>
+        <p className="mb-1 text-base text-muted-foreground">{t('confirm.readyForPickup')}</p>
 
-        {/* Schedule info */}
         <div className="mb-1.5 flex items-center gap-2 text-sm font-bold text-accent">
           <Clock className="h-4 w-4" />
-          {schedule.type === 'now' ? `Ready in ${dynamicLabel}` : scheduleLabel}
+          {schedule.type === 'now' ? `${t('confirm.readyIn')} ${dynamicLabel}` : scheduleLabel}
         </div>
         {schedule.type !== 'now' && (
           <div className="mb-3 flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -84,12 +80,11 @@ const Confirmation = () => {
           </div>
         )}
 
-        {/* Customer & Store info */}
         <div className="mb-4 w-full rounded-2xl border-2 border-border bg-card p-4 text-left">
           {customer?.firstName && (
             <div className="mb-3 pb-3 border-b border-border">
               <p className="text-lg font-bold text-primary mb-1">
-                Ask for {customer.firstName} at the pickup counter
+                {t('confirm.askFor')} {customer.firstName} {t('confirm.atPickupCounter')}
               </p>
               <div className="flex flex-col gap-1.5 mt-2">
                 <span className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -113,17 +108,17 @@ const Confirmation = () => {
           </div>
           <div className="border-t border-border pt-3 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-base text-muted-foreground">Order Number</span>
+              <span className="text-base text-muted-foreground">{t('confirm.orderNumber')}</span>
               <span className="text-base font-bold text-foreground">{orderNumber}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-base text-muted-foreground">Total ({totalItems} items)</span>
+              <span className="text-base text-muted-foreground">{t('confirm.total')} ({totalItems} {totalItems !== 1 ? t('browse.items') : t('browse.item')})</span>
               <span className="text-base font-bold text-foreground">${totalPrice.toFixed(2)}</span>
             </div>
             {isRestaurant && (
               <div className="flex items-center justify-between">
-                <span className="text-base text-muted-foreground">Order Type</span>
-                <span className="text-sm font-bold text-secondary-foreground">Restaurant / Bulk</span>
+                <span className="text-base text-muted-foreground">{t('confirm.orderType')}</span>
+                <span className="text-sm font-bold text-secondary-foreground">{t('confirm.restaurantBulk')}</span>
               </div>
             )}
           </div>
@@ -134,15 +129,15 @@ const Confirmation = () => {
         </div>
 
         <div className="mb-3 rounded-2xl bg-muted/60 px-5 py-3.5 text-sm text-muted-foreground">
-          📍 Show this screen at the <span className="font-bold text-foreground">front counter</span> or <span className="font-bold text-foreground">in-store kiosk</span> when you arrive.
+          📍 {t('confirm.showScreen')} <span className="font-bold text-foreground">{t('confirm.frontCounter')}</span> {t('confirm.or')} <span className="font-bold text-foreground">{t('confirm.inStoreKiosk')}</span> {t('confirm.whenYouArrive')}
         </div>
-        <p className="mb-5 text-xs text-muted-foreground">{selectedStore.address} · {selectedStore.distance} away</p>
+        <p className="mb-5 text-xs text-muted-foreground">{selectedStore.address} · {selectedStore.distance} {t('confirm.away')}</p>
 
         <Button size="lg" onClick={() => navigate('/order-status')} className="h-14 w-full rounded-2xl text-lg font-bold active:scale-[0.97] transition-transform md:h-16 md:text-xl">
-          Track My Order
+          {t('confirm.trackMyOrder')}
         </Button>
         <Button variant="outline" size="lg" onClick={handleDone} className="mt-2 h-12 w-full rounded-2xl text-base font-semibold border-2">
-          Done
+          {t('confirm.done')}
         </Button>
       </motion.div>
     </div>
